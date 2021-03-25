@@ -3,14 +3,16 @@ import {
   SET_BOARD_PAGE_LOADING,
   SET_BOARD_PAGE_ERROR,
   SET_BOARD_CARD_LOADING,
-  ADD_NEW_BOARD_CARD
+  ADD_NEW_BOARD_CARD,
+  ADD_NEW_BOARD_LIST
 } from './actions'
 import {
   ISetNewBoard,
   ISetBoardPageLoading,
   ISetBoardPageError,
   ISetBoardCardLoading,
-  IAddNewBoardCard
+  IAddNewBoardCard,
+  IAddNewBoardList
 } from './actionTypes'
 
 export interface IBoardTask {
@@ -41,7 +43,7 @@ interface IBoardPageState extends IBoardPage {
   error: string | null
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
-  ISetBoardCardLoading | IAddNewBoardCard
+  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -81,6 +83,14 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       return {
         ...state,
         lists: updatedLists
+      }
+    case ADD_NEW_BOARD_LIST:
+      return {
+        ...state,
+        lists: [
+          ...state.lists,
+          action.payload
+        ]
       }
     case SET_NEW_BOARD:
       const {

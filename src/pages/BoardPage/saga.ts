@@ -1,17 +1,19 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { v4 as uuidv4 } from 'uuid'
-import { INIT_SET_NEW_BOARD, INIT_ADD_NEW_BOARD_CARD } from './actions'
-import { IInitAddNewBoardCard, IInitSetNewBoard } from './actionTypes'
+import { INIT_SET_NEW_BOARD, INIT_ADD_NEW_BOARD_CARD, INIT_ADD_NEW_BOARD_LIST } from './actions'
+import { IInitAddNewBoardCard, IInitSetNewBoard, IInitAddNewBoardList } from './actionTypes'
 import boardApi from '../../api/boardApi'
-import { IBoardPage } from './reducer'
+import { IBoardPage, IBoardList } from './reducer'
 import {
   setNewBoardAction,
   setBoardPageLoading,
   setBoardPageError,
   setBoardCardLoading,
-  addNewBoardCardAction
+  addNewBoardCardAction,
+  addNewBoardListAction
 } from './actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
+import { setProgressBarLoading } from '../../features/ProgressBar/actions'
 
 export function* watchSetNewBoard() {
   yield takeEvery(INIT_SET_NEW_BOARD, setNewBoard)
@@ -21,7 +23,6 @@ export function* setNewBoard(action: IInitSetNewBoard) {
     yield put(setBoardPageError(null))
     yield put(setBoardPageLoading(true))
     const board: IBoardPage = yield call(boardApi.getBoard, action.payload)
-    console.log(board)
     yield put(setNewBoardAction(board))
   } catch (err) {
     yield put(setBoardPageError(err.message))
@@ -36,6 +37,7 @@ export function* watchAddNewBoardCard() {
 export function* addNewBoardCard(action: IInitAddNewBoardCard) {
   try {
     if (!action.payload.columnId) throw new Error('Не удалось добавить задачу')
+    yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
     const boardId = action.payload.boardId
     const newCard = {
@@ -49,5 +51,29 @@ export function* addNewBoardCard(action: IInitAddNewBoardCard) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
     yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchAddNewBoardList() {
+  yield takeEvery(INIT_ADD_NEW_BOARD_LIST, addNewBoardList)
+}
+export function* addNewBoardList(action: IInitAddNewBoardList) {
+  try {
+    if (!action.payload) throw new Error('Список должен иметь корректное название')
+    yield put(setProgressBarLoading(true))
+    yield put(setBoardCardLoading(true))
+    const newBoardList: IBoardList = {
+      name: action.payload.name,
+      id: uuidv4(),
+      tasks: []
+    }
+    yield call(boardApi.addNewList, newBoardList, action.payload.boardId)
+    yield put(addNewBoardListAction(newBoardList))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
   }
 }

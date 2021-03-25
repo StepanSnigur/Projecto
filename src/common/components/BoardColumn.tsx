@@ -11,8 +11,10 @@ interface IBoardColumn {
 const useStyles = makeStyles({
   boardColumnWrapper: {
     width: '280px',
+    flexShrink: 0,
     boxSizing: 'border-box',
     padding: '12px 0',
+    marginRight: '15px',
     background: '#ebecf0',
     borderRadius: '7px'
   },
@@ -62,7 +64,6 @@ const useStyles = makeStyles({
 
 const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
   const styles = useStyles()
-  console.log(tasksList)
 
   return (
     <div className={styles.boardColumnWrapper}>
@@ -74,7 +75,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
           <span className={styles.columnMenuDot}/>
         </div>
       </div>
-      {tasksList.tasks.map((task, i) => <BoardCard key={i} title={task.name} />)}
+      {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} />)}
       <button
         className={styles.addTaskBtn}
         onClick={() => onAddNewCard(tasksList.id)}
