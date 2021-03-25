@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useContext, useRef } from 'react'
 import { IBoardList } from '../../pages/BoardPage/reducer'
 import BoardCard from './BoardCard'
 import { makeStyles } from '@material-ui/core/styles'
+import { BoardColumnContext } from '../context/BoardColumnContext'
 
 interface IBoardColumn {
   tasksList: IBoardList,
@@ -63,13 +64,20 @@ const useStyles = makeStyles({
 })
 
 const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
+  const boardColumnContext = useContext(BoardColumnContext)
   const styles = useStyles()
+  const contextMenuBtn = useRef<HTMLDivElement>(null)
+
+  const openContextMenu = () => {
+    boardColumnContext.setIsOpen(true)
+    boardColumnContext.setAnchorEl(contextMenuBtn)
+  }
 
   return (
     <div className={styles.boardColumnWrapper}>
       <div className={styles.columnTitleWrapper}>
         <h4 className={styles.columnTitle}>{tasksList.name}</h4>
-        <div className={styles.columnMenu}>
+        <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
           <span className={styles.columnMenuDot}/>
           <span className={styles.columnMenuDot}/>
           <span className={styles.columnMenuDot}/>
