@@ -4,7 +4,8 @@ import BoardCard from './BoardCard'
 import { makeStyles } from '@material-ui/core/styles'
 
 interface IBoardColumn {
-  tasksList: IBoardList
+  tasksList: IBoardList,
+  onAddNewCard: (columnId: string) => void
 }
 
 const useStyles = makeStyles({
@@ -59,8 +60,9 @@ const useStyles = makeStyles({
   }
 })
 
-const BoardColumn: React.FC<IBoardColumn> = ({ tasksList }) => {
+const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
   const styles = useStyles()
+  console.log(tasksList)
 
   return (
     <div className={styles.boardColumnWrapper}>
@@ -73,7 +75,10 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList }) => {
         </div>
       </div>
       {tasksList.tasks.map((task, i) => <BoardCard key={i} title={task.name} />)}
-      <button className={styles.addTaskBtn}>Добавить задачу</button>
+      <button
+        className={styles.addTaskBtn}
+        onClick={() => onAddNewCard(tasksList.id)}
+      >Добавить задачу</button>
     </div>
   )
 }

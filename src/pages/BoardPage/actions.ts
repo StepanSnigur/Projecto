@@ -1,4 +1,4 @@
-import { IBoardPage } from './reducer'
+import { IBoardPage, IBoardTask } from './reducer'
 
 export const INIT_SET_NEW_BOARD = 'BOARD_PAGE/INIT_SET_NEW_BOARD'
 export const initSetNewBoard = (boardId: string) => ({
@@ -22,4 +22,27 @@ export const SET_BOARD_PAGE_ERROR = 'BOARD_PAGE/SET_ERROR'
 export const setBoardPageError = (error: string | null) => ({
   type: SET_BOARD_PAGE_ERROR,
   payload: error
+})
+
+export const INIT_ADD_NEW_BOARD_CARD = 'BOARD_PAGE/INIT_ADD_NEW_CARD'
+export const initAddNewBoardCard = (cardName: string, columnId: string, boardId: string) => ({
+  type: INIT_ADD_NEW_BOARD_CARD,
+  payload: {
+    cardName,
+    columnId,
+    boardId
+  }
+})
+export const ADD_NEW_BOARD_CARD = 'BOARD_PAGE/ADD_NEW_CARD'
+export const addNewBoardCardAction = (columnId: string, newCard: IBoardTask) => ({
+  type: ADD_NEW_BOARD_CARD,
+  payload: {
+    columnId,
+    newCard
+  }
+})
+export const SET_BOARD_CARD_LOADING = 'BOARD_PAGE/SET_CARD_LOADING'
+export const setBoardCardLoading = (isLoading: boolean) => ({
+  type: SET_BOARD_CARD_LOADING,
+  payload: isLoading
 })

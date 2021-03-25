@@ -1,20 +1,26 @@
 import {
   SET_NEW_BOARD,
   SET_BOARD_PAGE_LOADING,
-  SET_BOARD_PAGE_ERROR
+  SET_BOARD_PAGE_ERROR,
+  SET_BOARD_CARD_LOADING,
+  ADD_NEW_BOARD_CARD
 } from './actions'
 import {
   ISetNewBoard,
   ISetBoardPageLoading,
-  ISetBoardPageError
+  ISetBoardPageError,
+  ISetBoardCardLoading,
+  IAddNewBoardCard
 } from './actionTypes'
 
 export interface IBoardTask {
   name: string,
-  createdAt: string
+  createdAt: string,
+  id: string
 }
 export interface IBoardList {
   name: string,
+  id: string,
   tasks: IBoardTask[]
 }
 export interface IBoardAction {
@@ -31,12 +37,15 @@ export interface IBoardPage {
 }
 interface IBoardPageState extends IBoardPage {
   isLoading: boolean,
+  isCardLoading: boolean,
   error: string | null
 }
-type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError
+type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
+  ISetBoardCardLoading | IAddNewBoardCard
 
 const initialState: IBoardPageState = {
   isLoading: false,
+  isCardLoading: false,
   error: null,
   name: '',
   backgroundImage: null,
@@ -56,6 +65,22 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       return {
         ...state,
         error: action.payload
+      }
+    case SET_BOARD_CARD_LOADING:
+      return {
+        ...state,
+        isCardLoading: action.payload
+      }
+    case ADD_NEW_BOARD_CARD:
+      const updatedLists = [...state.lists]
+      const listToUpdate = updatedLists.findIndex((list) => list.id === action.payload.columnId)
+      updatedLists[listToUpdate] = {
+        ...updatedLists[listToUpdate],
+        tasks: [...updatedLists[listToUpdate].tasks, action.payload.newCard]
+      }
+      return {
+        ...state,
+        lists: updatedLists
       }
     case SET_NEW_BOARD:
       const {
