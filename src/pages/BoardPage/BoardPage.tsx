@@ -84,7 +84,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   return (
     <div className={styles.boardWrapper}>
       <BoardColumnContextProvider>
-        <BoardColumnContextMenu />
+        <BoardColumnContextMenu boardId={boardId} />
         <Container>
           board, {boardId}
           <h2>{boardPageState.name}</h2>

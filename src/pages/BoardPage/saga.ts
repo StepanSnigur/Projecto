@@ -1,7 +1,17 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { v4 as uuidv4 } from 'uuid'
-import { INIT_SET_NEW_BOARD, INIT_ADD_NEW_BOARD_CARD, INIT_ADD_NEW_BOARD_LIST } from './actions'
-import { IInitAddNewBoardCard, IInitSetNewBoard, IInitAddNewBoardList } from './actionTypes'
+import {
+  INIT_SET_NEW_BOARD,
+  INIT_ADD_NEW_BOARD_CARD,
+  INIT_ADD_NEW_BOARD_LIST,
+  INIT_DELETE_BOARD_LIST
+} from './actions'
+import {
+  IInitAddNewBoardCard,
+  IInitSetNewBoard,
+  IInitAddNewBoardList,
+  IInitDeleteBoardList
+} from './actionTypes'
 import boardApi from '../../api/boardApi'
 import { IBoardPage, IBoardList } from './reducer'
 import {
@@ -10,7 +20,8 @@ import {
   setBoardPageError,
   setBoardCardLoading,
   addNewBoardCardAction,
-  addNewBoardListAction
+  addNewBoardListAction,
+  deleteBoardListAction
 } from './actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
@@ -70,6 +81,23 @@ export function* addNewBoardList(action: IInitAddNewBoardList) {
     }
     yield call(boardApi.addNewList, newBoardList, action.payload.boardId)
     yield put(addNewBoardListAction(newBoardList))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchDeleteBoardList() {
+  yield takeEvery(INIT_DELETE_BOARD_LIST, deleteBoardList)
+}
+export function* deleteBoardList(action: IInitDeleteBoardList) {
+  try {
+    if (!action.payload.listId) throw new Error('Ошибка при удалении списка')
+    yield put(setProgressBarLoading(true))
+    yield put(setBoardCardLoading(true))
+    yield put(deleteBoardListAction(action.payload.listId))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {

@@ -4,7 +4,8 @@ import {
   SET_BOARD_PAGE_ERROR,
   SET_BOARD_CARD_LOADING,
   ADD_NEW_BOARD_CARD,
-  ADD_NEW_BOARD_LIST
+  ADD_NEW_BOARD_LIST,
+  DELETE_BOARD_LIST
 } from './actions'
 import {
   ISetNewBoard,
@@ -12,7 +13,8 @@ import {
   ISetBoardPageError,
   ISetBoardCardLoading,
   IAddNewBoardCard,
-  IAddNewBoardList
+  IAddNewBoardList,
+  IDeleteBoardList
 } from './actionTypes'
 
 export interface IBoardTask {
@@ -43,7 +45,7 @@ interface IBoardPageState extends IBoardPage {
   error: string | null
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
-  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList
+  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -91,6 +93,11 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
           ...state.lists,
           action.payload
         ]
+      }
+    case DELETE_BOARD_LIST:
+      return {
+        ...state,
+        lists: state.lists.filter(list => list.id !== action.payload)
       }
     case SET_NEW_BOARD:
       const {

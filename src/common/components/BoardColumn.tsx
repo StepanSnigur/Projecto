@@ -69,8 +69,9 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
   const contextMenuBtn = useRef<HTMLDivElement>(null)
 
   const openContextMenu = () => {
-    boardColumnContext.setIsOpen(true)
     boardColumnContext.setAnchorEl(contextMenuBtn)
+    boardColumnContext.setCurrentListId(tasksList.id)
+    boardColumnContext.setIsOpen(true)
   }
 
   return (
