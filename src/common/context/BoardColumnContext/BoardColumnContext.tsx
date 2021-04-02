@@ -6,7 +6,9 @@ export interface IBoardColumnContext {
   anchorEl: React.RefObject<HTMLDivElement> | null,
   setAnchorEl: (el: React.RefObject<HTMLDivElement>) => void,
   currentListId: string | null,
-  setCurrentListId: (id: string) => void
+  setCurrentListId: (id: string) => void,
+  isUpdating: boolean,
+  setIsUpdating: (isUpdating: boolean) => void
 }
 export const BoardColumnContext = createContext<IBoardColumnContext>({
   isOpen: false,
@@ -14,12 +16,15 @@ export const BoardColumnContext = createContext<IBoardColumnContext>({
   anchorEl: null,
   setAnchorEl: () => {},
   currentListId: null,
-  setCurrentListId: () => {}
+  setCurrentListId: () => {},
+  isUpdating: false,
+  setIsUpdating: () => {}
 })
 const BoardColumnContextProvider: React.FC = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<React.RefObject<HTMLDivElement> | null>(null)
   const [currentListId, setCurrentListId] = useState<string | null>(null)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const contextState: IBoardColumnContext = {
     isOpen,
@@ -27,7 +32,9 @@ const BoardColumnContextProvider: React.FC = ({ children }) => {
     anchorEl,
     setAnchorEl,
     currentListId,
-    setCurrentListId
+    setCurrentListId,
+    isUpdating,
+    setIsUpdating
   }
 
   return (

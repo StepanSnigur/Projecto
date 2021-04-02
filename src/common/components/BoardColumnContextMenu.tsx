@@ -25,7 +25,7 @@ const BoardColumnContextMenu: React.FC<IBoardColumnContextMenu> = ({ boardId }) 
     context.setIsOpen(false)
   }
   const updateList = () => {
-    console.log(context.currentListId, 'update')
+    context.setIsUpdating(true)
     context.setIsOpen(false)
   }
 
