@@ -9,6 +9,8 @@ import { isHexColor } from './utils'
 
 import BoardColumn from '../../common/components/BoardColumn'
 import InputModalWindow from '../../common/components/InputModalWindow'
+import BoardColumnContextMenu from '../../common/components/BoardColumnContextMenu'
+import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
 
 interface IBoardPage {
   boardId: string
@@ -81,24 +83,27 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
 
   return (
     <div className={styles.boardWrapper}>
-      <Container>
-        board, {boardId}
-        <h2>{boardPageState.name}</h2>
-        <div className={styles.tasksListWrapper}>
-          {boardPageState.lists.map(tasksList => <BoardColumn
-            tasksList={tasksList}
-            onAddNewCard={handleAddNewCard}
-            key={tasksList.id}
-          />)}
-          <Button
-            variant="contained"
-            disableElevation
-            className={styles.addListBtn}
-            onClick={() => setAddNewListModalOpen(true)}
-            disabled={boardPageState.isCardLoading}
-          >Добавить список</Button>
-        </div>
-      </Container>
+      <BoardColumnContextProvider>
+        <BoardColumnContextMenu boardId={boardId} />
+        <Container>
+          board, {boardId}
+          <h2>{boardPageState.name}</h2>
+          <div className={styles.tasksListWrapper}>
+            {boardPageState.lists.map(tasksList => <BoardColumn
+              tasksList={tasksList}
+              onAddNewCard={handleAddNewCard}
+              key={tasksList.id}
+            />)}
+            <Button
+              variant="contained"
+              disableElevation
+              className={styles.addListBtn}
+              onClick={() => setAddNewListModalOpen(true)}
+              disabled={boardPageState.isCardLoading}
+            >Добавить список</Button>
+          </div>
+        </Container>
+      </BoardColumnContextProvider>
 
       <InputModalWindow
         isOpen={addNewCardModalOpen}

@@ -7,7 +7,9 @@ import {
   ADD_NEW_BOARD_CARD,
   SET_BOARD_CARD_LOADING,
   INIT_ADD_NEW_BOARD_LIST,
-  ADD_NEW_BOARD_LIST
+  ADD_NEW_BOARD_LIST,
+  INIT_DELETE_BOARD_LIST,
+  DELETE_BOARD_LIST
 } from './actions'
 import { IBoardList, IBoardPage, IBoardTask } from './reducer'
 
@@ -56,4 +58,15 @@ export interface IInitAddNewBoardList {
 export interface IAddNewBoardList {
   type: typeof ADD_NEW_BOARD_LIST,
   payload: IBoardList
+}
+export interface IInitDeleteBoardList {
+  type: typeof INIT_DELETE_BOARD_LIST,
+  payload: {
+    boardId: string,
+    listId: string
+  }
+}
+export interface IDeleteBoardList {
+  type: typeof DELETE_BOARD_LIST,
+  payload: string
 }

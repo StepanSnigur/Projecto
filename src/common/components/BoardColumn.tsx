@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useContext, useRef, useEffect, useState } from 'react'
 import { IBoardList } from '../../pages/BoardPage/reducer'
 import BoardCard from './BoardCard'
+import { TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { BoardColumnContext } from '../context/BoardColumnContext'
+import { ENTER_KEY_CODE } from '../constants'
 
 interface IBoardColumn {
   tasksList: IBoardList,
@@ -63,13 +66,60 @@ const useStyles = makeStyles({
 })
 
 const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
+  const boardColumnContext = useContext(BoardColumnContext)
+  const [titleInputValue, setTitleInputValue] = useState('')
   const styles = useStyles()
+  const contextMenuBtn = useRef<HTMLDivElement>(null)
+
+  const handleTitleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitleInputValue(e.target.value)
+  }
+  const handleTitleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === ENTER_KEY_CODE) {
+      boardColumnContext.setIsUpdating(false)
+    }
+  }
+  const exitUpdatingMode = (e: any) => {
+    if (e.target.parentNode.getAttribute('id') === 'root') {
+      boardColumnContext.setIsUpdating(false)
+    }
+  }
+  useEffect(() => {
+    if (boardColumnContext.isUpdating) {
+      document.body.addEventListener('click', exitUpdatingMode)
+      setTitleInputValue(tasksList.name || '')
+    } else {
+      document.body.removeEventListener('click', exitUpdatingMode)
+    }
+
+    return () => {
+      document.body.removeEventListener('click', exitUpdatingMode)
+    }
+  }, [boardColumnContext.isUpdating])
+
+  const openContextMenu = () => {
+    boardColumnContext.setAnchorEl(contextMenuBtn)
+    boardColumnContext.setCurrentListId(tasksList.id)
+    boardColumnContext.setIsOpen(true)
+    boardColumnContext.setIsUpdating(false)
+  }
 
   return (
     <div className={styles.boardColumnWrapper}>
       <div className={styles.columnTitleWrapper}>
-        <h4 className={styles.columnTitle}>{tasksList.name}</h4>
-        <div className={styles.columnMenu}>
+        {(boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) ?
+          <TextField
+            label="Новое название"
+            variant="outlined"
+            size="small"
+            value={titleInputValue}
+            onChange={handleTitleInputChange}
+            onKeyDown={handleTitleInputKeyDown}
+            autoFocus
+          /> :
+          <h4 className={styles.columnTitle}>{tasksList.name}</h4>
+        }
+        <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
           <span className={styles.columnMenuDot}/>
           <span className={styles.columnMenuDot}/>
           <span className={styles.columnMenuDot}/>

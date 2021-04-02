@@ -9,7 +9,12 @@ import { errorManagerReducer } from '../features/ErrorManager'
 
 import { registrationPageReducer } from '../pages/RegistrationPage'
 
-import { watchSetNewBoard, watchAddNewBoardCard, watchAddNewBoardList } from '../pages/BoardPage/saga'
+import {
+  watchSetNewBoard,
+  watchAddNewBoardCard,
+  watchAddNewBoardList,
+  watchDeleteBoardList
+} from '../pages/BoardPage/saga'
 import { boardPageReducer } from '../pages/BoardPage'
 
 import { progressBarReducer } from '../features/ProgressBar'
@@ -30,5 +35,6 @@ sagaMiddleware.run(watchSetError)
 sagaMiddleware.run(watchSetNewBoard)
 sagaMiddleware.run(watchAddNewBoardCard)
 sagaMiddleware.run(watchAddNewBoardList)
+sagaMiddleware.run(watchDeleteBoardList)
 
 export default store

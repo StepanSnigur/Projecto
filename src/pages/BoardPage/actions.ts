@@ -60,3 +60,17 @@ export const addNewBoardListAction = (newBoardList: IBoardList) => ({
   type: ADD_NEW_BOARD_LIST,
   payload: newBoardList
 })
+
+export const INIT_DELETE_BOARD_LIST = 'BOARD_PAGE/INIT_DELETE_LIST'
+export const initDeleteBoardList = (listId: string, boardId: string) => ({
+  type: INIT_DELETE_BOARD_LIST,
+  payload: {
+    listId,
+    boardId
+  }
+})
+export const DELETE_BOARD_LIST = 'BOARD_PAGE/DELETE_LIST'
+export const deleteBoardListAction = (listId: string) => ({
+  type: DELETE_BOARD_LIST,
+  payload: listId
+})
