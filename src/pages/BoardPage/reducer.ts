@@ -5,7 +5,8 @@ import {
   SET_BOARD_CARD_LOADING,
   ADD_NEW_BOARD_CARD,
   ADD_NEW_BOARD_LIST,
-  DELETE_BOARD_LIST
+  DELETE_BOARD_LIST,
+  MOVE_BOARD_TASK
 } from './actions'
 import {
   ISetNewBoard,
@@ -14,7 +15,8 @@ import {
   ISetBoardCardLoading,
   IAddNewBoardCard,
   IAddNewBoardList,
-  IDeleteBoardList
+  IDeleteBoardList,
+  IMoveBoardTask
 } from './actionTypes'
 
 export interface IBoardTask {
@@ -45,7 +47,7 @@ interface IBoardPageState extends IBoardPage {
   error: string | null
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
-  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList
+  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList | IMoveBoardTask
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -85,6 +87,26 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       return {
         ...state,
         lists: updatedLists
+      }
+    case MOVE_BOARD_TASK:
+      const { source, destination } = action.payload
+      const listsToChange = [...state.lists]
+
+      const dragFromListIndex = state.lists.findIndex(list => list.id === source.droppableId)
+      const dragToListIndex = state.lists.findIndex(list => list.id === destination.droppableId)
+      const taskToMove = { ...listsToChange[dragFromListIndex].tasks[source.index] }
+      console.log(taskToMove, 'move')
+      listsToChange[dragFromListIndex].tasks = listsToChange[dragFromListIndex].tasks
+        .filter((_, i) => i !== source.index)
+      listsToChange[dragToListIndex].tasks = [
+        ...listsToChange[dragToListIndex].tasks.slice(0, destination.index),
+        taskToMove,
+        ...listsToChange[dragToListIndex].tasks.slice(destination.index),
+      ]
+
+      return {
+        ...state,
+        lists: listsToChange
       }
     case ADD_NEW_BOARD_LIST:
       return {

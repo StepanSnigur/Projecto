@@ -1,5 +1,6 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
 import { IBoardList } from '../../pages/BoardPage/reducer'
+import { Droppable } from 'react-beautiful-dnd'
 import BoardCard from './BoardCard'
 import { TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -125,7 +126,17 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
           <span className={styles.columnMenuDot}/>
         </div>
       </div>
-      {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} />)}
+      <Droppable droppableId={tasksList.id}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} id={task.id} index={i} />)}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
       <button
         className={styles.addTaskBtn}
         onClick={() => onAddNewCard(tasksList.id)}

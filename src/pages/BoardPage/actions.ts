@@ -1,4 +1,5 @@
 import { IBoardPage, IBoardTask, IBoardList } from './reducer'
+import { IDropResult } from './BoardPage'
 
 export const INIT_SET_NEW_BOARD = 'BOARD_PAGE/INIT_SET_NEW_BOARD'
 export const initSetNewBoard = (boardId: string) => ({
@@ -73,4 +74,13 @@ export const DELETE_BOARD_LIST = 'BOARD_PAGE/DELETE_LIST'
 export const deleteBoardListAction = (listId: string) => ({
   type: DELETE_BOARD_LIST,
   payload: listId
+})
+
+export const MOVE_BOARD_TASK = 'BOARD_PAGE/MOVE_TASK'
+export const moveBoardTask = (source: IDropResult, destination: IDropResult) => ({
+  type: MOVE_BOARD_TASK,
+  payload: {
+    source,
+    destination
+  }
 })

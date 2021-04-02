@@ -9,9 +9,11 @@ import {
   INIT_ADD_NEW_BOARD_LIST,
   ADD_NEW_BOARD_LIST,
   INIT_DELETE_BOARD_LIST,
-  DELETE_BOARD_LIST
+  DELETE_BOARD_LIST,
+  MOVE_BOARD_TASK
 } from './actions'
 import { IBoardList, IBoardPage, IBoardTask } from './reducer'
+import { IDropResult } from './BoardPage'
 
 export interface IInitSetNewBoard {
   type: typeof INIT_SET_NEW_BOARD,
@@ -69,4 +71,12 @@ export interface IInitDeleteBoardList {
 export interface IDeleteBoardList {
   type: typeof DELETE_BOARD_LIST,
   payload: string
+}
+
+export interface IMoveBoardTask {
+  type: typeof MOVE_BOARD_TASK,
+  payload: {
+    source: IDropResult,
+    destination: IDropResult
+  }
 }
