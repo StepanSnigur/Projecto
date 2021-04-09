@@ -99,7 +99,6 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       const dragFromListIndex = state.lists.findIndex(list => list.id === source.droppableId)
       const dragToListIndex = state.lists.findIndex(list => list.id === destination.droppableId)
       const taskToMove = { ...listsToChange[dragFromListIndex].tasks[source.index] }
-      console.log(taskToMove, 'move')
       listsToChange[dragFromListIndex].tasks = listsToChange[dragFromListIndex].tasks
         .filter((_, i) => i !== source.index)
       listsToChange[dragToListIndex].tasks = [
