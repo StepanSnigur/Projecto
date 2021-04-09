@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import RegistrationPage from '../pages/RegistrationPage'
 import BoardPage from '../pages/BoardPage'
+import Header from '../features/Header'
 
 const AppRouter = () => (
   <Router>
+    <Header />
     <Switch>
       <Route path="/" exact render={() => <div>test</div>} />
       <Route path="/registration" component={RegistrationPage} />
