@@ -86,7 +86,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     handleCloseAddNewListModal()
   }
   const handleDragEnd = (result: any) => {
-    const { destination, source, draggableId } = result
+    const { destination, source } = result
     if (
       !destination ||
       (destination.droppableId === source.droppableId && destination.index === source.index)

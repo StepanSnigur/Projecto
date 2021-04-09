@@ -100,7 +100,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
     return () => {
       document.body.removeEventListener('click', exitUpdatingMode)
     }
-  }, [boardColumnContext.isUpdating])
+  }, [boardColumnContext.isUpdating, tasksList.name])
 
   const openContextMenu = () => {
     boardColumnContext.setAnchorEl(contextMenuBtn)
