@@ -5,6 +5,7 @@ import {
   INIT_ADD_NEW_BOARD_CARD,
   INIT_ADD_NEW_BOARD_LIST,
   INIT_DELETE_BOARD_LIST,
+  INIT_MOVE_BOARD_TASK,
   INIT_MOVE_BOARD_COLUMN
 } from './actions'
 import {
@@ -24,6 +25,7 @@ import {
   addNewBoardCardAction,
   addNewBoardListAction,
   deleteBoardListAction,
+  moveBoardTask,
   moveBoardColumn
 } from './actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
@@ -109,6 +111,21 @@ export function* deleteBoardList(action: IInitDeleteBoardList) {
   }
 }
 
+export function* watchMoveBoardTask() {
+  yield takeEvery(INIT_MOVE_BOARD_TASK, moveBoardTaskSaga)
+}
+export function* moveBoardTaskSaga(action: IInitMoveBoardColumn) {
+  try {
+    yield put(setProgressBarLoading(true))
+    yield put(setBoardCardLoading(true))
+    yield put(moveBoardTask(action.payload.source, action.payload.destination))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
 export function* watchMoveBoardColumn() {
   yield takeEvery(INIT_MOVE_BOARD_COLUMN, moveBoardColumnSaga)
 }

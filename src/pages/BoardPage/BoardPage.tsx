@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardPageState } from './selectors'
-import { initAddNewBoardCard, initSetNewBoard, initAddNewBoardList, moveBoardTask, initMoveBoardColumn } from './actions'
+import {
+  initAddNewBoardCard,
+  initSetNewBoard,
+  initAddNewBoardList,
+  initMoveBoardTask,
+  initMoveBoardColumn
+} from './actions'
 import Preloader from '../../common/components/Preloader'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Container } from '@material-ui/core'
@@ -88,7 +94,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
 
     result.type === 'column'
       ? dispatch(initMoveBoardColumn(source, destination))
-      : dispatch(moveBoardTask(source, destination))
+      : dispatch(initMoveBoardTask(source, destination))
   }
 
   useEffect(() => {
