@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardPageState } from './selectors'
 import {
@@ -97,7 +97,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
       : dispatch(initMoveBoardTask(source, destination))
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(initSetNewBoard(boardId))
   }, [dispatch, boardId])
 
