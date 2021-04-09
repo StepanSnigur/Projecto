@@ -23,6 +23,7 @@ const useStyles = makeStyles({
     borderRadius: '7px',
     cursor: 'pointer',
     transition: '.3s',
+    overflow: 'hidden',
 
     '&:hover': {
       background: '#fff'
