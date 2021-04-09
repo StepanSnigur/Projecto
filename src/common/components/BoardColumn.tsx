@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
 import { IBoardList } from '../../pages/BoardPage/reducer'
-import { Droppable } from 'react-beautiful-dnd'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 import BoardCard from './BoardCard'
 import { TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -9,7 +9,8 @@ import { ENTER_KEY_CODE } from '../constants'
 
 interface IBoardColumn {
   tasksList: IBoardList,
-  onAddNewCard: (columnId: string) => void
+  onAddNewCard: (columnId: string) => void,
+  dragIndex: number
 }
 
 const useStyles = makeStyles({
@@ -63,10 +64,13 @@ const useStyles = makeStyles({
     border: '1px solid #6b778c',
     borderRadius: '4px',
     cursor: 'pointer'
+  },
+  droppableZone: {
+    minHeight: '20px'
   }
 })
 
-const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
+const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragIndex }) => {
   const boardColumnContext = useContext(BoardColumnContext)
   const [titleInputValue, setTitleInputValue] = useState('')
   const styles = useStyles()
@@ -106,42 +110,52 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard }) => {
   }
 
   return (
-    <div className={styles.boardColumnWrapper}>
-      <div className={styles.columnTitleWrapper}>
-        {(boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) ?
-          <TextField
-            label="Новое название"
-            variant="outlined"
-            size="small"
-            value={titleInputValue}
-            onChange={handleTitleInputChange}
-            onKeyDown={handleTitleInputKeyDown}
-            autoFocus
-          /> :
-          <h4 className={styles.columnTitle}>{tasksList.name}</h4>
-        }
-        <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
-          <span className={styles.columnMenuDot}/>
-          <span className={styles.columnMenuDot}/>
-          <span className={styles.columnMenuDot}/>
-        </div>
-      </div>
-      <Droppable droppableId={tasksList.id}>
-        {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} id={task.id} index={i} />)}
-            {provided.placeholder}
+    <Draggable draggableId={tasksList.id} index={dragIndex}>
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          className={styles.boardColumnWrapper}
+        >
+          <div className={styles.columnTitleWrapper}>
+            {(boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) ?
+              <TextField
+                label="Новое название"
+                variant="outlined"
+                size="small"
+                value={titleInputValue}
+                onChange={handleTitleInputChange}
+                onKeyDown={handleTitleInputKeyDown}
+                autoFocus
+              /> :
+              <h4 className={styles.columnTitle}>{tasksList.name}</h4>
+            }
+            <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
+              <span className={styles.columnMenuDot}/>
+              <span className={styles.columnMenuDot}/>
+              <span className={styles.columnMenuDot}/>
+            </div>
           </div>
-        )}
-      </Droppable>
-      <button
-        className={styles.addTaskBtn}
-        onClick={() => onAddNewCard(tasksList.id)}
-      >Добавить задачу</button>
-    </div>
+          <Droppable droppableId={tasksList.id}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={styles.droppableZone}
+              >
+                {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} id={task.id} index={i} />)}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <button
+            className={styles.addTaskBtn}
+            onClick={() => onAddNewCard(tasksList.id)}
+          >Добавить задачу</button>
+        </div>
+      )}
+    </Draggable>
   )
 }
 

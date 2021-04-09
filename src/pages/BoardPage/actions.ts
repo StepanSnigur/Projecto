@@ -76,9 +76,33 @@ export const deleteBoardListAction = (listId: string) => ({
   payload: listId
 })
 
+export const INIT_MOVE_BOARD_TASK = 'BOARD_PAGE/INIT_MOVE_TASK'
+export const initMoveBoardTask = (source: IDropResult, destination: IDropResult) => ({
+  type: INIT_MOVE_BOARD_TASK,
+  payload: {
+    source,
+    destination
+  }
+})
 export const MOVE_BOARD_TASK = 'BOARD_PAGE/MOVE_TASK'
 export const moveBoardTask = (source: IDropResult, destination: IDropResult) => ({
   type: MOVE_BOARD_TASK,
+  payload: {
+    source,
+    destination
+  }
+})
+export const INIT_MOVE_BOARD_COLUMN = 'BOARD_PAGE/INIT_MOVE_COLUMN'
+export const initMoveBoardColumn = (source: IDropResult, destination: IDropResult) => ({
+  type: INIT_MOVE_BOARD_COLUMN,
+  payload: {
+    source,
+    destination
+  }
+})
+export const MOVE_BOARD_COLUMN = 'BOARD_PAGE/MOVE_COLUMN'
+export const moveBoardColumn = (source: IDropResult, destination: IDropResult) => ({
+  type: MOVE_BOARD_COLUMN,
   payload: {
     source,
     destination
