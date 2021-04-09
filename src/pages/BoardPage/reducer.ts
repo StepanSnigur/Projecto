@@ -6,7 +6,8 @@ import {
   ADD_NEW_BOARD_CARD,
   ADD_NEW_BOARD_LIST,
   DELETE_BOARD_LIST,
-  MOVE_BOARD_TASK
+  MOVE_BOARD_TASK,
+  MOVE_BOARD_COLUMN
 } from './actions'
 import {
   ISetNewBoard,
@@ -16,8 +17,10 @@ import {
   IAddNewBoardCard,
   IAddNewBoardList,
   IDeleteBoardList,
-  IMoveBoardTask
+  IMoveBoardTask,
+  IMoveBoardColumn
 } from './actionTypes'
+import { moveToPosition } from './utils'
 
 export interface IBoardTask {
   name: string,
@@ -47,7 +50,8 @@ interface IBoardPageState extends IBoardPage {
   error: string | null
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
-  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList | IMoveBoardTask
+  ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList | IMoveBoardTask |
+  IMoveBoardColumn
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -107,6 +111,13 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       return {
         ...state,
         lists: listsToChange
+      }
+    case MOVE_BOARD_COLUMN:
+      const sourceId = action.payload.source.index
+      const destinationId = action.payload.destination.index
+      return {
+        ...state,
+        lists: moveToPosition([...state.lists], sourceId, destinationId)
       }
     case ADD_NEW_BOARD_LIST:
       return {

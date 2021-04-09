@@ -4,13 +4,15 @@ import {
   INIT_SET_NEW_BOARD,
   INIT_ADD_NEW_BOARD_CARD,
   INIT_ADD_NEW_BOARD_LIST,
-  INIT_DELETE_BOARD_LIST
+  INIT_DELETE_BOARD_LIST,
+  INIT_MOVE_BOARD_COLUMN
 } from './actions'
 import {
   IInitAddNewBoardCard,
   IInitSetNewBoard,
   IInitAddNewBoardList,
-  IInitDeleteBoardList
+  IInitDeleteBoardList,
+  IInitMoveBoardColumn
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
 import { IBoardPage, IBoardList } from './reducer'
@@ -21,7 +23,8 @@ import {
   setBoardCardLoading,
   addNewBoardCardAction,
   addNewBoardListAction,
-  deleteBoardListAction
+  deleteBoardListAction,
+  moveBoardColumn
 } from './actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
@@ -98,6 +101,22 @@ export function* deleteBoardList(action: IInitDeleteBoardList) {
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
     yield put(deleteBoardListAction(action.payload.listId))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchMoveBoardColumn() {
+  yield takeEvery(INIT_MOVE_BOARD_COLUMN, moveBoardColumnSaga)
+}
+export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
+  try {
+    yield put(setProgressBarLoading(true))
+    yield put(setBoardCardLoading(true))
+    yield put(moveBoardColumn(action.payload.source, action.payload.destination))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {

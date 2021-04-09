@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardPageState } from './selectors'
-import { initAddNewBoardCard, initSetNewBoard, initAddNewBoardList, moveBoardTask } from './actions'
+import { initAddNewBoardCard, initSetNewBoard, initAddNewBoardList, moveBoardTask, initMoveBoardColumn } from './actions'
 import Preloader from '../../common/components/Preloader'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Container } from '@material-ui/core'
 import { isHexColor } from './utils'
 import { IBoardList } from './reducer'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import BoardColumn from '../../common/components/BoardColumn'
 import InputModalWindow from '../../common/components/InputModalWindow'
@@ -21,20 +21,6 @@ interface IStyleProps {
   background: string | null,
   isImage: boolean
 }
-// interface IDropResult {
-//   destination: {
-//     droppableId: string,
-//     index: number
-//   },
-//   draggableId: string,
-//   mode: string,
-//   reason: string,
-//   source: {
-//     droppableId: string,
-//     index: number
-//   },
-//   type: string
-// }
 export interface IDropResult {
   index: number,
   droppableId: string
@@ -100,7 +86,9 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
       (destination.droppableId === source.droppableId && destination.index === source.index)
     ) return false
 
-    dispatch(moveBoardTask(source, destination))
+    result.type === 'column'
+      ? dispatch(initMoveBoardColumn(source, destination))
+      : dispatch(moveBoardTask(source, destination))
   }
 
   useEffect(() => {
@@ -113,8 +101,6 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   return (
     <div className={styles.boardWrapper}>
       <DragDropContext
-        // onDragStart={}
-        // onDragUpdate={}
         onDragEnd={handleDragEnd}
       >
         <BoardColumnContextProvider>
@@ -122,20 +108,26 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
           <Container>
             board, {boardId}
             <h2>{boardPageState.name}</h2>
-            <div className={styles.tasksListWrapper}>
-              {boardPageState.lists.map((tasksList: IBoardList) => <BoardColumn
-                tasksList={tasksList}
-                onAddNewCard={handleAddNewCard}
-                key={tasksList.id}
-              />)}
-              <Button
-                variant="contained"
-                disableElevation
-                className={styles.addListBtn}
-                onClick={() => setAddNewListModalOpen(true)}
-                disabled={boardPageState.isCardLoading}
-              >Добавить список</Button>
-            </div>
+            <Droppable droppableId="task-lists" direction="horizontal" type="column">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef} className={styles.tasksListWrapper}>
+                  {boardPageState.lists.map((tasksList: IBoardList, i) => <BoardColumn
+                    tasksList={tasksList}
+                    onAddNewCard={handleAddNewCard}
+                    dragIndex={i}
+                    key={tasksList.id}
+                  />)}
+                  {provided.placeholder}
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    className={styles.addListBtn}
+                    onClick={() => setAddNewListModalOpen(true)}
+                    disabled={boardPageState.isCardLoading}
+                  >Добавить список</Button>
+                </div>
+              )}
+            </Droppable>
           </Container>
         </BoardColumnContextProvider>
 
