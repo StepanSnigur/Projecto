@@ -35,7 +35,9 @@ export interface IDropResult {
 const useStyles = makeStyles({
   boardWrapper: {
     height: '100vh',
-    background: (props: IStyleProps) => props.isImage ? `url(${props.background}) no-repeat center / cover` : (props.background || '#fff')
+    background: (props: IStyleProps) => props.isImage
+      ? `url(${props.background}) no-repeat center / cover`
+      : (props.background || '#fff')
   },
   tasksListWrapper: {
     overflowX: 'auto',
