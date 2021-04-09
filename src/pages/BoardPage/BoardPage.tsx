@@ -34,15 +34,23 @@ export interface IDropResult {
 
 const useStyles = makeStyles({
   boardWrapper: {
-    height: '100vh',
+    width: '100%',
+    maxHeight: 'calc(100vh - 60px)',
     background: (props: IStyleProps) => props.isImage
       ? `url(${props.background}) no-repeat center / cover`
-      : (props.background || '#fff')
+      : (props.background || '#fff'),
+    paddingTop: '25px'
+  },
+  boardContainer: {
+    margin: 0,
+    maxWidth: 'none'
   },
   tasksListWrapper: {
-    overflowX: 'auto',
+    maxHeight: '850px',
+    overflow: 'auto',
     display: 'flex',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    paddingBottom: '20px'
   },
   addListBtn: {
     height: '40px',
@@ -113,9 +121,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
       >
         <BoardColumnContextProvider>
           <BoardColumnContextMenu boardId={boardId} />
-          <Container>
-            board, {boardId}
-            <h2>{boardPageState.name}</h2>
+          <Container className={styles.boardContainer}>
             <Droppable droppableId="task-lists" direction="horizontal" type="column">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef} className={styles.tasksListWrapper}>
