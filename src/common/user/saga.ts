@@ -4,14 +4,14 @@ import { INIT_SET_USER, setUser } from './actions'
 import { IInitSetUser } from './actionTypes'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
-import { IUserData } from './reducer'
+import { IUserData, IBoardLink } from './reducer'
 import history from '../../App/history'
 import { translatedServerErrors } from '../constants'
 
 export interface IUser {
   nickName: string,
   email: string,
-  registeredInBoards: string[],
+  registeredInBoards: IBoardLink[],
   icon: string | null
 }
 export function* watchSetUser() {
