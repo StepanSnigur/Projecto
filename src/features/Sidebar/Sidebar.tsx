@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
+import { getUserState } from '../../common/user/selectors'
 
 const useStyles = makeStyles({
   sidebarWrapper: {
@@ -26,6 +28,9 @@ const useStyles = makeStyles({
 
 const Sidebar = () => {
   const styles = useStyles()
+  const userState = useSelector(getUserState)
+
+  if (!userState.id) return null
 
   return (
     <div className={styles.sidebarWrapper}>
