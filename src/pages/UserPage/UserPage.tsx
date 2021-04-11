@@ -1,6 +1,6 @@
 import React from 'react'
-import { Redirect, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Redirect, Link } from 'react-router-dom'
 import { getUserState } from '../../common/user/selectors'
 import { makeStyles } from '@material-ui/core/styles'
 
