@@ -1,12 +1,13 @@
 import React from 'react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { Router } from 'react-router-dom'
+import history from './history'
 import AppRouter from './Router'
 import ErrorManager from '../features/ErrorManager'
 import ProgressBar from '../features/ProgressBar'
 
 const App = () => {
   return (
-    <Router>
+    <Router history={history}>
       <ErrorManager />
       <AppRouter />
       <ProgressBar />

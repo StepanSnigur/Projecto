@@ -6,10 +6,3 @@ export const requiredPasswordCharacters = [
   { regexp: /[a-z]/g, name: 'буквы' },
   { regexp: /[A-Z]/g, name: 'заглавные буквы' }
 ]
-
-interface ITranslatedServerErrors {
-  [index: string]: string
-}
-export const translatedServerErrors = {
-  'auth/email-already-in-use': 'Такой email уже существует'
-} as ITranslatedServerErrors

@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 
 import RegistrationPage from '../pages/RegistrationPage'
+import LoginPage from '../pages/LoginPage'
 import BoardPage from '../pages/BoardPage'
 import Header from '../features/Header'
 import Sidebar from '../features/Sidebar'
@@ -35,6 +36,7 @@ const AppRouter = () => {
         <Switch>
           <Route path="/" exact render={() => <div>test</div>} />
           <Route path="/registration" component={RegistrationPage} />
+          <Route path="/login" component={LoginPage} />
           <Route path="/board/:id" render={({ match }) => {
             const { id } = match.params
             return <BoardPage boardId={id} />

@@ -1,3 +1,8 @@
+import { ISetUser } from './actionTypes'
+import {
+  SET_USER
+} from './actions'
+
 export interface IUserData {
   email: string,
   nickName: string,
@@ -12,9 +17,15 @@ const initialState: IUserData = {
   id: '',
   icon: null
 }
+type userReducerActionType = ISetUser
 
-const userReducer = (state = initialState, action: any): IUserData => {
+const userReducer = (state = initialState, action: userReducerActionType): IUserData => {
   switch(action.type) {
+    case SET_USER:
+      return {
+        ...state,
+        ...action.payload
+      }
     default:
       return state
   }
