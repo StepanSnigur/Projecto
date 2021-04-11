@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 
 import { watchAddNewUser } from '../pages/RegistrationPage/saga'
+import { watchSetUser } from '../common/user/saga'
 import userReducer from '../common/user/reducer'
 
 import { watchSetError } from '../features/ErrorManager/saga'
@@ -33,6 +34,7 @@ const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
 export type AppStateType = ReturnType<typeof rootReducer>
 
 sagaMiddleware.run(watchAddNewUser)
+sagaMiddleware.run(watchSetUser)
 sagaMiddleware.run(watchSetError)
 sagaMiddleware.run(watchSetNewBoard)
 sagaMiddleware.run(watchAddNewBoardCard)

@@ -13,9 +13,11 @@ import {
   emailRegexp,
   minPasswordLength,
   maxPasswordLength,
-  requiredPasswordCharacters,
-  translatedServerErrors
+  requiredPasswordCharacters
 } from './constants'
+import {
+  translatedServerErrors
+} from '../../common/constants'
 
 const requiredPasswordCharactersString = requiredPasswordCharacters.reduce((acc, character, idx) => {
   return `${acc}${idx === 0 ? '' : ', '}${character.name}`
@@ -45,7 +47,7 @@ function* addNewUser(action: addNewUserSagaCreatorType) {
     const [emailErrors, passwordErrors] = validateEmailAndPassword(email, password)
     if (emailErrors.length || passwordErrors.length) throw new Error(JSON.stringify([...emailErrors, ...passwordErrors]))
     else if (fieldErrors && fieldErrors.length) yield put(setRegistrationInputErrors(null))
-    
+
     const userData: IUserData = yield call(authApi.registerNewUser, email, password)
     yield put(addNewUserActionCreator(userData))
   } catch (err) {
