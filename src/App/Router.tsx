@@ -10,6 +10,7 @@ import LoginPage from '../pages/LoginPage'
 import BoardPage from '../pages/BoardPage'
 import Header from '../features/Header'
 import Sidebar from '../features/Sidebar'
+import UserPage from '../pages/UserPage'
 
 interface IContentWrapperProps {
   isLogged: boolean,
@@ -44,6 +45,7 @@ const AppRouter = () => {
             const { id } = match.params
             return <BoardPage boardId={id} />
           }}/>
+          <Route path="/user" component={UserPage} />
         </Switch>
       </div>
     </>
