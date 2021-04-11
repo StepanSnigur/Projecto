@@ -1,4 +1,6 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { getUserState } from '../common/user/selectors'
 import { useLocation } from 'react-router-dom'
 import { Switch, Route } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
@@ -23,8 +25,9 @@ const useStyles = makeStyles({
 
 const AppRouter = () => {
   const location = useLocation()
+  const userState = useSelector(getUserState)
   const styles = useStyles({
-    isLogged: true,
+    isLogged: !!userState.id,
     onBoardPage: location.pathname.split('/').includes('board')
   })
 
