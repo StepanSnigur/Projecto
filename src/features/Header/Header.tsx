@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '12px 30px',
-    background: '#23324b',
+    background: '#23324b', // 23324b
     color: '#afbcc5' // #afbcc5 f6f1f1
   },
   logo: {
@@ -17,10 +17,10 @@ const useStyles = makeStyles({
     padding: 0
   },
   headerButton: {
-    background: '#3855c9', // 3855c9 7f4bec
+    background: '#2c86ff', // 3855c9 7f4bec 2c86ff
     color: '#fff',
     '&:hover': {
-      background: '#23324b'
+      background: '#3855c9'
     }
   }
 })

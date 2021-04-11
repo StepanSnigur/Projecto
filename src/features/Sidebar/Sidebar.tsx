@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     width: '48px',
     height: '48px',
     borderRadius: '10px',
-    background: '#3855c9',
+    background: '#2c86ff', // 2c86ff
     cursor: 'pointer',
     marginTop: '12px'
   }
