@@ -3,10 +3,16 @@ import {
   SET_USER
 } from './actions'
 
+export interface IBoardLink {
+  name: string,
+  id: string,
+  background: string,
+  isAdmin: boolean
+}
 export interface IUserData {
   email: string,
   nickName: string,
-  registeredInBoards: any[],
+  registeredInBoards: IBoardLink[],
   id: string,
   icon: string | null,
 }
