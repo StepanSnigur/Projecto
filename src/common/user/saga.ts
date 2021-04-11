@@ -32,7 +32,7 @@ export function* setUserSaga (action: IInitSetUser) {
     }
 
     yield put(setUser(userData))
-    history.push('/')
+    history.push('/user')
   } catch (e) {
     yield put(fireSetError(translatedServerErrors[e.code] || 'Непредвиденная ошибка'))
   } finally {
