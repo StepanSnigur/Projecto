@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { openAddNewTableWindow } from '../AddNewTable/actions'
 import { getUserState } from '../../common/user/selectors'
 import AddIcon from '@material-ui/icons/Add'
 
@@ -31,12 +32,14 @@ const useStyles = makeStyles({
 
 const Sidebar = () => {
   const styles = useStyles()
+  const dispatch = useDispatch()
   const userState = useSelector(getUserState)
 
   if (!userState.id) return null
 
   const handleAddNewTable = (e: React.MouseEvent) => {
     e.preventDefault()
+    dispatch(openAddNewTableWindow(true))
   }
 
   return (

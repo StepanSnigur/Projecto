@@ -9,6 +9,7 @@ import { watchSetError } from '../features/ErrorManager/saga'
 import { errorManagerReducer } from '../features/ErrorManager'
 
 import { registrationPageReducer } from '../pages/RegistrationPage'
+import { addNewTableReducer } from '../features/AddNewTable'
 
 import {
   watchSetNewBoard,
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   errorManager: errorManagerReducer,
   registrationPage: registrationPageReducer,
   boardPage: boardPageReducer,
-  progressBar: progressBarReducer
+  progressBar: progressBarReducer,
+  addNewTable: addNewTableReducer
 })
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
 export type AppStateType = ReturnType<typeof rootReducer>

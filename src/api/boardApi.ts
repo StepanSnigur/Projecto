@@ -1,5 +1,6 @@
 import app from 'firebase/app'
 import { IBoardTask, IBoardList } from '../pages/BoardPage/reducer'
+import { ITableMember } from '../features/AddNewTable/AddNewTable'
 
 const boardApi = {
   async getBoard(boardId: string) {
@@ -27,6 +28,18 @@ const boardApi = {
     const boardData = await board.data()
     const lists = [...boardData!.lists]
     await app.firestore().collection('boards').doc(boardId).update('lists', [...lists, list])
+  },
+  async searchUsers(term: string) {
+    const searchedUsers: ITableMember[] = []
+    const snapshot = await app.firestore().collection('users').where('email', '==', term).get()
+    snapshot.forEach(doc => {
+      const user: ITableMember = {
+        name: doc.data().email,
+        id: doc.id
+      }
+      searchedUsers.push(user)
+    })
+    return searchedUsers
   }
 }
 
