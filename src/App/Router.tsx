@@ -11,6 +11,7 @@ import BoardPage from '../pages/BoardPage'
 import Header from '../features/Header'
 import Sidebar from '../features/Sidebar'
 import UserPage from '../pages/UserPage'
+import AddNewTable from '../features/AddNewTable'
 
 interface IContentWrapperProps {
   isLogged: boolean,
@@ -35,6 +36,7 @@ const AppRouter = () => {
   return (
     <>
       <Route path="/board" component={Sidebar} />
+      <Route path={['/user', '/board/:id']} component={AddNewTable} />
       <div className={styles.contentWrapper}>
         <Header />
         <Switch>
