@@ -4,7 +4,6 @@ export const asyncThrottle = (
   callback: (...args: any) => any,
   timeout: number
 ) => {
-  console.log('called')
   let isCalled = false
   let timer: ReturnType<typeof setTimeout> | null = null
 
@@ -17,8 +16,22 @@ export const asyncThrottle = (
         resolve(res)
         isCalled = false
       } catch (e) {
-        reject(e)
+        reject(e.message)
       }
     }, timeout)
   })
+}
+
+const getArrIds = (arr: any[]) => arr.map(el => el.id)
+export const getUniqueArr = (arr: any[]) => {
+  const res: any[] = []
+
+  const ids = getArrIds(arr)
+  const uniqueIds = new Set(ids)
+  uniqueIds.forEach(id => {
+    const uniqueEl = arr.find(el => el.id === id)
+    res.push(uniqueEl)
+  })
+
+  return res
 }

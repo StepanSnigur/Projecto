@@ -5,8 +5,9 @@ import { getAddNewTableState } from './selectors'
 import { makeStyles } from '@material-ui/core/styles'
 import { Modal, Slide } from '@material-ui/core'
 import boardApi from '../../api/boardApi'
-import { asyncThrottle } from './utils'
+import { asyncThrottle, getUniqueArr } from './utils'
 import { SEARCH_DELAY } from './constants'
+import { fireSetError } from '../ErrorManager/actions'
 
 import { TextField, Button, Chip, CircularProgress } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -66,7 +67,7 @@ const AddNewTable = () => {
     setIsMemberInputLoading(false)
   }
   const membersListError = (errorMessage: string) => {
-    console.log(errorMessage, ': members list error')
+    dispatch(fireSetError(errorMessage))
   }
   const throttlesSearchUsers = useMemo(
     () => asyncThrottle(boardApi.searchUsers, SEARCH_DELAY),
@@ -88,8 +89,8 @@ const AddNewTable = () => {
     setTableName(e.target.value)
   }
   const handleTableMembersChange = (_: any, newValue: any) => {
-    console.log('change members', newValue)
-    setTableMembers(newValue)
+    const filteredMembers = getUniqueArr(newValue)
+    setTableMembers(filteredMembers)
   }
   const handleClose = () => {
     dispatch(openAddNewTableWindow(false))
