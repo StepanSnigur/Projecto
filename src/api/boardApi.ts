@@ -1,6 +1,8 @@
 import app from 'firebase/app'
-import { IBoardTask, IBoardList } from '../pages/BoardPage/reducer'
+import { IBoardTask, IBoardList, IBoardPage } from '../pages/BoardPage/reducer'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
+import { IBoardLink } from '../common/user/reducer'
+import authApi from './authApi'
 
 const boardApi = {
   async getBoard(boardId: string) {
@@ -40,6 +42,39 @@ const boardApi = {
       searchedUsers.push(user)
     })
     return searchedUsers
+  },
+  async createBoard(
+    name: string,
+    members: ITableMember[],
+    userBoards: IBoardLink[],
+    userEmail: string,
+    userId: string
+  ) {
+    if (!userId) throw new Error('Вы не в сети')
+    const tableCreator = {
+      name: userEmail,
+      id: userId
+    }
+    const assignedUsers = [tableCreator, ...members]
+
+    const newBoard: IBoardPage = {
+      backgroundImage: '#fff',
+      lists: [],
+      actions: [],
+      assignedUsers,
+      name
+    }
+    const table = await app.firestore().collection('boards').add(newBoard)
+
+    const updatedUserTables = await authApi.addTableToUser(userId, userBoards, table.id, name)
+    await authApi.addTableToUsers(members, table.id, name)
+
+    return {
+      newBoard: Object.assign(newBoard, {
+        id: table.id
+      }),
+      updatedUserTables
+    }
   }
 }
 

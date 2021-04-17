@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { openAddNewTableWindow } from '../AddNewTable/actions'
 import { getUserState } from '../../common/user/selectors'
 import AddIcon from '@material-ui/icons/Add'
+import BoardLink from '../../common/components/BoardLink'
 
 const useStyles = makeStyles({
   sidebarWrapper: {
@@ -45,15 +46,7 @@ const Sidebar = () => {
   return (
     <div className={styles.sidebarWrapper}>
       <div className={styles.sidebarItemsWrapper}>
-        {userState.registeredInBoards.map(boardLink => <Link
-          key={boardLink.id}
-          to={`/board/${boardLink.id}`}
-          className={styles.sidebarItem}
-          style={{
-            background: boardLink.background
-          }}
-          title={boardLink.name}
-        />)}
+        {userState.registeredInBoards.map(boardLink => <BoardLink key={boardLink.id} linkId={boardLink.id} />)}
         <Link to="/" onClick={handleAddNewTable} className={styles.sidebarItem}>
           <AddIcon style={{ color: '#fff' }} />
         </Link>

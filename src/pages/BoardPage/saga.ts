@@ -1,6 +1,7 @@
-import { takeEvery, call, put } from 'redux-saga/effects'
+import { takeEvery, call, put, select } from 'redux-saga/effects'
 import { v4 as uuidv4 } from 'uuid'
 import {
+  INIT_CREATE_BOARD,
   INIT_SET_NEW_BOARD,
   INIT_ADD_NEW_BOARD_CARD,
   INIT_ADD_NEW_BOARD_LIST,
@@ -9,6 +10,7 @@ import {
   INIT_MOVE_BOARD_COLUMN
 } from './actions'
 import {
+  IInitCreateBoardPage,
   IInitAddNewBoardCard,
   IInitSetNewBoard,
   IInitAddNewBoardList,
@@ -30,6 +32,44 @@ import {
 } from './actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
+import { IUserData, IBoardLink } from '../../common/user/reducer'
+import { updateUserBoards } from '../../common/user/actions'
+import { getUserState } from '../../common/user/selectors'
+import history from '../../App/history'
+
+interface INewBoardWithId extends IBoardPage {
+  id: string
+}
+export interface INewBoardData {
+  updatedUserTables: IBoardLink[],
+  newBoard: INewBoardWithId
+}
+export function* watchCreateBoard() {
+  yield takeEvery(INIT_CREATE_BOARD, createBoardSaga)
+}
+export function* createBoardSaga(action: IInitCreateBoardPage) {
+  try {
+    yield put(setBoardCardLoading(true))
+    yield put(setProgressBarLoading(true))
+    const { name, members } = action.payload
+    const userState: IUserData = yield select(getUserState)
+    const newTableData: INewBoardData = yield call(
+      boardApi.createBoard,
+      name,
+      members,
+      userState.registeredInBoards,
+      userState.email,
+      userState.id
+    )
+    yield put(updateUserBoards(newTableData.updatedUserTables))
+    history.push(`/board/${newTableData.newBoard.id}`)
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
 
 export function* watchSetNewBoard() {
   yield takeEvery(INIT_SET_NEW_BOARD, setNewBoard)

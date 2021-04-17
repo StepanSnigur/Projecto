@@ -1,8 +1,9 @@
 import {
   INIT_SET_USER,
-  SET_USER
+  SET_USER,
+  UPDATE_USER_BOARDS
 } from './actions'
-import { IUserData } from './reducer'
+import { IUserData, IBoardLink } from './reducer'
 
 export interface IInitSetUser {
   type: typeof INIT_SET_USER,
@@ -14,4 +15,8 @@ export interface IInitSetUser {
 export interface ISetUser {
   type: typeof SET_USER,
   payload: IUserData
+}
+export interface IUpdateUserBoards {
+  type: typeof UPDATE_USER_BOARDS,
+  payload: IBoardLink[]
 }

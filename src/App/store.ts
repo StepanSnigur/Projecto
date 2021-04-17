@@ -12,6 +12,7 @@ import { registrationPageReducer } from '../pages/RegistrationPage'
 import { addNewTableReducer } from '../features/AddNewTable'
 
 import {
+  watchCreateBoard,
   watchSetNewBoard,
   watchAddNewBoardCard,
   watchAddNewBoardList,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
 export type AppStateType = ReturnType<typeof rootReducer>
 
+sagaMiddleware.run(watchCreateBoard)
 sagaMiddleware.run(watchAddNewUser)
 sagaMiddleware.run(watchSetUser)
 sagaMiddleware.run(watchSetError)

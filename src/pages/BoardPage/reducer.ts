@@ -21,6 +21,7 @@ import {
   IMoveBoardColumn
 } from './actionTypes'
 import { moveToPosition } from './utils'
+import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 
 export interface IBoardTask {
   name: string,
@@ -39,7 +40,7 @@ export interface IBoardAction {
 }
 export interface IBoardPage {
   name: string,
-  assignedUsers: string[],
+  assignedUsers: ITableMember[],
   backgroundImage: string | null,
   lists: IBoardList[],
   actions: IBoardAction[]

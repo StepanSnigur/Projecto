@@ -100,6 +100,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
     return () => {
       document.body.removeEventListener('click', exitUpdatingMode)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumnContext.isUpdating, tasksList.name])
 
   const openContextMenu = () => {
