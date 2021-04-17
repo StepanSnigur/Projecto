@@ -1,5 +1,15 @@
 import { IBoardPage, IBoardTask, IBoardList } from './reducer'
 import { IDropResult } from './BoardPage'
+import { ITableMember } from '../../features/AddNewTable/AddNewTable'
+
+export const INIT_CREATE_BOARD = 'BOARD_PAGE/INIT_CREATE'
+export const initCreateBoardPage = (name: string, members: ITableMember[]) => ({
+  type: INIT_CREATE_BOARD,
+  payload: {
+    name,
+    members
+  }
+})
 
 export const INIT_SET_NEW_BOARD = 'BOARD_PAGE/INIT_SET_NEW_BOARD'
 export const initSetNewBoard = (boardId: string) => ({

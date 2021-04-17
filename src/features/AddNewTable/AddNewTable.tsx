@@ -8,6 +8,7 @@ import boardApi from '../../api/boardApi'
 import { asyncThrottle, getUniqueArr } from './utils'
 import { SEARCH_DELAY } from './constants'
 import { fireSetError } from '../ErrorManager/actions'
+import { initCreateBoardPage } from '../../pages/BoardPage/actions'
 
 import { TextField, Button, Chip, CircularProgress } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -83,6 +84,7 @@ const AddNewTable = () => {
 
   useEffect(() => {
     loadMembersList()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchMembersInputValue])
 
   const handleTableNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +98,7 @@ const AddNewTable = () => {
     dispatch(openAddNewTableWindow(false))
   }
   const handleAddNewTable = () => {
+    dispatch(initCreateBoardPage(tableName, tableMembers))
     setTableName('')
     setTableMembers([])
     dispatch(openAddNewTableWindow(false))

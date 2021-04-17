@@ -1,4 +1,5 @@
 import {
+  INIT_CREATE_BOARD,
   INIT_SET_NEW_BOARD,
   SET_NEW_BOARD,
   SET_BOARD_PAGE_LOADING,
@@ -16,7 +17,15 @@ import {
 } from './actions'
 import { IBoardList, IBoardPage, IBoardTask } from './reducer'
 import { IDropResult } from './BoardPage'
+import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 
+export interface IInitCreateBoardPage {
+  type: typeof INIT_CREATE_BOARD,
+  payload: {
+    name: string,
+    members: ITableMember[]
+  }
+}
 export interface IInitSetNewBoard {
   type: typeof INIT_SET_NEW_BOARD,
   payload: string
