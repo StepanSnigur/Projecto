@@ -13,7 +13,9 @@ import {
   DELETE_BOARD_LIST,
   MOVE_BOARD_TASK,
   INIT_MOVE_BOARD_COLUMN,
-  MOVE_BOARD_COLUMN
+  MOVE_BOARD_COLUMN,
+  INIT_CHANGE_BOARD_TITLE,
+  CHANGE_BOARD_TITLE
 } from './actions'
 import { IBoardList, IBoardPage, IBoardTask } from './reducer'
 import { IDropResult } from './BoardPage'
@@ -104,4 +106,16 @@ export interface IMoveBoardColumn {
     source: IDropResult,
     destination: IDropResult
   }
+}
+
+export interface IInitChangeBoardTitle {
+  type: typeof INIT_CHANGE_BOARD_TITLE,
+  payload: {
+    boardId: string,
+    newTitle: string
+  }
+}
+export interface IChangeBoardTitle {
+  type: typeof CHANGE_BOARD_TITLE,
+  payload: string
 }

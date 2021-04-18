@@ -7,7 +7,8 @@ import {
   ADD_NEW_BOARD_LIST,
   DELETE_BOARD_LIST,
   MOVE_BOARD_TASK,
-  MOVE_BOARD_COLUMN
+  MOVE_BOARD_COLUMN,
+  CHANGE_BOARD_TITLE
 } from './actions'
 import {
   ISetNewBoard,
@@ -18,7 +19,8 @@ import {
   IAddNewBoardList,
   IDeleteBoardList,
   IMoveBoardTask,
-  IMoveBoardColumn
+  IMoveBoardColumn,
+  IChangeBoardTitle
 } from './actionTypes'
 import { moveToPosition } from './utils'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
@@ -43,7 +45,8 @@ export interface IBoardPage {
   assignedUsers: ITableMember[],
   backgroundImage: string | null,
   lists: IBoardList[],
-  actions: IBoardAction[]
+  actions: IBoardAction[],
+  id?: string
 }
 interface IBoardPageState extends IBoardPage {
   isLoading: boolean,
@@ -52,7 +55,7 @@ interface IBoardPageState extends IBoardPage {
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
   ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList | IMoveBoardTask |
-  IMoveBoardColumn
+  IMoveBoardColumn | IChangeBoardTitle
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -62,7 +65,8 @@ const initialState: IBoardPageState = {
   backgroundImage: null,
   assignedUsers: [],
   lists: [],
-  actions: []
+  actions: [],
+  id: ''
 }
 
 const boardPageReducer = (state = initialState, action: boardPageReducerActionType): IBoardPageState => {
@@ -138,7 +142,8 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
         backgroundImage,
         assignedUsers,
         lists,
-        actions
+        actions,
+        id
       } = action.payload
       return {
         ...state,
@@ -146,7 +151,13 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
         backgroundImage,
         assignedUsers,
         lists,
-        actions
+        actions,
+        id
+      }
+    case CHANGE_BOARD_TITLE:
+      return {
+        ...state,
+        name: action.payload
       }
     default:
       return state

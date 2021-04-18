@@ -18,7 +18,8 @@ import {
   watchAddNewBoardList,
   watchDeleteBoardList,
   watchMoveBoardTask,
-  watchMoveBoardColumn
+  watchMoveBoardColumn,
+  watchChangeBoardTitle
 } from '../pages/BoardPage/saga'
 import { boardPageReducer } from '../pages/BoardPage'
 
@@ -46,5 +47,6 @@ sagaMiddleware.run(watchAddNewBoardList)
 sagaMiddleware.run(watchDeleteBoardList)
 sagaMiddleware.run(watchMoveBoardTask)
 sagaMiddleware.run(watchMoveBoardColumn)
+sagaMiddleware.run(watchChangeBoardTitle)
 
 export default store

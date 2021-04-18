@@ -7,7 +7,8 @@ import {
   INIT_ADD_NEW_BOARD_LIST,
   INIT_DELETE_BOARD_LIST,
   INIT_MOVE_BOARD_TASK,
-  INIT_MOVE_BOARD_COLUMN
+  INIT_MOVE_BOARD_COLUMN,
+  INIT_CHANGE_BOARD_TITLE
 } from './actions'
 import {
   IInitCreateBoardPage,
@@ -15,7 +16,8 @@ import {
   IInitSetNewBoard,
   IInitAddNewBoardList,
   IInitDeleteBoardList,
-  IInitMoveBoardColumn
+  IInitMoveBoardColumn,
+  IInitChangeBoardTitle
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
 import { IBoardPage, IBoardList } from './reducer'
@@ -28,8 +30,10 @@ import {
   addNewBoardListAction,
   deleteBoardListAction,
   moveBoardTask,
-  moveBoardColumn
+  moveBoardColumn,
+  changeBoardTitle
 } from './actions'
+import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/actions'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
 import { IUserData, IBoardLink } from '../../common/user/reducer'
@@ -178,6 +182,23 @@ export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
     yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchChangeBoardTitle() {
+  yield takeEvery(INIT_CHANGE_BOARD_TITLE, changeBoardTitleSaga)
+}
+export function* changeBoardTitleSaga(action: IInitChangeBoardTitle) {
+  try {
+    yield call(checkIsLogged)
+    yield put(setProgressBarLoading(true))
+    const { boardId, newTitle } = action.payload
+    yield call(boardApi.changeBoardTitle, boardId, newTitle)
+    yield put(changeBoardTitle(newTitle))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
     yield put(setProgressBarLoading(false))
   }
 }
