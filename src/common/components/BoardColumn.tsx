@@ -1,4 +1,6 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { getUserState } from '../user/selectors'
 import { IBoardList } from '../../pages/BoardPage/reducer'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import BoardCard from './BoardCard'
@@ -72,6 +74,7 @@ const useStyles = makeStyles({
 
 const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragIndex }) => {
   const boardColumnContext = useContext(BoardColumnContext)
+  const userState = useSelector(getUserState)
   const [titleInputValue, setTitleInputValue] = useState('')
   const styles = useStyles()
   const contextMenuBtn = useRef<HTMLDivElement>(null)
@@ -102,7 +105,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   }
 
   return (
-    <Draggable draggableId={tasksList.id} index={dragIndex}>
+    <Draggable draggableId={tasksList.id} isDragDisabled={!userState.id} index={dragIndex}>
       {(provided) => (
         <div
           {...provided.draggableProps}
@@ -124,11 +127,11 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
               /> :
               <h4 className={styles.columnTitle}>{tasksList.name}</h4>
             }
-            <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
+            {userState.id ? <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
               <span className={styles.columnMenuDot}/>
               <span className={styles.columnMenuDot}/>
               <span className={styles.columnMenuDot}/>
-            </div>
+            </div> : null}
           </div>
           <Droppable droppableId={tasksList.id}>
             {(provided) => (
@@ -137,7 +140,13 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                 {...provided.droppableProps}
                 className={styles.droppableZone}
               >
-                {tasksList.tasks.map((task, i) => <BoardCard key={task.id} title={task.name} id={task.id} index={i} />)}
+                {tasksList.tasks.map((task, i) => <BoardCard
+                  key={task.id}
+                  title={task.name}
+                  id={task.id}
+                  index={i}
+                  isDraggable={!!userState.id}
+                />)}
                 {provided.placeholder}
               </div>
             )}
