@@ -5,7 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 interface IBoardCard {
   title: string,
   id: string,
-  index: number
+  index: number,
+  isDraggable: boolean
 }
 
 const useStyles = makeStyles({
@@ -31,11 +32,11 @@ const useStyles = makeStyles({
   }
 })
 
-const BoardCard: React.FC<IBoardCard> = ({ title, id, index }) => {
+const BoardCard: React.FC<IBoardCard> = ({ title, id, index, isDraggable }) => {
   const styles = useStyles()
 
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={id} isDragDisabled={!isDraggable} index={index}>
       {(provided) => (
         <div
           {...provided.draggableProps}
