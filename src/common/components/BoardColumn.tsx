@@ -84,21 +84,9 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
       boardColumnContext.setIsUpdating(false)
     }
   }
-  const exitUpdatingMode = (e: any) => {
-    if (e.target.parentNode.getAttribute('id') === 'root') {
-      boardColumnContext.setIsUpdating(false)
-    }
-  }
   useEffect(() => {
     if (boardColumnContext.isUpdating) {
-      document.body.addEventListener('click', exitUpdatingMode)
       setTitleInputValue(tasksList.name || '')
-    } else {
-      document.body.removeEventListener('click', exitUpdatingMode)
-    }
-
-    return () => {
-      document.body.removeEventListener('click', exitUpdatingMode)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumnContext.isUpdating, tasksList.name])
@@ -107,6 +95,9 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
     boardColumnContext.setAnchorEl(contextMenuBtn)
     boardColumnContext.setCurrentListId(tasksList.id)
     boardColumnContext.setIsOpen(true)
+    boardColumnContext.setIsUpdating(false)
+  }
+  const handleInputClose = () => {
     boardColumnContext.setIsUpdating(false)
   }
 
@@ -128,6 +119,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                 value={titleInputValue}
                 onChange={handleTitleInputChange}
                 onKeyDown={handleTitleInputKeyDown}
+                onBlur={handleInputClose}
                 autoFocus
               /> :
               <h4 className={styles.columnTitle}>{tasksList.name}</h4>
