@@ -4,6 +4,7 @@ import { getUserState } from '../common/user/selectors'
 import { useLocation } from 'react-router-dom'
 import { Switch, Route } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
+import { isOnBoardPage } from '../common/utils/routes'
 
 import RegistrationPage from '../pages/RegistrationPage'
 import LoginPage from '../pages/LoginPage'
@@ -30,7 +31,7 @@ const AppRouter = () => {
   const userState = useSelector(getUserState)
   const styles = useStyles({
     isLogged: !!userState.id,
-    onBoardPage: location.pathname.split('/').includes('board')
+    onBoardPage: isOnBoardPage(location.pathname)
   })
 
   return (

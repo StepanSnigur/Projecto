@@ -7,7 +7,9 @@ import authApi from './authApi'
 const boardApi = {
   async getBoard(boardId: string) {
     const board = await app.firestore().collection('boards').doc(boardId).get()
-    return board.data()
+    const boardData = board.data()
+    boardData!.id = board.id
+    return boardData
   },
   async addNewCard(boardId: string, columnId: string, newCard: IBoardTask) {
     const board = await app.firestore().collection('boards').doc(boardId).get()
@@ -75,6 +77,11 @@ const boardApi = {
       }),
       updatedUserTables
     }
+  },
+  async changeBoardTitle(boardId: string, newTitle: string) {
+    return await app.firestore().collection('boards').doc(boardId).update({
+      name: newTitle
+    })
   }
 }
 

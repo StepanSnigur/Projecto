@@ -118,3 +118,17 @@ export const moveBoardColumn = (source: IDropResult, destination: IDropResult) =
     destination
   }
 })
+
+export const INIT_CHANGE_BOARD_TITLE = 'BOARD_PAGE/CHANGE_TITLE'
+export const initChangeBoardTitle = (boardId: string, newTitle: string) => ({
+  type: INIT_CHANGE_BOARD_TITLE,
+  payload: {
+    boardId,
+    newTitle
+  }
+})
+export const CHANGE_BOARD_TITLE = 'BOARD_PAGE/CHANGE_BOARD_TITLE'
+export const changeBoardTitle = (newTitle: string) => ({
+  type: CHANGE_BOARD_TITLE,
+  payload: newTitle
+})
