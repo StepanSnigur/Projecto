@@ -15,6 +15,8 @@ import { ENTER_KEY_CODE } from '../../common/constants'
 
 const useStyles = makeStyles({
   headerWrapper: {
+    height: '60px',
+    boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -35,7 +35,7 @@ export interface IDropResult {
 const useStyles = makeStyles({
   boardWrapper: {
     width: '100%',
-    maxHeight: 'calc(100vh - 60px)',
+    minHeight: 'calc(100vh - 85px)',
     background: (props: IStyleProps) => props.isImage
       ? `url(${props.background}) no-repeat center / cover`
       : (props.background || '#fff'),
