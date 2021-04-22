@@ -23,7 +23,9 @@ const useStyles = makeStyles({
     borderRadius: '12px',
     textDecoration: 'none',
     textAlign: 'center',
-    lineHeight: '100px'
+    lineHeight: '100px',
+    border: '1px solid #afbcc5',
+    justifySelf: 'center'
   }
 })
 
