@@ -73,7 +73,8 @@ export function* createBoardSaga(action: IInitCreateBoardPage) {
       background: newTableData.newBoard.backgroundImage || '#fff',
       isLoading: false,
       id: newTableData.newBoard.id,
-      isAdmin: true
+      isAdmin: true,
+      isPinned: false
     }
     yield put(addSidebarLink(newBoardSidebarLink))
     history.push(`/board/${newTableData.newBoard.id}`)
