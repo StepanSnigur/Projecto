@@ -5,7 +5,8 @@ import {
 
 export interface IBoardLink {
   id: string,
-  isAdmin: boolean
+  isAdmin: boolean,
+  isPinned: boolean
 }
 export interface IUserData {
   email: string,

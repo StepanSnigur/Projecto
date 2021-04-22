@@ -33,7 +33,8 @@ const authApi = {
   async addTableToUser(userId: string, userBoards: IBoardLink[], tableId: string, tableName: string) {
     const newUserTable = {
       isAdmin: true,
-      id: tableId
+      id: tableId,
+      isPinned: false
     }
     const updatedUserBoards: IBoardLink[] = [...userBoards, newUserTable]
     await app.firestore().collection('users').doc(userId).update({
