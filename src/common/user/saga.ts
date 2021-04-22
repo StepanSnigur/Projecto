@@ -1,6 +1,8 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import authApi from '../../api/authApi'
 import { INIT_SET_USER, setUser } from './actions'
+import { setSidebarLinks } from '../../features/Sidebar/actions'
+import { addLoadingField } from '../../features/Sidebar/utils'
 import { IInitSetUser } from './actionTypes'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
 import { fireSetError } from '../../features/ErrorManager/actions'
@@ -32,6 +34,8 @@ export function* setUserSaga (action: IInitSetUser) {
     }
 
     yield put(setUser(userData))
+    const extendedUserLinks = addLoadingField(userData.registeredInBoards)
+    yield put(setSidebarLinks(extendedUserLinks))
     history.push('/user')
   } catch (e) {
     yield put(fireSetError(translatedServerErrors[e.code] || 'Непредвиденная ошибка'))
