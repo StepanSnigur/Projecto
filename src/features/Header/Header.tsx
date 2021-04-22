@@ -9,6 +9,7 @@ import { getBoardPageState } from '../../pages/BoardPage/selectors'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import { Button, TextField } from '@material-ui/core'
+import { Skeleton } from '@material-ui/lab'
 import PersonIcon from '@material-ui/icons/Person'
 import { INITIAL_HEADER_TITLE } from './constants'
 import { ENTER_KEY_CODE } from '../../common/constants'
@@ -46,6 +47,22 @@ const useStyles = makeStyles({
     }
   }
 })
+
+interface ITextWithLoading {
+  isLoading: boolean,
+  Component: React.FC
+}
+const TextWithLoading: React.FC<ITextWithLoading> = ({ isLoading, Component }) => {
+  return (
+    <>
+      {
+        isLoading
+          ? <Skeleton variant="text" height={44} width={90} />
+          : <Component />
+      }
+    </>
+  )
+}
 
 const Header = () => {
   const styles = useStyles()
@@ -90,6 +107,11 @@ const Header = () => {
       exitUpdatingMode()
     }
   }
+  const TableTitle: React.FC = () => (
+    <Link to="/" className={styles.logoBtn} onClick={handleTitleClick}>
+      <h3 className={styles.logo}>{headerTitle}</h3>
+    </Link>
+  )
 
   return <div className={styles.headerWrapper}>
     {
@@ -104,9 +126,7 @@ const Header = () => {
           onBlur={exitUpdatingMode}
           autoFocus
         />
-        : <Link to="/" className={styles.logoBtn} onClick={handleTitleClick}>
-          <h3 className={styles.logo}>{headerTitle}</h3>
-        </Link>
+        : <TextWithLoading isLoading={boardPageState.isLoading} Component={TableTitle} />
     }
     {
       userState.id
