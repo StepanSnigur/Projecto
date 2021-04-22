@@ -37,7 +37,8 @@ import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/actions'
 import { setProgressBarLoading } from '../../features/ProgressBar/actions'
 import { IUserData, IBoardLink } from '../../common/user/reducer'
-import { updateUserBoards } from '../../common/user/actions'
+import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/actions'
+import { addLoadingField } from '../../features/Sidebar/utils'
 import { getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
 
@@ -65,7 +66,16 @@ export function* createBoardSaga(action: IInitCreateBoardPage) {
       userState.email,
       userState.id
     )
-    yield put(updateUserBoards(newTableData.updatedUserTables))
+    const extendedSidebarLinks = addLoadingField(newTableData.updatedUserTables)
+    yield put(setSidebarLinks(extendedSidebarLinks))
+    const newBoardSidebarLink = {
+      name: name,
+      background: newTableData.newBoard.backgroundImage || '#fff',
+      isLoading: false,
+      id: newTableData.newBoard.id,
+      isAdmin: true
+    }
+    yield put(addSidebarLink(newBoardSidebarLink))
     history.push(`/board/${newTableData.newBoard.id}`)
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))

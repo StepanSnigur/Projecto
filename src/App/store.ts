@@ -24,6 +24,8 @@ import {
 import { boardPageReducer } from '../pages/BoardPage'
 
 import { progressBarReducer } from '../features/ProgressBar'
+import sidebarReducer from '../features/Sidebar/reducer'
+import { watchUpdateUserLink } from '../features/Sidebar/saga'
 
 export const sagaMiddleware = createSagaMiddleware()
 const rootReducer = combineReducers({
@@ -32,7 +34,8 @@ const rootReducer = combineReducers({
   registrationPage: registrationPageReducer,
   boardPage: boardPageReducer,
   progressBar: progressBarReducer,
-  addNewTable: addNewTableReducer
+  addNewTable: addNewTableReducer,
+  sidebar: sidebarReducer
 })
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
 export type AppStateType = ReturnType<typeof rootReducer>
@@ -48,5 +51,6 @@ sagaMiddleware.run(watchDeleteBoardList)
 sagaMiddleware.run(watchMoveBoardTask)
 sagaMiddleware.run(watchMoveBoardColumn)
 sagaMiddleware.run(watchChangeBoardTitle)
+sagaMiddleware.run(watchUpdateUserLink)
 
 export default store

@@ -1,7 +1,6 @@
-import { ISetUser, IUpdateUserBoards } from './actionTypes'
+import { ISetUser } from './actionTypes'
 import {
-  SET_USER,
-  UPDATE_USER_BOARDS
+  SET_USER
 } from './actions'
 
 export interface IBoardLink {
@@ -22,7 +21,7 @@ const initialState: IUserData = {
   id: '',
   icon: null
 }
-type userReducerActionType = ISetUser | IUpdateUserBoards
+type userReducerActionType = ISetUser
 
 const userReducer = (state = initialState, action: userReducerActionType): IUserData => {
   switch(action.type) {
@@ -30,11 +29,6 @@ const userReducer = (state = initialState, action: userReducerActionType): IUser
       return {
         ...state,
         ...action.payload
-      }
-    case UPDATE_USER_BOARDS:
-      return {
-        ...state,
-        registeredInBoards: action.payload
       }
     default:
       return state

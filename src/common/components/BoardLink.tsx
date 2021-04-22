@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { fireSetError } from '../../features/ErrorManager/actions'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import boardApi from '../../api/boardApi'
+import { initUpdateSidebarLink } from '../../features/Sidebar/actions'
+import { IExtendedBoardLink } from '../../features/Sidebar/reducer'
 
 const useStyles = makeStyles({
   sidebarItem: {
@@ -28,33 +28,16 @@ const useStyles = makeStyles({
 })
 
 interface IBoardLink {
-  linkId: string,
-  isUserLink?: boolean
+  isUserLink?: boolean,
+  idx: number,
+  linkData: IExtendedBoardLink
 }
-export const BoardLink: React.FC<IBoardLink> = ({ linkId, isUserLink = false }) => {
+export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkData }) => {
   const dispatch = useDispatch()
   const styles = useStyles()
-  const [boardLink, setBoardLink] = useState({
-    background: '#eee',
-    name: ''
-  })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(false)
 
   const loadLinkData = async () => {
-    try {
-      setIsLoading(true)
-      const linkData = await boardApi.getBoard(linkId)
-      setBoardLink({
-        name: linkData?.name,
-        background: linkData?.backgroundImage || '#eee'
-      })
-    } catch (e) {
-      dispatch(fireSetError(e.message))
-      setError(true)
-    } finally {
-      setIsLoading(false)
-    }
+    !linkData.name && dispatch(initUpdateSidebarLink(linkData.id, idx))
   }
 
   useEffect(() => {
@@ -62,35 +45,35 @@ export const BoardLink: React.FC<IBoardLink> = ({ linkId, isUserLink = false }) 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (isLoading) return (
+  if (linkData.isLoading) return (
     <div
       className={isUserLink ? styles.boardLink : styles.sidebarItem}
       style={{
-        background: boardLink.background
+        background: linkData.background
       }}
     >
       loading
     </div>
   )
-  if (error) {
+  if (false) {
     <div
       className={isUserLink ? styles.boardLink : styles.sidebarItem}
       style={{
-        background: boardLink.background
+        background: linkData.background
       }}
     >
-      {error}
+      {'error'}
     </div>
   }
   return (
     <Link
-      to={`/board/${linkId}`}
+      to={`/board/${linkData.id}`}
       className={isUserLink ? styles.boardLink : styles.sidebarItem}
       style={{
-        background: boardLink.background
+        background: linkData.background
       }}
-      title={isUserLink ? '' : boardLink.name}
-    >{isUserLink ? boardLink.name : ''}</Link>
+      title={isUserLink ? '' : linkData.name}
+    >{isUserLink ? linkData.name : ''}</Link>
   )
 }
 
