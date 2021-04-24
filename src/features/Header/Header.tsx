@@ -99,6 +99,10 @@ const Header = () => {
       setIsModdingTitle(false)
       return false
     }
+    if (headerTitle === title) {
+      setIsModdingTitle(false)
+      return false
+    }
     dispatch(initChangeBoardTitle(boardPageState.id, title))
     setIsModdingTitle(false)
   }
