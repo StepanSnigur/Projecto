@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import { isOnBoardPage } from '../common/utils/routes'
 
+import LandingPage from '../pages/LandingPage'
 import RegistrationPage from '../pages/RegistrationPage'
 import LoginPage from '../pages/LoginPage'
 import BoardPage from '../pages/BoardPage'
@@ -41,7 +42,7 @@ const AppRouter = () => {
       <div className={styles.contentWrapper}>
         <Header />
         <Switch>
-          <Route path="/" exact render={() => <div>test</div>} />
+          <Route path="/" exact component={LandingPage} />
           <Route path="/registration" component={RegistrationPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/board/:id" render={({ match }) => {
