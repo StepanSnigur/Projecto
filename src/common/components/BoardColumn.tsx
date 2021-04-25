@@ -78,6 +78,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   const [titleInputValue, setTitleInputValue] = useState('')
   const styles = useStyles()
   const contextMenuBtn = useRef<HTMLDivElement>(null)
+  const columnInput = useRef<HTMLInputElement>(null)
 
   const handleTitleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInputValue(e.target.value)
@@ -93,6 +94,9 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumnContext.isUpdating, tasksList.name])
+  useEffect(() => {
+    columnInput.current?.focus()
+  }, [boardColumnContext.isUpdating, columnInput])
 
   const openContextMenu = () => {
     boardColumnContext.setAnchorEl(contextMenuBtn)
@@ -123,7 +127,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                 onChange={handleTitleInputChange}
                 onKeyDown={handleTitleInputKeyDown}
                 onBlur={handleInputClose}
-                autoFocus
+                inputRef={columnInput}
               /> :
               <h4 className={styles.columnTitle}>{tasksList.name}</h4>
             }
