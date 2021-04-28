@@ -95,8 +95,10 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumnContext.isUpdating, tasksList.name])
   useEffect(() => {
-    boardColumnContext.isUpdating && columnInput.current?.focus()
-  }, [boardColumnContext.isUpdating, columnInput])
+    if (boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) {
+      columnInput.current?.focus()
+    }
+  }, [boardColumnContext.isUpdating, columnInput, boardColumnContext.currentListId, tasksList.id])
 
   const openContextMenu = () => {
     boardColumnContext.setAnchorEl(contextMenuBtn)
