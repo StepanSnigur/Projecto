@@ -35,3 +35,7 @@ export const getUniqueArr = (arr: any[]) => {
 
   return res
 }
+
+export const removeCurrentUserFromSearchList = (list: ITableMember[], currentUserId: string): ITableMember[] => {
+  return list.filter(member => member.id !== currentUserId)
+}
