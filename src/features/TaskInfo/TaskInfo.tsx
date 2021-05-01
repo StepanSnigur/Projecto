@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTaskInfoOpen } from './actions'
 import { getTaskInfoState } from './selectors'
-import { Modal, Slide, TextField } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Modal, Slide, TextField, Button, IconButton } from '@material-ui/core'
+import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles'
+import { green, blueGrey } from '@material-ui/core/colors'
+import { Save, Delete } from '@material-ui/icons'
 
 const useStyles = makeStyles({
   modalWindowContent: {
@@ -25,8 +28,39 @@ const useStyles = makeStyles({
   taskDescription: {
     marginTop: '12px',
     height: '60px'
+  },
+  controlButtons: {
+    boxSizing: 'border-box',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    padding: '15px',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    borderBottom: '1px solid #23324b'
+  },
+  deleteBtn: {
+    color: '#e53935'
   }
 })
+const taskInfoTheme = createMuiTheme({
+  palette: {
+    primary: green,
+    secondary: blueGrey
+  }
+})
+const DoTaskBtn = withStyles({
+  root: {
+    color: '#fff'
+  }
+})(Button)
+const ControlBtn = withStyles({
+  root: {
+    color: '#fff',
+    marginLeft: '10px'
+  }
+})(IconButton)
 
 const TaskInfo = () => {
   const dispatch = useDispatch()
@@ -35,6 +69,7 @@ const TaskInfo = () => {
 
   const [taskTitle, setTaskTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
 
   useEffect(() => {
     setTaskTitle(taskInfoState.taskData.title)
@@ -42,6 +77,12 @@ const TaskInfo = () => {
   useEffect(() => {
     setTaskDescription(taskInfoState.taskData.description)
   }, [taskInfoState.taskData.description, setTaskDescription])
+  useEffect(() => {
+    const isTaskChanged = (taskTitle !== taskInfoState.taskData.title)
+      || (taskDescription !== taskInfoState.taskData.description)
+    setIsSaveButtonDisabled(!isTaskChanged)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskTitle, taskDescription, setIsSaveButtonDisabled])
 
   const handleClose = () => {
     dispatch(setTaskInfoOpen(false))
@@ -62,6 +103,24 @@ const TaskInfo = () => {
     >
       <Slide direction="left" in={taskInfoState.isOpen}>
         <div className={styles.modalWindowContent}>
+          {taskInfoState.canEdit ? <div className={styles.controlButtons}>
+            <ThemeProvider theme={taskInfoTheme}>
+              <div>
+                <DoTaskBtn
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  disableElevation
+                >Выполнить</DoTaskBtn>
+                <ControlBtn aria-label="сохранить" size="small" disabled={isSaveButtonDisabled}>
+                  <Save color={isSaveButtonDisabled ? 'disabled' : 'secondary'} />
+                </ControlBtn>
+              </div>
+              <ControlBtn aria-label="удалить" size="small">
+                <Delete className={styles.deleteBtn} />
+              </ControlBtn>
+            </ThemeProvider>
+          </div> : null}
           <TextField
             label="Название задачи"
             variant="outlined"
