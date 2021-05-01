@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTaskInfoOpen } from './actions'
+import { initChangeBoardCard } from '../../pages/BoardPage/actions'
 import { getTaskInfoState } from './selectors'
 import { Modal, Slide, TextField, Button, IconButton } from '@material-ui/core'
 import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles'
@@ -93,6 +94,9 @@ const TaskInfo = () => {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTaskDescription(e.target.value)
   }
+  const handleTaskInfoSave = () => {
+    dispatch(initChangeBoardCard(taskInfoState.id, taskInfoState.listId, taskTitle, taskDescription))
+  }
 
   return (
     <Modal
@@ -112,7 +116,12 @@ const TaskInfo = () => {
                   color="primary"
                   disableElevation
                 >Выполнить</DoTaskBtn>
-                <ControlBtn aria-label="сохранить" size="small" disabled={isSaveButtonDisabled}>
+                <ControlBtn
+                  aria-label="сохранить"
+                  size="small"
+                  disabled={isSaveButtonDisabled}
+                  onClick={handleTaskInfoSave}
+                >
                   <Save color={isSaveButtonDisabled ? 'disabled' : 'secondary'} />
                 </ControlBtn>
               </div>

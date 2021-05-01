@@ -15,7 +15,9 @@ import {
   INIT_MOVE_BOARD_COLUMN,
   MOVE_BOARD_COLUMN,
   INIT_CHANGE_BOARD_TITLE,
-  CHANGE_BOARD_TITLE
+  CHANGE_BOARD_TITLE,
+  INIT_CHANGE_BOARD_CARD,
+  CHANGE_BOARD_CARD
 } from './actions'
 import { IBoardList, IBoardPage, IBoardTask } from './reducer'
 import { IDropResult } from './BoardPage'
@@ -63,6 +65,25 @@ export interface ISetBoardCardLoading {
   type: typeof SET_BOARD_CARD_LOADING,
   payload: boolean
 }
+export interface IInitChangeBoardCard {
+  type: typeof INIT_CHANGE_BOARD_CARD,
+  payload: {
+    taskId: string,
+    listId: string,
+    newTitle: string,
+    newDescription: string
+  }
+}
+export interface IChangeBoardCard {
+  type: typeof CHANGE_BOARD_CARD,
+  payload: {
+    listId: string,
+    taskId: string,
+    newTitle: string,
+    newDescription: string
+  }
+}
+
 export interface IInitAddNewBoardList {
   type: typeof INIT_ADD_NEW_BOARD_LIST,
   payload: {

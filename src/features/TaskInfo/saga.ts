@@ -15,12 +15,12 @@ export function* watchOpenTaskInfo() {
 function* openTaskInfoSaga(action: IInitTaskInfoOpen) {
   try {
     yield put(setTaskInfoLoading(true))
-    const { id, title } = action.payload
+    const { id, listId, title, description } = action.payload
 
     const userId: string = yield select(getUserId)
     const boardId: string = yield select(getBoardId)
     const canEdit: boolean = yield call(boardApi.checkCanEdit, userId, boardId)
-    yield put(setTaskInfoOpen(true, title, id, canEdit))
+    yield put(setTaskInfoOpen(true, title, description, id, listId, canEdit))
   } catch (e) {
     console.log(e.message)
   } finally {

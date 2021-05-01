@@ -8,7 +8,8 @@ import {
   INIT_DELETE_BOARD_LIST,
   INIT_MOVE_BOARD_TASK,
   INIT_MOVE_BOARD_COLUMN,
-  INIT_CHANGE_BOARD_TITLE
+  INIT_CHANGE_BOARD_TITLE,
+  INIT_CHANGE_BOARD_CARD
 } from './actions'
 import {
   IInitCreateBoardPage,
@@ -17,7 +18,8 @@ import {
   IInitAddNewBoardList,
   IInitDeleteBoardList,
   IInitMoveBoardColumn,
-  IInitChangeBoardTitle
+  IInitChangeBoardTitle,
+  IInitChangeBoardCard
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
 import { IBoardPage, IBoardList } from './reducer'
@@ -31,7 +33,8 @@ import {
   deleteBoardListAction,
   moveBoardTask,
   moveBoardColumn,
-  changeBoardTitle
+  changeBoardTitle,
+  changeBoardCard
 } from './actions'
 import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/actions'
@@ -41,6 +44,7 @@ import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/actions'
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
+import { getBoardId, getBoardPageState } from './selectors'
 
 interface INewBoardWithId extends IBoardPage {
   id: string
@@ -118,6 +122,28 @@ export function* addNewBoardCard(action: IInitAddNewBoardCard) {
     }
     yield call(boardApi.addNewCard, boardId, action.payload.columnId, newCard)
     yield put(addNewBoardCardAction(action.payload.columnId, newCard))
+  } catch (e) {
+    yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
+  } finally {
+    yield put(setBoardCardLoading(false))
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchChangeBoardCard() {
+  yield takeEvery(INIT_CHANGE_BOARD_CARD, changeBoardCardSaga)
+}
+export function* changeBoardCardSaga(action: IInitChangeBoardCard) {
+  try {
+    if (!action.payload.taskId) throw new Error('Не обновить добавить задачу')
+    yield put(setProgressBarLoading(true))
+    yield put(setBoardCardLoading(true))
+
+    const boardId: string = yield select(getBoardId)
+    const boardPageState: IBoardPage = yield select(getBoardPageState)
+    const { taskId, listId, newTitle, newDescription } = action.payload
+    yield call(boardApi.changeTaskData, boardId, listId, taskId, newTitle, newDescription, boardPageState.lists)
+    yield put(changeBoardCard(listId, taskId, newTitle, newDescription))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {

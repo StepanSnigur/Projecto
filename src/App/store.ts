@@ -19,7 +19,8 @@ import {
   watchDeleteBoardList,
   watchMoveBoardTask,
   watchMoveBoardColumn,
-  watchChangeBoardTitle
+  watchChangeBoardTitle,
+  watchChangeBoardCard
 } from '../pages/BoardPage/saga'
 import { boardPageReducer } from '../pages/BoardPage'
 
@@ -50,6 +51,7 @@ sagaMiddleware.run(watchSetUser)
 sagaMiddleware.run(watchSetError)
 sagaMiddleware.run(watchSetNewBoard)
 sagaMiddleware.run(watchAddNewBoardCard)
+sagaMiddleware.run(watchChangeBoardCard)
 sagaMiddleware.run(watchAddNewBoardList)
 sagaMiddleware.run(watchDeleteBoardList)
 sagaMiddleware.run(watchMoveBoardTask)

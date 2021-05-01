@@ -88,6 +88,31 @@ const boardApi = {
     const board = await app.firestore().collection('boards').doc(boardId).get()
     const boardData = board.data()
     return boardData!.assignedUsers.map(getArrayIds).includes(userId)
+  },
+  async changeTaskData(
+    boardId: string,
+    listId: string,
+    taskId: string,
+    newTitle: string,
+    newDescription: string,
+    oldLists: IBoardList[]
+  ) {
+    const newLists = [...oldLists]
+    const listToChange = newLists.findIndex(list => list.id === listId)
+    const taskToChange = newLists[listToChange].tasks.findIndex(task => task.id === taskId)
+    const newTasks = [...newLists[listToChange].tasks]
+    newTasks[taskToChange] = {
+      ...newTasks[taskToChange],
+      name: newTitle,
+      description: newDescription
+    }
+    newLists[listToChange] = {
+      ...newLists[listToChange],
+      tasks: newTasks
+    }
+    await app.firestore().collection('boards').doc(boardId).update({
+      lists: newLists
+    })
   }
 }
 

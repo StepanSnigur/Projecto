@@ -19,6 +19,8 @@ export interface ITaskInfoReducer {
   error: string | null,
   isLoading: boolean,
   canEdit: boolean,
+  id: string,
+  listId: string,
   taskData: ITaskData
 }
 const initialState: ITaskInfoReducer = {
@@ -26,6 +28,8 @@ const initialState: ITaskInfoReducer = {
   error: null,
   isLoading: false,
   canEdit: false,
+  id: '',
+  listId: '',
   taskData: {
     priority: '',
     type: '',
@@ -44,9 +48,12 @@ const taskInfoReducer = (state = initialState, action: taskInfoReducerActionType
         ...state,
         isOpen: action.payload.isOpen,
         canEdit: action.payload.canEdit,
+        id: action.payload.id,
+        listId: action.payload.listId,
         taskData: {
           ...state.taskData,
-          title: action.payload.title
+          title: action.payload.title,
+          description: action.payload.description
         }
       }
     default:

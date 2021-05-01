@@ -9,7 +9,9 @@ export interface IInitTaskInfoOpen {
   payload: {
     isOpen: boolean,
     title: string,
-    id: string
+    description: string,
+    id: string,
+    listId: string
   }
 }
 
@@ -18,7 +20,9 @@ export interface ISetTaskInfoOpen {
   payload: {
     isOpen: boolean,
     title: string,
+    description: string,
     id: string,
+    listId: string,
     canEdit: boolean
   }
 }
