@@ -19,6 +19,7 @@ import BoardColumn from '../../common/components/BoardColumn'
 import InputModalWindow from '../../common/components/InputModalWindow'
 import BoardColumnContextMenu from '../../common/components/BoardColumnContextMenu'
 import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
+import TaskInfo from '../../features/TaskInfo'
 
 interface IBoardPage {
   boardId: string
@@ -162,6 +163,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
           onSubmit={addNewList}
         />
       </DragDropContext>
+      <TaskInfo />
     </div>
   )
 }

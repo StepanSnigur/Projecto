@@ -8,7 +8,8 @@ import {
   DELETE_BOARD_LIST,
   MOVE_BOARD_TASK,
   MOVE_BOARD_COLUMN,
-  CHANGE_BOARD_TITLE
+  CHANGE_BOARD_TITLE,
+  CHANGE_BOARD_CARD
 } from './actions'
 import {
   ISetNewBoard,
@@ -20,13 +21,15 @@ import {
   IDeleteBoardList,
   IMoveBoardTask,
   IMoveBoardColumn,
-  IChangeBoardTitle
+  IChangeBoardTitle,
+  IChangeBoardCard
 } from './actionTypes'
 import { moveToPosition } from './utils'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 
 export interface IBoardTask {
   name: string,
+  description?: string,
   createdAt: string,
   id: string
 }
@@ -55,7 +58,7 @@ interface IBoardPageState extends IBoardPage {
 }
 type boardPageReducerActionType = ISetNewBoard | ISetBoardPageLoading | ISetBoardPageError |
   ISetBoardCardLoading | IAddNewBoardCard | IAddNewBoardList | IDeleteBoardList | IMoveBoardTask |
-  IMoveBoardColumn | IChangeBoardTitle
+  IMoveBoardColumn | IChangeBoardTitle | IChangeBoardCard
 
 const initialState: IBoardPageState = {
   isLoading: false,
@@ -85,6 +88,24 @@ const boardPageReducer = (state = initialState, action: boardPageReducerActionTy
       return {
         ...state,
         isCardLoading: action.payload
+      }
+    case CHANGE_BOARD_CARD:
+      const newLists = [...state.lists]
+      const listToChange = newLists.findIndex(list => list.id === action.payload.listId)
+      const taskToChange = newLists[listToChange].tasks.findIndex(task => task.id === action.payload.taskId)
+      const newTasks = [...newLists[listToChange].tasks]
+      newTasks[taskToChange] = {
+        ...newTasks[taskToChange],
+        name: action.payload.newTitle,
+        description: action.payload.newDescription
+      }
+      newLists[listToChange] = {
+        ...newLists[listToChange],
+        tasks: newTasks
+      }
+      return {
+        ...state,
+        lists: newLists
       }
     case ADD_NEW_BOARD_CARD:
       const updatedLists = [...state.lists]

@@ -1,10 +1,15 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { getUserId } from '../user/selectors'
+import { initTaskInfoOpen } from '../../features/TaskInfo/actions'
 import { Draggable } from 'react-beautiful-dnd'
 import { makeStyles } from '@material-ui/core/styles'
 
 interface IBoardCard {
   title: string,
+  description?: string,
   id: string,
+  listId: string,
   index: number,
   isDraggable: boolean
 }
@@ -32,8 +37,23 @@ const useStyles = makeStyles({
   }
 })
 
-const BoardCard: React.FC<IBoardCard> = ({ title, id, index, isDraggable }) => {
+const BoardCard: React.FC<IBoardCard> = ({
+  title,
+  description,
+  id,
+  listId,
+  index,
+  isDraggable
+}) => {
+  const dispatch = useDispatch()
+  const userId = useSelector(getUserId)
   const styles = useStyles()
+
+  const openTaskInfo = () => {
+    if (userId) {
+      dispatch(initTaskInfoOpen(true, title, description, id, listId))
+    }
+  }
 
   return (
     <Draggable draggableId={id} isDragDisabled={!isDraggable} index={index}>
@@ -44,7 +64,7 @@ const BoardCard: React.FC<IBoardCard> = ({ title, id, index, isDraggable }) => {
           ref={provided.innerRef}
           className={styles.wrapper}
         >
-          <div className={styles.taskButton}>{title}</div>
+          <div className={styles.taskButton} onClick={openTaskInfo}>{title}</div>
         </div>
       )}
     </Draggable>

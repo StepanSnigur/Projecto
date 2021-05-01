@@ -149,7 +149,9 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                 {tasksList.tasks.map((task, i) => <BoardCard
                   key={task.id}
                   title={task.name}
+                  description={task.description}
                   id={task.id}
+                  listId={tasksList.id}
                   index={i}
                   isDraggable={!!userState.id}
                 />)}

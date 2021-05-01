@@ -3,6 +3,7 @@ import { IBoardTask, IBoardList, IBoardPage } from '../pages/BoardPage/reducer'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 import { IBoardLink } from '../common/user/reducer'
 import authApi from './authApi'
+import { getArrayIds } from './utils'
 
 const boardApi = {
   async getBoard(boardId: string) {
@@ -81,6 +82,36 @@ const boardApi = {
   async changeBoardTitle(boardId: string, newTitle: string) {
     return await app.firestore().collection('boards').doc(boardId).update({
       name: newTitle
+    })
+  },
+  async checkCanEdit(userId: string, boardId: string) {
+    const board = await app.firestore().collection('boards').doc(boardId).get()
+    const boardData = board.data()
+    return boardData!.assignedUsers.map(getArrayIds).includes(userId)
+  },
+  async changeTaskData(
+    boardId: string,
+    listId: string,
+    taskId: string,
+    newTitle: string,
+    newDescription: string,
+    oldLists: IBoardList[]
+  ) {
+    const newLists = [...oldLists]
+    const listToChange = newLists.findIndex(list => list.id === listId)
+    const taskToChange = newLists[listToChange].tasks.findIndex(task => task.id === taskId)
+    const newTasks = [...newLists[listToChange].tasks]
+    newTasks[taskToChange] = {
+      ...newTasks[taskToChange],
+      name: newTitle,
+      description: newDescription
+    }
+    newLists[listToChange] = {
+      ...newLists[listToChange],
+      tasks: newTasks
+    }
+    await app.firestore().collection('boards').doc(boardId).update({
+      lists: newLists
     })
   }
 }

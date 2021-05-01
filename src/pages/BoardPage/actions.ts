@@ -57,6 +57,36 @@ export const setBoardCardLoading = (isLoading: boolean) => ({
   type: SET_BOARD_CARD_LOADING,
   payload: isLoading
 })
+export const INIT_CHANGE_BOARD_CARD = 'BOARD_PAGE/INIT_CHANGE_CARD'
+export const initChangeBoardCard = (
+  taskId: string,
+  listId: string,
+  newTitle: string,
+  newDescription: string
+) => ({
+  type: INIT_CHANGE_BOARD_CARD,
+  payload: {
+    taskId,
+    listId,
+    newTitle,
+    newDescription
+  }
+})
+export const CHANGE_BOARD_CARD = 'BOARD_PAGE/CHANGE_CARD'
+export const changeBoardCard = (
+  listId: string,
+  taskId: string,
+  newTitle: string,
+  newDescription: string
+) => ({
+  type: CHANGE_BOARD_CARD,
+  payload: {
+    listId,
+    taskId,
+    newTitle,
+    newDescription
+  }
+})
 
 export const INIT_ADD_NEW_BOARD_LIST = 'BOARD_PAGE/INIT_ADD_NEW_LIST'
 export const initAddNewBoardList = (listName: string, boardId: string) => ({
