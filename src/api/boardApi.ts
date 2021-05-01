@@ -3,6 +3,7 @@ import { IBoardTask, IBoardList, IBoardPage } from '../pages/BoardPage/reducer'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 import { IBoardLink } from '../common/user/reducer'
 import authApi from './authApi'
+import { getArrayIds } from './utils'
 
 const boardApi = {
   async getBoard(boardId: string) {
@@ -82,6 +83,11 @@ const boardApi = {
     return await app.firestore().collection('boards').doc(boardId).update({
       name: newTitle
     })
+  },
+  async checkCanEdit(userId: string, boardId: string) {
+    const board = await app.firestore().collection('boards').doc(boardId).get()
+    const boardData = board.data()
+    return boardData!.assignedUsers.map(getArrayIds).includes(userId)
   }
 }
 

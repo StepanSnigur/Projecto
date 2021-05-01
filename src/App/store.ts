@@ -27,6 +27,9 @@ import { progressBarReducer } from '../features/ProgressBar'
 import sidebarReducer from '../features/Sidebar/reducer'
 import { watchUpdateUserLink } from '../features/Sidebar/saga'
 
+import taskInfoReducer from '../features/TaskInfo/reducer'
+import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
+
 export const sagaMiddleware = createSagaMiddleware()
 const rootReducer = combineReducers({
   user: userReducer,
@@ -35,7 +38,8 @@ const rootReducer = combineReducers({
   boardPage: boardPageReducer,
   progressBar: progressBarReducer,
   addNewTable: addNewTableReducer,
-  sidebar: sidebarReducer
+  sidebar: sidebarReducer,
+  taskInfo: taskInfoReducer
 })
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
 export type AppStateType = ReturnType<typeof rootReducer>
@@ -52,5 +56,6 @@ sagaMiddleware.run(watchMoveBoardTask)
 sagaMiddleware.run(watchMoveBoardColumn)
 sagaMiddleware.run(watchChangeBoardTitle)
 sagaMiddleware.run(watchUpdateUserLink)
+sagaMiddleware.run(watchOpenTaskInfo)
 
 export default store
