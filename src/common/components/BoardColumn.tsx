@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getUserState } from '../user/selectors'
-import { IBoardList } from '../../pages/BoardPage/reducer'
+import { IBoardList } from '../../pages/BoardPage/boardPageSlice'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import BoardCard from './BoardCard'
 import { TextField } from '@material-ui/core'

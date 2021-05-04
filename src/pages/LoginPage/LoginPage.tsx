@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProgressBarState } from '../../features/ProgressBar/selectors'
-import { initSetUser } from '../../common/user/actions'
+import { initSetUser } from '../../common/user/userSlice'
 
 import { Box, Container, Button, TextField, IconButton } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
@@ -56,7 +56,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(initSetUser(email, password))
+    dispatch(initSetUser({ email, password }))
   }
   const handleEmailInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)

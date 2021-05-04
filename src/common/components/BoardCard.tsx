@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getUserId } from '../user/selectors'
-import { initTaskInfoOpen } from '../../features/TaskInfo/actions'
+import { initSetTaskInfoOpen } from '../../features/TaskInfo/taskInfoSlice'
 import { Draggable } from 'react-beautiful-dnd'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -51,7 +51,13 @@ const BoardCard: React.FC<IBoardCard> = ({
 
   const openTaskInfo = () => {
     if (userId) {
-      dispatch(initTaskInfoOpen(true, title, description, id, listId))
+      dispatch(initSetTaskInfoOpen({
+        isOpen: true,
+        title,
+        description,
+        id,
+        listId
+      }))
     }
   }
 

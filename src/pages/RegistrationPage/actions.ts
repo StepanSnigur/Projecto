@@ -1,4 +1,4 @@
-import { IUserData } from '../../common/user/reducer'
+import { IUserData } from '../../common/user/userSlice'
 
 export const ADD_NEW_USER_HANDLER = 'ADD_NEW_USER_HANDLER'
 export const ADD_NEW_USER = 'ADD_NEW_USER'

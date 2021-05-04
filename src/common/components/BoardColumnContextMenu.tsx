@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useDispatch } from 'react-redux'
-import { initDeleteBoardList } from '../../pages/BoardPage/actions'
+import { initDeleteBoardList } from '../../pages/BoardPage/boardPageSlice'
 import { BoardColumnContext } from '../context/BoardColumnContext'
 import { Menu, MenuItem } from '@material-ui/core'
 import { Delete, Create } from '@material-ui/icons'
@@ -21,7 +21,10 @@ const BoardColumnContextMenu: React.FC<IBoardColumnContextMenu> = ({ boardId }) 
   const styles = useStyles()
 
   const deleteList = () => {
-    dispatch(initDeleteBoardList(context.currentListId || '', boardId))
+    dispatch(initDeleteBoardList({
+      listId: context.currentListId || '',
+      boardId
+    }))
     context.setIsOpen(false)
   }
   const updateList = () => {

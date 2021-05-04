@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { openAddNewTableWindow } from './actions'
+import { openAddNewTableWindow } from './addNewTableSlice'
 import { getAddNewTableState } from './selectors'
 import { getUserId } from '../../common/user/selectors'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,8 +8,8 @@ import { Modal, Slide } from '@material-ui/core'
 import boardApi from '../../api/boardApi'
 import { asyncThrottle, getUniqueArr, removeCurrentUserFromSearchList } from './utils'
 import { SEARCH_DELAY } from './constants'
-import { fireSetError } from '../ErrorManager/actions'
-import { initCreateBoardPage } from '../../pages/BoardPage/actions'
+import { fireSetError } from '../ErrorManager/errorManagerSlice'
+import { initCreateBoardPage } from '../../pages/BoardPage/boardPageSlice'
 
 import { TextField, Button, Chip, CircularProgress } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -64,7 +64,6 @@ const AddNewTable = () => {
 
   const styles = useStyles()
   const membersListLoaded = (members: ITableMember[]) => {
-    console.log(members, 'members')
     setMembersList(members)
     setIsMemberInputLoading(false)
   }
@@ -100,7 +99,10 @@ const AddNewTable = () => {
     dispatch(openAddNewTableWindow(false))
   }
   const handleAddNewTable = () => {
-    dispatch(initCreateBoardPage(tableName, tableMembers))
+    dispatch(initCreateBoardPage({
+      name: tableName,
+      members: tableMembers
+    }))
     setTableName('')
     setTableMembers([])
     dispatch(openAddNewTableWindow(false))

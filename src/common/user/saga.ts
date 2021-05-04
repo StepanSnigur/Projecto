@@ -1,12 +1,12 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import authApi from '../../api/authApi'
-import { INIT_SET_USER, setUser } from './actions'
-import { setSidebarLinks } from '../../features/Sidebar/actions'
+import { initSetUser, setUser } from './userSlice'
+import { setSidebarLinks } from '../../features/Sidebar/sidebarSlice'
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { IInitSetUser } from './actionTypes'
-import { setProgressBarLoading } from '../../features/ProgressBar/actions'
-import { fireSetError } from '../../features/ErrorManager/actions'
-import { IUserData, IBoardLink } from './reducer'
+import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSlice'
+import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
+import { IUserData, IBoardLink } from './userSlice'
 import history from '../../App/history'
 import { translatedServerErrors } from '../constants'
 
@@ -17,7 +17,7 @@ export interface IUser {
   icon: string | null
 }
 export function* watchSetUser() {
-  yield takeEvery(INIT_SET_USER, setUserSaga)
+  yield takeEvery(initSetUser.type, setUserSaga)
 }
 export function* setUserSaga (action: IInitSetUser) {
   try {

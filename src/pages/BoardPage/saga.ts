@@ -1,17 +1,6 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects'
 import { v4 as uuidv4 } from 'uuid'
 import {
-  INIT_CREATE_BOARD,
-  INIT_SET_NEW_BOARD,
-  INIT_ADD_NEW_BOARD_CARD,
-  INIT_ADD_NEW_BOARD_LIST,
-  INIT_DELETE_BOARD_LIST,
-  INIT_MOVE_BOARD_TASK,
-  INIT_MOVE_BOARD_COLUMN,
-  INIT_CHANGE_BOARD_TITLE,
-  INIT_CHANGE_BOARD_CARD
-} from './actions'
-import {
   IInitCreateBoardPage,
   IInitAddNewBoardCard,
   IInitSetNewBoard,
@@ -22,8 +11,17 @@ import {
   IInitChangeBoardCard
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
-import { IBoardPage, IBoardList } from './reducer'
+import { IBoardPage, IBoardList } from './boardPageSlice'
 import {
+  initCreateBoardPage,
+  initSetNewBoard,
+  initAddNewBoardCard,
+  initAddNewBoardList,
+  initDeleteBoardList,
+  initMoveBoardTask,
+  initMoveBoardColumn,
+  initChangeBoardTitle,
+  initChangeBoardCard,
   setNewBoardAction,
   setBoardPageLoading,
   setBoardPageError,
@@ -35,12 +33,12 @@ import {
   moveBoardColumn,
   changeBoardTitle,
   changeBoardCard
-} from './actions'
+} from './boardPageSlice'
 import { checkIsLogged } from '../../common/saga'
-import { fireSetError } from '../../features/ErrorManager/actions'
-import { setProgressBarLoading } from '../../features/ProgressBar/actions'
-import { IUserData, IBoardLink } from '../../common/user/reducer'
-import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/actions'
+import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
+import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSlice'
+import { IUserData, IBoardLink } from '../../common/user/userSlice'
+import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/sidebarSlice'
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
@@ -54,7 +52,7 @@ export interface INewBoardData {
   newBoard: INewBoardWithId
 }
 export function* watchCreateBoard() {
-  yield takeEvery(INIT_CREATE_BOARD, createBoardSaga)
+  yield takeEvery(initCreateBoardPage.type, createBoardSaga)
 }
 export function* createBoardSaga(action: IInitCreateBoardPage) {
   try {
@@ -91,7 +89,7 @@ export function* createBoardSaga(action: IInitCreateBoardPage) {
 }
 
 export function* watchSetNewBoard() {
-  yield takeEvery(INIT_SET_NEW_BOARD, setNewBoard)
+  yield takeEvery(initSetNewBoard.type, setNewBoard)
 }
 export function* setNewBoard(action: IInitSetNewBoard) {
   try {
@@ -107,7 +105,7 @@ export function* setNewBoard(action: IInitSetNewBoard) {
 }
 
 export function* watchAddNewBoardCard() {
-  yield takeEvery(INIT_ADD_NEW_BOARD_CARD, addNewBoardCard)
+  yield takeEvery(initAddNewBoardCard.type, addNewBoardCard)
 }
 export function* addNewBoardCard(action: IInitAddNewBoardCard) {
   try {
@@ -121,7 +119,10 @@ export function* addNewBoardCard(action: IInitAddNewBoardCard) {
       createdAt: new Date().toLocaleDateString()
     }
     yield call(boardApi.addNewCard, boardId, action.payload.columnId, newCard)
-    yield put(addNewBoardCardAction(action.payload.columnId, newCard))
+    yield put(addNewBoardCardAction({
+      columnId: action.payload.columnId,
+      newCard
+    }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -131,7 +132,7 @@ export function* addNewBoardCard(action: IInitAddNewBoardCard) {
 }
 
 export function* watchChangeBoardCard() {
-  yield takeEvery(INIT_CHANGE_BOARD_CARD, changeBoardCardSaga)
+  yield takeEvery(initChangeBoardCard.type, changeBoardCardSaga)
 }
 export function* changeBoardCardSaga(action: IInitChangeBoardCard) {
   try {
@@ -143,7 +144,7 @@ export function* changeBoardCardSaga(action: IInitChangeBoardCard) {
     const boardPageState: IBoardPage = yield select(getBoardPageState)
     const { taskId, listId, newTitle, newDescription } = action.payload
     yield call(boardApi.changeTaskData, boardId, listId, taskId, newTitle, newDescription, boardPageState.lists)
-    yield put(changeBoardCard(listId, taskId, newTitle, newDescription))
+    yield put(changeBoardCard({ listId, taskId, newTitle, newDescription }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -153,7 +154,7 @@ export function* changeBoardCardSaga(action: IInitChangeBoardCard) {
 }
 
 export function* watchAddNewBoardList() {
-  yield takeEvery(INIT_ADD_NEW_BOARD_LIST, addNewBoardList)
+  yield takeEvery(initAddNewBoardList.type, addNewBoardList)
 }
 export function* addNewBoardList(action: IInitAddNewBoardList) {
   try {
@@ -176,7 +177,7 @@ export function* addNewBoardList(action: IInitAddNewBoardList) {
 }
 
 export function* watchDeleteBoardList() {
-  yield takeEvery(INIT_DELETE_BOARD_LIST, deleteBoardList)
+  yield takeEvery(initDeleteBoardList.type, deleteBoardList)
 }
 export function* deleteBoardList(action: IInitDeleteBoardList) {
   try {
@@ -193,13 +194,16 @@ export function* deleteBoardList(action: IInitDeleteBoardList) {
 }
 
 export function* watchMoveBoardTask() {
-  yield takeEvery(INIT_MOVE_BOARD_TASK, moveBoardTaskSaga)
+  yield takeEvery(initMoveBoardTask.type, moveBoardTaskSaga)
 }
 export function* moveBoardTaskSaga(action: IInitMoveBoardColumn) {
   try {
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
-    yield put(moveBoardTask(action.payload.source, action.payload.destination))
+    yield put(moveBoardTask({
+      source: action.payload.source,
+      destination: action.payload.destination
+    }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -208,13 +212,16 @@ export function* moveBoardTaskSaga(action: IInitMoveBoardColumn) {
   }
 }
 export function* watchMoveBoardColumn() {
-  yield takeEvery(INIT_MOVE_BOARD_COLUMN, moveBoardColumnSaga)
+  yield takeEvery(initMoveBoardColumn.type, moveBoardColumnSaga)
 }
 export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
   try {
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
-    yield put(moveBoardColumn(action.payload.source, action.payload.destination))
+    yield put(moveBoardColumn({
+      source: action.payload.source,
+      destination: action.payload.destination
+    }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -224,7 +231,7 @@ export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
 }
 
 export function* watchChangeBoardTitle() {
-  yield takeEvery(INIT_CHANGE_BOARD_TITLE, changeBoardTitleSaga)
+  yield takeEvery(initChangeBoardTitle.type, changeBoardTitleSaga)
 }
 export function* changeBoardTitleSaga(action: IInitChangeBoardTitle) {
   try {

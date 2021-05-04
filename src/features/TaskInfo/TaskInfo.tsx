@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setTaskInfoOpen } from './actions'
-import { initChangeBoardCard } from '../../pages/BoardPage/actions'
+import { setTaskInfoOpen } from './taskInfoSlice'
+import { initChangeBoardCard } from '../../pages/BoardPage/boardPageSlice'
 import { getTaskInfoState } from './selectors'
 import { Modal, Slide, TextField, Button, IconButton } from '@material-ui/core'
 import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles'
@@ -86,7 +86,14 @@ const TaskInfo = () => {
   }, [taskTitle, taskDescription, setIsSaveButtonDisabled])
 
   const handleClose = () => {
-    dispatch(setTaskInfoOpen(false))
+    dispatch(setTaskInfoOpen({
+      isOpen: false,
+      title: '',
+      description: '',
+      id: '',
+      listId: '',
+      canEdit: false
+    }))
   }
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTaskTitle(e.target.value)
@@ -95,7 +102,12 @@ const TaskInfo = () => {
     setTaskDescription(e.target.value)
   }
   const handleTaskInfoSave = () => {
-    dispatch(initChangeBoardCard(taskInfoState.id, taskInfoState.listId, taskTitle, taskDescription))
+    dispatch(initChangeBoardCard({
+      taskId: taskInfoState.id,
+      listId: taskInfoState.listId,
+      newTitle: taskTitle,
+      newDescription: taskDescription
+    }))
   }
 
   return (

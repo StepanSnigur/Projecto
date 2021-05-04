@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { initUpdateSidebarLink } from '../../features/Sidebar/actions'
-import { IExtendedBoardLink } from '../../features/Sidebar/reducer'
+import { initUpdateSidebarLink } from '../../features/Sidebar/sidebarSlice'
+import { IExtendedBoardLink } from '../../features/Sidebar/sidebarSlice'
 
 const useStyles = makeStyles({
   sidebarItem: {
@@ -39,7 +39,10 @@ export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkD
   const styles = useStyles()
 
   const loadLinkData = async () => {
-    !linkData.name && dispatch(initUpdateSidebarLink(linkData.id, idx))
+    !linkData.name && dispatch(initUpdateSidebarLink({
+      id: linkData.id,
+      position: idx
+    }))
   }
 
   useEffect(() => {

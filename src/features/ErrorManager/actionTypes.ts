@@ -1,4 +1,4 @@
-import { fireSetError, setErrorCreator } from './actions'
+import { fireSetError, setError } from './errorManagerSlice'
 
 export type fireSetErrorActionType = ReturnType<typeof fireSetError>
-export type setErrorActionType = ReturnType<typeof setErrorCreator>
+export type setErrorActionType = ReturnType<typeof setError>

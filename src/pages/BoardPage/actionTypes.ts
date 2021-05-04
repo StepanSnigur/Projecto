@@ -1,53 +1,43 @@
 import {
-  INIT_CREATE_BOARD,
-  INIT_SET_NEW_BOARD,
-  SET_NEW_BOARD,
-  SET_BOARD_PAGE_LOADING,
-  SET_BOARD_PAGE_ERROR,
-  INIT_ADD_NEW_BOARD_CARD,
-  ADD_NEW_BOARD_CARD,
-  SET_BOARD_CARD_LOADING,
-  INIT_ADD_NEW_BOARD_LIST,
-  ADD_NEW_BOARD_LIST,
-  INIT_DELETE_BOARD_LIST,
-  DELETE_BOARD_LIST,
-  MOVE_BOARD_TASK,
-  INIT_MOVE_BOARD_COLUMN,
-  MOVE_BOARD_COLUMN,
-  INIT_CHANGE_BOARD_TITLE,
-  CHANGE_BOARD_TITLE,
-  INIT_CHANGE_BOARD_CARD,
-  CHANGE_BOARD_CARD
-} from './actions'
-import { IBoardList, IBoardPage, IBoardTask } from './reducer'
+  initCreateBoardPage,
+  initSetNewBoard,
+  setBoardPageLoading,
+  setBoardPageError,
+  initAddNewBoardCard,
+  addNewBoardCardAction,
+  setBoardCardLoading,
+  initAddNewBoardList,
+  initDeleteBoardList,
+  initMoveBoardColumn,
+  initChangeBoardTitle,
+  initChangeBoardCard,
+  changeBoardCard
+} from './boardPageSlice'
+import { IBoardTask } from './boardPageSlice'
 import { IDropResult } from './BoardPage'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 
 export interface IInitCreateBoardPage {
-  type: typeof INIT_CREATE_BOARD,
+  type: typeof initCreateBoardPage.type,
   payload: {
     name: string,
     members: ITableMember[]
   }
 }
 export interface IInitSetNewBoard {
-  type: typeof INIT_SET_NEW_BOARD,
+  type: typeof initSetNewBoard.type,
   payload: string
 }
-export interface ISetNewBoard {
-  type: typeof SET_NEW_BOARD,
-  payload: IBoardPage
-}
 export interface ISetBoardPageLoading {
-  type: typeof SET_BOARD_PAGE_LOADING,
+  type: typeof setBoardPageLoading.type,
   payload: boolean
 }
 export interface ISetBoardPageError {
-  type: typeof SET_BOARD_PAGE_ERROR,
+  type: typeof setBoardPageError.type,
   payload: string | null
 }
 export interface IInitAddNewBoardCard {
-  type: typeof INIT_ADD_NEW_BOARD_CARD,
+  type: typeof initAddNewBoardCard.type,
   payload: {
     cardName: string,
     boardId: string,
@@ -55,18 +45,18 @@ export interface IInitAddNewBoardCard {
   }
 }
 export interface IAddNewBoardCard {
-  type: typeof ADD_NEW_BOARD_CARD,
+  type: typeof addNewBoardCardAction.type,
   payload: {
     columnId: string,
     newCard: IBoardTask
   }
 }
 export interface ISetBoardCardLoading {
-  type: typeof SET_BOARD_CARD_LOADING,
+  type: typeof setBoardCardLoading.type,
   payload: boolean
 }
 export interface IInitChangeBoardCard {
-  type: typeof INIT_CHANGE_BOARD_CARD,
+  type: typeof initChangeBoardCard.type,
   payload: {
     taskId: string,
     listId: string,
@@ -75,7 +65,7 @@ export interface IInitChangeBoardCard {
   }
 }
 export interface IChangeBoardCard {
-  type: typeof CHANGE_BOARD_CARD,
+  type: typeof changeBoardCard.type,
   payload: {
     listId: string,
     taskId: string,
@@ -85,44 +75,22 @@ export interface IChangeBoardCard {
 }
 
 export interface IInitAddNewBoardList {
-  type: typeof INIT_ADD_NEW_BOARD_LIST,
+  type: typeof initAddNewBoardList.type,
   payload: {
     boardId: string,
     name: string
   }
 }
-export interface IAddNewBoardList {
-  type: typeof ADD_NEW_BOARD_LIST,
-  payload: IBoardList
-}
 export interface IInitDeleteBoardList {
-  type: typeof INIT_DELETE_BOARD_LIST,
+  type: typeof initDeleteBoardList.type,
   payload: {
     boardId: string,
     listId: string
   }
 }
-export interface IDeleteBoardList {
-  type: typeof DELETE_BOARD_LIST,
-  payload: string
-}
 
-export interface IMoveBoardTask {
-  type: typeof MOVE_BOARD_TASK,
-  payload: {
-    source: IDropResult,
-    destination: IDropResult
-  }
-}
 export interface IInitMoveBoardColumn {
-  type: typeof INIT_MOVE_BOARD_COLUMN,
-  payload: {
-    source: IDropResult,
-    destination: IDropResult
-  }
-}
-export interface IMoveBoardColumn {
-  type: typeof MOVE_BOARD_COLUMN,
+  type: typeof initMoveBoardColumn.type,
   payload: {
     source: IDropResult,
     destination: IDropResult
@@ -130,13 +98,25 @@ export interface IMoveBoardColumn {
 }
 
 export interface IInitChangeBoardTitle {
-  type: typeof INIT_CHANGE_BOARD_TITLE,
+  type: typeof initChangeBoardTitle.type,
   payload: {
     boardId: string,
     newTitle: string
   }
 }
-export interface IChangeBoardTitle {
-  type: typeof CHANGE_BOARD_TITLE,
-  payload: string
+
+
+export interface IAddNewBoardCardActionPayload {
+  columnId: string,
+  newCard: IBoardTask
+}
+export interface IChangeBoardCardActionPayload {
+  listId: string,
+  taskId: string,
+  newTitle: string,
+  newDescription: string
+}
+export interface IMoveBoardTaskActionPayload {
+  source: IDropResult,
+  destination: IDropResult
 }
