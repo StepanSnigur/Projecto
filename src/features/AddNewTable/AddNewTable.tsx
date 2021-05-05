@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { openAddNewTableWindow } from './addNewTableSlice'
 import { getAddNewTableState } from './selectors'
 import { getUserId } from '../../common/user/selectors'
-import { makeStyles } from '@material-ui/core/styles'
-import { Modal, Slide } from '@material-ui/core'
+import { makeStyles, createStyles, useTheme } from '@material-ui/core/styles'
+import { Modal, Slide, Paper } from '@material-ui/core'
 import boardApi from '../../api/boardApi'
 import { asyncThrottle, getUniqueArr, removeCurrentUserFromSearchList } from './utils'
 import { SEARCH_DELAY } from './constants'
@@ -14,7 +14,7 @@ import { initCreateBoardPage } from '../../pages/BoardPage/boardPageSlice'
 import { TextField, Button, Chip, CircularProgress } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
     display: 'flex',
     width: '40%',
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
     top: '0',
     right: '0',
     outline: 'none',
-    background: '#f4f5f7',
+    // background: '#f4f5f7',
     borderRadius: '5px 0 0 5px'
   },
   title: {
@@ -35,6 +35,9 @@ const useStyles = makeStyles({
   textInput: {
     width: '400px',
     marginBottom: '20px'
+  },
+  inputColor: {
+    borderColor: theme.palette.text.primary
   },
   modalBtn: {
     width: '200px',
@@ -45,7 +48,7 @@ const useStyles = makeStyles({
       background: '#3855c9'
     }
   }
-})
+}))
 
 export interface ITableMember {
   id: string,
@@ -56,6 +59,7 @@ const AddNewTable = () => {
   const addNewTableState = useSelector(getAddNewTableState)
   const currentUserId = useSelector(getUserId)
   const [tableName, setTableName] = useState('')
+  const theme = useTheme()
 
   const [tableMembers, setTableMembers] = useState<ITableMember[]>([]) // <-- added members
   const [membersList, setMembersList] = useState<ITableMember[]>([]) // <-- searched members
@@ -123,7 +127,15 @@ const AddNewTable = () => {
             {isMemberInputLoading ? <CircularProgress size={20} color="inherit" /> : null}
             {params.InputProps.endAdornment}
           </>
-        )
+        ),
+        classes: {
+          notchedOutline: styles.inputColor
+        }
+      }}
+      InputLabelProps={{
+        style: {
+          color: theme.palette.text.primary
+        }
       }}
       onChange={handleMemberInputChange}
     />
@@ -137,13 +149,24 @@ const AddNewTable = () => {
       aria-describedby="simple-modal-description"
     >
       <Slide direction="left" in={addNewTableState.isOpen}>
-        <div className={styles.modalWindowContent}>
+        <Paper className={styles.modalWindowContent}>
           <h3 className={styles.title}>Добавить новую таблицу</h3>
           <TextField
             variant="outlined"
             label="Имя таблицы"
             className={styles.textInput}
+            color="primary"
             required
+            InputProps={{
+              classes: {
+                notchedOutline: styles.inputColor
+              }
+            }}
+            InputLabelProps={{
+              style: {
+                color: theme.palette.text.primary
+              }
+            }}
             onChange={handleTableNameChange}
             value={tableName}
           />
@@ -159,6 +182,7 @@ const AddNewTable = () => {
                 {...getTagProps({ index })}
               />
             ))}
+            color="primary"
             renderInput={renderMembersInput}
             loading={isMemberInputLoading}
           />
@@ -168,7 +192,7 @@ const AddNewTable = () => {
             disableElevation
             onClick={handleAddNewTable}
           >Создать</Button>
-        </div>
+        </Paper>
       </Slide>
     </Modal>
   )

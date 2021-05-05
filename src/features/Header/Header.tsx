@@ -6,15 +6,15 @@ import { initChangeBoardTitle } from '../../pages/BoardPage/boardPageSlice'
 import { fireSetError } from '../ErrorManager/errorManagerSlice'
 import { isOnBoardPage } from '../../common/utils/routes'
 import { getBoardPageState } from '../../pages/BoardPage/selectors'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
-import { Button, TextField } from '@material-ui/core'
+import { Button, TextField, Paper } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import PersonIcon from '@material-ui/icons/Person'
 import { INITIAL_HEADER_TITLE } from './constants'
 import { ENTER_KEY_CODE } from '../../common/constants'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => createStyles({
   headerWrapper: {
     height: '60px',
     boxSizing: 'border-box',
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '12px 30px',
-    background: '#23324b', // 23324b
+    // background: theme.palette.primary.main, // '#23324b', // 23324b
     color: '#afbcc5' // #afbcc5 f6f1f1
   },
   logo: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles({
       background: '#3855c9'
     }
   }
-})
+}))
 
 interface ITextWithLoading {
   isLoading: boolean,
@@ -120,7 +120,7 @@ const Header = () => {
     </Link>
   )
 
-  return <div className={styles.headerWrapper}>
+  return <Paper className={styles.headerWrapper} square>
     {
       isModdingTitle
         ? <TextField
@@ -138,7 +138,7 @@ const Header = () => {
     {
       userState.id
         ? <Link to="/user" className={styles.headerLink}>
-          <Button variant="contained">
+          <Button variant="contained" color="primary">
             <PersonIcon fontSize="small" />
           </Button>
         </Link>
@@ -146,7 +146,7 @@ const Header = () => {
           <Button className={styles.headerButton} variant="contained">Войти</Button>
         </Link>
     }
-  </div>
+  </Paper>
 }
 
 export default Header

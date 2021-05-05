@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setTaskInfoOpen } from './taskInfoSlice'
 import { initChangeBoardCard } from '../../pages/BoardPage/boardPageSlice'
 import { getTaskInfoState } from './selectors'
-import { Modal, Slide, TextField, Button, IconButton } from '@material-ui/core'
-import { makeStyles, createMuiTheme, withStyles } from '@material-ui/core/styles'
+import { Modal, Slide, TextField, Button, IconButton, Paper } from '@material-ui/core'
+import { makeStyles, createStyles, createMuiTheme, withStyles, useTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import { green, blueGrey } from '@material-ui/core/colors'
 import { Save, Delete } from '@material-ui/icons'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
     boxSizing: 'border-box',
     display: 'flex',
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     top: '0',
     right: '0',
     outline: 'none',
-    background: '#f4f5f7',
+    // background: '#f4f5f7',
     borderRadius: '5px 0 0 5px',
     padding: '0 120px'
   },
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
   deleteBtn: {
     color: '#e53935'
   }
-})
+}))
 const taskInfoTheme = createMuiTheme({
   palette: {
     primary: green,
@@ -67,6 +67,7 @@ const TaskInfo = () => {
   const dispatch = useDispatch()
   const taskInfoState = useSelector(getTaskInfoState)
   const styles = useStyles()
+  const theme = useTheme()
 
   const [taskTitle, setTaskTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
@@ -118,7 +119,7 @@ const TaskInfo = () => {
       aria-describedby="simple-modal-description"
     >
       <Slide direction="left" in={taskInfoState.isOpen}>
-        <div className={styles.modalWindowContent}>
+        <Paper className={styles.modalWindowContent}>
           {taskInfoState.canEdit ? <div className={styles.controlButtons}>
             <ThemeProvider theme={taskInfoTheme}>
               <div>
@@ -143,6 +144,11 @@ const TaskInfo = () => {
             </ThemeProvider>
           </div> : null}
           <TextField
+            InputLabelProps={{
+              style: {
+                color: theme.palette.text.primary
+              }
+            }}
             label="Название задачи"
             variant="outlined"
             value={taskTitle}
@@ -151,6 +157,11 @@ const TaskInfo = () => {
             disabled={!taskInfoState.canEdit}
           />
           <TextField
+            InputLabelProps={{
+              style: {
+                color: theme.palette.text.primary
+              }
+            }}
             className={styles.taskDescription}
             label="Описание задачи"
             variant="outlined"
@@ -161,7 +172,7 @@ const TaskInfo = () => {
             onChange={handleDescriptionChange}
             disabled={!taskInfoState.canEdit}
           />
-        </div>
+        </Paper>
       </Slide>
     </Modal>
   )

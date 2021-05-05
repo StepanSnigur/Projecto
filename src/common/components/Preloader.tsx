@@ -2,12 +2,13 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { CircularProgress, createStyles } from '@material-ui/core'
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles(theme => createStyles({
   preloaderContainer: {
     height: '100vh',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    background: theme.palette.secondary.dark
   }
 }))
 
