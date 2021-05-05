@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
+import { Paper } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import { openAddNewTableWindow } from '../AddNewTable/addNewTableSlice'
 import { getUserId } from '../../common/user/selectors'
@@ -8,12 +9,12 @@ import { getPinnedBoards } from './selectors'
 import AddIcon from '@material-ui/icons/Add'
 import BoardLink from '../../common/components/BoardLink'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => createStyles({
   sidebarWrapper: {
     width: '60px',
     position: 'absolute',
     height: '100%',
-    background: '#23324b'
+    // background: theme.palette.primary.main // '#23324b'
   },
   sidebarItemsWrapper: {
     display: 'flex',
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
     textAlign: 'center',
     lineHeight: '60px'
   }
-})
+}))
 
 const Sidebar = () => {
   const styles = useStyles()
@@ -46,7 +47,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className={styles.sidebarWrapper}>
+    <Paper className={styles.sidebarWrapper} square elevation={0}>
       <div className={styles.sidebarItemsWrapper}>
         {pinnedBoards.map((boardLink, i) => <BoardLink
           key={boardLink.id}
@@ -57,7 +58,7 @@ const Sidebar = () => {
           <AddIcon style={{ color: '#fff' }} />
         </Link>
       </div>
-    </div>
+    </Paper>
   )
 }
 

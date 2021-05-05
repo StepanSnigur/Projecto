@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getUserId } from '../user/selectors'
 import { initSetTaskInfoOpen } from '../../features/TaskInfo/taskInfoSlice'
 import { Draggable } from 'react-beautiful-dnd'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 
 interface IBoardCard {
   title: string,
@@ -14,7 +14,7 @@ interface IBoardCard {
   isDraggable: boolean
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => createStyles({
   wrapper: {
     margin: '0 10px',
     marginBottom: '5px',
@@ -32,10 +32,10 @@ const useStyles = makeStyles({
     overflow: 'hidden',
 
     '&:hover': {
-      background: '#fff'
+      background: theme.palette.primary.main
     }
   }
-})
+}))
 
 const BoardCard: React.FC<IBoardCard> = ({
   title,

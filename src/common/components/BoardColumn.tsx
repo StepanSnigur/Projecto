@@ -4,7 +4,7 @@ import { getUserState } from '../user/selectors'
 import { IBoardList } from '../../pages/BoardPage/boardPageSlice'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import BoardCard from './BoardCard'
-import { TextField } from '@material-ui/core'
+import { TextField, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { BoardColumnContext } from '../context/BoardColumnContext'
 import { ENTER_KEY_CODE } from '../constants'
@@ -22,7 +22,6 @@ const useStyles = makeStyles({
     boxSizing: 'border-box',
     padding: '12px 0',
     marginRight: '15px',
-    background: '#ebecf0',
     borderRadius: '7px'
   },
   columnTitleWrapper: {
@@ -35,8 +34,7 @@ const useStyles = makeStyles({
   },
   columnTitle: {
     margin: '0',
-    padding: '0',
-    color: '#172b4d'
+    padding: '0'
   },
   columnMenu: {
     display: 'flex',
@@ -113,7 +111,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   return (
     <Draggable draggableId={tasksList.id} isDragDisabled={!userState.id} index={dragIndex}>
       {(provided) => (
-        <div
+        <Paper
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
@@ -163,7 +161,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
             className={styles.addTaskBtn}
             onClick={() => onAddNewCard(tasksList.id)}
           >Добавить задачу</button>
-        </div>
+        </Paper>
       )}
     </Draggable>
   )

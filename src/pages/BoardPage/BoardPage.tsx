@@ -9,7 +9,7 @@ import {
   initMoveBoardColumn
 } from './boardPageSlice'
 import Preloader from '../../common/components/Preloader'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import { Button, Container } from '@material-ui/core'
 import { isHexColor } from './utils'
 import { IBoardList } from './boardPageSlice'
@@ -33,13 +33,13 @@ export interface IDropResult {
   droppableId: string
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => createStyles({
   boardWrapper: {
     width: '100%',
     minHeight: 'calc(100vh - 85px)',
     background: (props: IStyleProps) => props.isImage
       ? `url(${props.background}) no-repeat center / cover`
-      : (props.background || '#fff'),
+      : (props.background || theme.palette.secondary.dark),
     paddingTop: '25px'
   },
   boardContainer: {
@@ -57,14 +57,14 @@ const useStyles = makeStyles({
     height: '40px',
     flexShrink: 0
   },
-})
+}))
 
 const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   const dispatch = useDispatch()
   const boardPageState = useSelector(getBoardPageState)
   const styles = useStyles({
     background: boardPageState.backgroundImage,
-    isImage: !isHexColor(boardPageState.backgroundImage || '')
+    isImage: !isHexColor(boardPageState.backgroundImage || '') && !!boardPageState.backgroundImage?.length
   })
 
   const [addNewCardModalOpen, setAddNewCardModalOpen] = useState(false)
