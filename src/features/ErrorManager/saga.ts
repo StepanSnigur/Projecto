@@ -1,12 +1,12 @@
 import { put, takeEvery, delay } from 'redux-saga/effects'
-import { FIRE_SET_ERROR, setErrorCreator } from './actions'
+import { fireSetError, setError } from './errorManagerSlice'
 import { fireSetErrorActionType } from './actionTypes'
 
 export function* watchSetError() {
-  yield takeEvery(FIRE_SET_ERROR, setError)
+  yield takeEvery(fireSetError.type, setErrorSaga)
 }
-function* setError(action: fireSetErrorActionType) {
-  yield put(setErrorCreator(action.payload))
+function* setErrorSaga(action: fireSetErrorActionType) {
+  yield put(setError(action.payload))
   yield delay(3000)
-  yield put(setErrorCreator(''))
+  yield put(setError(''))
 }

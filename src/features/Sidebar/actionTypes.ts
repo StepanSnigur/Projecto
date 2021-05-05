@@ -1,39 +1,38 @@
 import {
-  SET_SIDEBAR_LINKS,
-  UPDATE_SIDEBAR_LINK,
-  INIT_UPDATE_SIDEBAR_LINK,
-  SET_BOARD_LINK_LOADING,
-  ADD_SIDEBAR_LINK
-} from './actions'
-import { IExtendedBoardLink } from './reducer'
-import { IUserLinkUpdates } from './actions'
+  setSidebarLinks,
+  setBoardLinkLoading,
+  initUpdateSidebarLink
+} from './sidebarSlice'
+import { IExtendedBoardLink } from './sidebarSlice'
 
 export interface ISetSidebarLinks {
-  type: typeof SET_SIDEBAR_LINKS,
+  type: typeof setSidebarLinks.type,
   payload: IExtendedBoardLink[]
 }
-export interface IAddSidebarLink {
-  type: typeof ADD_SIDEBAR_LINK,
-  payload: IExtendedBoardLink
-}
 export interface ISetBoardLinkLoading {
-  type: typeof SET_BOARD_LINK_LOADING,
+  type: typeof setBoardLinkLoading.type,
   payload: {
     idx: number,
     isLoading: boolean
   }
 }
 export interface IInitUpdateSidebarLink {
-  type: typeof INIT_UPDATE_SIDEBAR_LINK,
+  type: typeof initUpdateSidebarLink.type,
   payload: {
     id: string,
     position: number
   }
 }
-export interface IUpdateSidebarLink {
-  type: typeof UPDATE_SIDEBAR_LINK,
-  payload: {
-    idx: number,
-    updates: IUserLinkUpdates
-  }
+
+export interface IUserLinkUpdates {
+  name: string,
+  background: string
+}
+export interface ISetBoardLinksLoadingPayload {
+  idx: number,
+  isLoading: boolean
+}
+export interface IUpdateSidebarLinkPayload {
+  idx: number,
+  updates: IUserLinkUpdates
 }

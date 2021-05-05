@@ -1,5 +1,5 @@
 import app from 'firebase/app'
-import { IUserData, IBoardLink } from '../common/user/reducer'
+import { IUserData, IBoardLink } from '../common/user/userSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 
 const authApi = {

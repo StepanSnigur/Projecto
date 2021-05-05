@@ -1,6 +1,6 @@
 import { select } from 'redux-saga/effects'
-import { getUserState } from '../common/user/selectors'
-import { IUserData } from '../common/user/reducer'
+import { getUserState } from './user/selectors'
+import { IUserData } from './user/userSlice'
 
 export function* checkIsLogged() {
   const user: IUserData = yield select(getUserState)

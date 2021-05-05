@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addNewUserSagaCreator } from './actions'
+import { initAddNewUser } from './registrationPageSlice'
 import { getRegistrationPageState } from './selectors'
 
 import { Box, Container, Button, TextField, IconButton } from '@material-ui/core'
@@ -57,7 +57,7 @@ const RegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(addNewUserSagaCreator(email, password))
+    dispatch(initAddNewUser({ email, password }))
   }
   const handleEmailInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)

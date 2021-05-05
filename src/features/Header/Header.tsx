@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { getUserState } from '../../common/user/selectors'
-import { initChangeBoardTitle } from '../../pages/BoardPage/actions'
-import { fireSetError } from '../ErrorManager/actions'
+import { initChangeBoardTitle } from '../../pages/BoardPage/boardPageSlice'
+import { fireSetError } from '../ErrorManager/errorManagerSlice'
 import { isOnBoardPage } from '../../common/utils/routes'
 import { getBoardPageState } from '../../pages/BoardPage/selectors'
 import { makeStyles } from '@material-ui/core/styles'
@@ -103,7 +103,10 @@ const Header = () => {
       setIsModdingTitle(false)
       return false
     }
-    dispatch(initChangeBoardTitle(boardPageState.id, title))
+    dispatch(initChangeBoardTitle({
+      boardId: boardPageState.id,
+      newTitle: title
+    }))
     setIsModdingTitle(false)
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

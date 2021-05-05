@@ -7,12 +7,12 @@ import {
   initAddNewBoardList,
   initMoveBoardTask,
   initMoveBoardColumn
-} from './actions'
+} from './boardPageSlice'
 import Preloader from '../../common/components/Preloader'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Container } from '@material-ui/core'
 import { isHexColor } from './utils'
-import { IBoardList } from './reducer'
+import { IBoardList } from './boardPageSlice'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import BoardColumn from '../../common/components/BoardColumn'
@@ -85,7 +85,11 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     setCurrentColumnId(columnId)
   }
   const addNewCard = () => {
-    dispatch(initAddNewBoardCard(newCardTitle, currentColumnId, boardId))
+    dispatch(initAddNewBoardCard({
+      cardName: newCardTitle,
+      columnId: currentColumnId,
+      boardId
+    }))
     handleCloseAddNewCardModal()
   }
 
@@ -93,7 +97,10 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     setAddNewListModalOpen(false)
   }
   const addNewList = () => {
-    dispatch(initAddNewBoardList(newListTitle, boardId))
+    dispatch(initAddNewBoardList({
+      name: newListTitle,
+      boardId
+    }))
     handleCloseAddNewListModal()
   }
   const handleDragEnd = (result: any) => {
@@ -104,8 +111,8 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     ) return false
 
     result.type === 'column'
-      ? dispatch(initMoveBoardColumn(source, destination))
-      : dispatch(initMoveBoardTask(source, destination))
+      ? dispatch(initMoveBoardColumn({ source, destination }))
+      : dispatch(initMoveBoardTask({ source, destination }))
   }
 
   useLayoutEffect(() => {
