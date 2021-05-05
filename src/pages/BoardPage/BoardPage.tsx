@@ -51,7 +51,22 @@ const useStyles = makeStyles(theme => createStyles({
     overflow: 'auto',
     display: 'flex',
     alignItems: 'flex-start',
-    paddingBottom: '20px'
+    paddingBottom: '20px',
+    '&::-webkit-scrollbar': {
+      backgroundColor: theme.palette.background.paper,
+      width: '16px',
+      borderRadius: '16px'
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: 'inherit'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: '16px'
+    },
+    '&::-webkit-scrollbar-button': {
+      display: 'none'
+    }
   },
   addListBtn: {
     height: '40px',
