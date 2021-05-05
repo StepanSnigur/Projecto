@@ -8,7 +8,7 @@ import userReducer from '../common/user/userSlice'
 import errorManagerReducer from '../features/ErrorManager/errorManagerSlice'
 import { watchSetError } from '../features/ErrorManager/saga'
 
-import { registrationPageReducer } from '../pages/RegistrationPage'
+import registrationPageReducer from '../pages/RegistrationPage/registrationPageSlice'
 import addNewTableReducer from '../features/AddNewTable/addNewTableSlice'
 
 import {

@@ -1,7 +1,10 @@
 import { takeEvery, put, call, select } from 'redux-saga/effects'
-import { addNewUserSagaCreatorType } from './actionTypes'
-import { addNewUserActionCreator, setRegistrationInputErrors, setRegistrationPageLoading } from './actions'
-import { ADD_NEW_USER_HANDLER } from './actions'
+import {
+  initAddNewUser,
+  setRegistrationPageLoading,
+  setRegistrationInputErrors
+} from './registrationPageSlice'
+import { setUser } from '../../common/user/userSlice'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import authApi from '../../api/authApi'
 import { IUserData } from '../../common/user/userSlice'
@@ -37,9 +40,9 @@ const validateEmailAndPassword = (email: string, password: string) => {
 }
 
 export function* watchAddNewUser() {
-  yield takeEvery(ADD_NEW_USER_HANDLER, addNewUser)
+  yield takeEvery(initAddNewUser.type, addNewUser)
 }
-function* addNewUser(action: addNewUserSagaCreatorType) {
+function* addNewUser(action: ReturnType<typeof initAddNewUser>) {
   try {
     yield put(setRegistrationPageLoading(true))
     const fieldErrors: string[] | null = getRegistrationPageState(yield select()).errors
@@ -49,7 +52,7 @@ function* addNewUser(action: addNewUserSagaCreatorType) {
     else if (fieldErrors && fieldErrors.length) yield put(setRegistrationInputErrors(null))
 
     const userData: IUserData = yield call(authApi.registerNewUser, email, password)
-    yield put(addNewUserActionCreator(userData))
+    yield put(setUser(userData))
   } catch (err) {
     const errorMessage = err.message
     const serverErrorMessage = translatedServerErrors[err.code]
