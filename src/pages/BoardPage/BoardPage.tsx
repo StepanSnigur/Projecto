@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardPageState } from './selectors'
+import { getUserId } from '../../common/user/selectors'
 import {
   initAddNewBoardCard,
   initSetNewBoard,
@@ -18,6 +19,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import BoardColumn from '../../common/components/BoardColumn'
 import InputModalWindow from '../../common/components/InputModalWindow'
 import BoardColumnContextMenu from '../../common/components/BoardColumnContextMenu'
+import BoardMemberBarrier from '../../common/components/BoardMemberBarrier'
 import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
 import TaskInfo from '../../features/TaskInfo'
 import BoardSettings from '../../features/BoardSettings'
@@ -78,6 +80,7 @@ const useStyles = makeStyles(theme => createStyles({
 const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   const dispatch = useDispatch()
   const boardPageState = useSelector(getBoardPageState)
+  const userId = useSelector(getUserId)
   const styles = useStyles({
     background: boardPageState.backgroundImage,
     isImage: !isHexColor(boardPageState.backgroundImage || '') && !!boardPageState.backgroundImage?.length
@@ -136,6 +139,10 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   }, [dispatch, boardId])
 
   if (boardPageState.isLoading) return <Preloader />
+  if (
+    JSON.parse(boardPageState.settings?.isPrivate) &&
+    (!userId || !boardPageState.assignedUsers.some(user => user.id === userId))
+  ) return <BoardMemberBarrier />
   if (boardPageState.error) return <div>error</div>
 
   return (

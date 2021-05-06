@@ -63,7 +63,7 @@ const BoardSettings = () => {
     dispatch(changeCommentsState(e.target.value as string))
   }
   const handleIsPrivateStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(changeIsPrivateState(e.target.value as boolean))
+    dispatch(changeIsPrivateState(e.target.value as string))
   }
   const handleSettingsSave = () => {
     dispatch(saveBoardPageSettings())

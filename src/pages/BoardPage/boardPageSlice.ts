@@ -25,7 +25,7 @@ export interface IBoardAction {
 }
 export interface IBoardSettings {
   comments: string,
-  isPrivate: boolean
+  isPrivate: string
 }
 export interface IBoardPage {
   name: string,
@@ -56,7 +56,7 @@ const boardPageSlice = createSlice({
     id: '',
     settings: {
       comments: 'disabled',
-      isPrivate: false
+      isPrivate: 'false'
     }
   } as IBoardPageState,
   reducers: {
@@ -69,7 +69,8 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id
+        id,
+        settings
       } = action.payload
       return {
         ...state,
@@ -78,7 +79,8 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id
+        id,
+        settings
       }
     },
     setBoardPageLoading(state, action: PayloadAction<boolean>) {
@@ -185,7 +187,7 @@ const boardPageSlice = createSlice({
         }
       }
     },
-    changeIsPrivateState(state, action: PayloadAction<boolean>) {
+    changeIsPrivateState(state, action: PayloadAction<string>) {
       return {
         ...state,
         settings: {
