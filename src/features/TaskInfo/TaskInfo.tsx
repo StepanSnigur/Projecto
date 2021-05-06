@@ -41,6 +41,9 @@ const useStyles = makeStyles(theme => createStyles({
     justifyContent: 'space-between',
     borderBottom: '1px solid #23324b'
   },
+  inputBorder: {
+    borderColor: theme.palette.primary.main
+  },
   deleteBtn: {
     color: '#e53935'
   }
@@ -49,6 +52,17 @@ const taskInfoTheme = createMuiTheme({
   palette: {
     primary: green,
     secondary: blueGrey
+  }
+})
+const inputsTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#c9d1d7'
+    },
+    text: {
+      primary: '#c9d1d7',
+      disabled: '#c9d1d7'
+    }
   }
 })
 const DoTaskBtn = withStyles({
@@ -143,35 +157,47 @@ const TaskInfo = () => {
               </ControlBtn>
             </ThemeProvider>
           </div> : null}
-          <TextField
-            InputLabelProps={{
-              style: {
-                color: theme.palette.text.primary
-              }
-            }}
-            label="Название задачи"
-            variant="outlined"
-            value={taskTitle}
-            fullWidth
-            onChange={handleTitleChange}
-            disabled={!taskInfoState.canEdit}
-          />
-          <TextField
-            InputLabelProps={{
-              style: {
-                color: theme.palette.text.primary
-              }
-            }}
-            className={styles.taskDescription}
-            label="Описание задачи"
-            variant="outlined"
-            value={taskDescription}
-            fullWidth
-            multiline
-            rows={7}
-            onChange={handleDescriptionChange}
-            disabled={!taskInfoState.canEdit}
-          />
+          <ThemeProvider theme={inputsTheme}>
+            <TextField
+              InputLabelProps={{
+                style: {
+                  color: theme.palette.text.primary
+                }
+              }}
+              InputProps={{
+                classes: {
+                  notchedOutline: styles.inputBorder
+                }
+              }}
+              label="Название задачи"
+              variant="outlined"
+              value={taskTitle}
+              fullWidth
+              onChange={handleTitleChange}
+              disabled={!taskInfoState.canEdit}
+            />
+            <TextField
+              InputLabelProps={{
+                style: {
+                  color: theme.palette.text.primary
+                }
+              }}
+              InputProps={{
+                classes: {
+                  notchedOutline: styles.inputBorder
+                }
+              }}
+              className={styles.taskDescription}
+              label="Описание задачи"
+              variant="outlined"
+              value={taskDescription}
+              fullWidth
+              multiline
+              rows={7}
+              onChange={handleDescriptionChange}
+              disabled={!taskInfoState.canEdit}
+            />
+          </ThemeProvider>
         </Paper>
       </Slide>
     </Modal>
