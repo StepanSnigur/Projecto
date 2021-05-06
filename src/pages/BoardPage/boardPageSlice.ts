@@ -23,13 +23,18 @@ export interface IBoardAction {
   operatorId: string,
   producedAt: string
 }
+export interface IBoardSettings {
+  comments: string,
+  isPrivate: string
+}
 export interface IBoardPage {
   name: string,
   assignedUsers: ITableMember[],
   backgroundImage: string | null,
   lists: IBoardList[],
   actions: IBoardAction[],
-  id?: string
+  id?: string,
+  settings: IBoardSettings
 }
 interface IBoardPageState extends IBoardPage {
   isLoading: boolean,
@@ -48,7 +53,11 @@ const boardPageSlice = createSlice({
     assignedUsers: [],
     lists: [],
     actions: [],
-    id: ''
+    id: '',
+    settings: {
+      comments: 'disabled',
+      isPrivate: 'false'
+    }
   } as IBoardPageState,
   reducers: {
     initCreateBoardPage(state, action) {},
@@ -60,7 +69,8 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id
+        id,
+        settings
       } = action.payload
       return {
         ...state,
@@ -69,7 +79,8 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id
+        id,
+        settings
       }
     },
     setBoardPageLoading(state, action: PayloadAction<boolean>) {
@@ -166,7 +177,26 @@ const boardPageSlice = createSlice({
         ...state,
         name: action.payload
       }
-    }
+    },
+    changeCommentsState(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          comments: action.payload
+        }
+      }
+    },
+    changeIsPrivateState(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          isPrivate: action.payload
+        }
+      }
+    },
+    saveBoardPageSettings() {},
   }
 })
 
@@ -190,6 +220,9 @@ export const {
   initMoveBoardColumn,
   moveBoardColumn,
   initChangeBoardTitle,
-  changeBoardTitle
+  changeBoardTitle,
+  changeCommentsState,
+  changeIsPrivateState,
+  saveBoardPageSettings
 } = boardPageSlice.actions
 export default boardPageSlice.reducer

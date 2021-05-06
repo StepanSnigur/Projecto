@@ -1,9 +1,11 @@
 import app from 'firebase/app'
-import { IBoardTask, IBoardList, IBoardPage } from '../pages/BoardPage/boardPageSlice'
+import { IBoardTask, IBoardList, IBoardPage, IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 import { IBoardLink } from '../common/user/userSlice'
 import authApi from './authApi'
 import { getArrayIds } from './utils'
+import { DEFAULT_BOARD_SETTINGS } from '../features/AddNewTable/constants'
+
 
 const boardApi = {
   async getBoard(boardId: string) {
@@ -65,7 +67,10 @@ const boardApi = {
       lists: [],
       actions: [],
       assignedUsers,
-      name
+      name,
+      settings: {
+        ...DEFAULT_BOARD_SETTINGS
+      }
     }
     const table = await app.firestore().collection('boards').add(newBoard)
 
@@ -112,6 +117,11 @@ const boardApi = {
     }
     await app.firestore().collection('boards').doc(boardId).update({
       lists: newLists
+    })
+  },
+  async saveBoardSettings(boardId: string, newSettings: IBoardSettings) {
+    return await app.firestore().collection('boards').doc(boardId).update({
+      settings: newSettings
     })
   }
 }
