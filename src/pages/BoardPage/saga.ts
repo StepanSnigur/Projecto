@@ -11,7 +11,7 @@ import {
   IInitChangeBoardCard
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
-import { IBoardPage, IBoardList } from './boardPageSlice'
+import { IBoardPage, IBoardList, IBoardSettings } from './boardPageSlice'
 import {
   initCreateBoardPage,
   initSetNewBoard,
@@ -32,7 +32,8 @@ import {
   moveBoardTask,
   moveBoardColumn,
   changeBoardTitle,
-  changeBoardCard
+  changeBoardCard,
+  saveBoardPageSettings
 } from './boardPageSlice'
 import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
@@ -42,7 +43,9 @@ import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/sidebarS
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
-import { getBoardId, getBoardPageState } from './selectors'
+import { getBoardId, getBoardPageState, getBoardPageSettings } from './selectors'
+import { setSidebarSpinnerLoading } from '../../features/SidebarSpinner/sidebarSpinnerSlice'
+import { setBoardSettingsOpen } from '../../features/BoardSettings/boardSettingsSlice'
 
 interface INewBoardWithId extends IBoardPage {
   id: string
@@ -244,5 +247,22 @@ export function* changeBoardTitleSaga(action: IInitChangeBoardTitle) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
     yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchSaveBoardPageSettings() {
+  yield takeEvery(saveBoardPageSettings.type, saveBoardPageSettingsSaga)
+}
+function* saveBoardPageSettingsSaga() {
+  try {
+    yield put(setSidebarSpinnerLoading(true))
+    const newSettings: IBoardSettings = yield select(getBoardPageSettings)
+    const boardId: string = yield select(getBoardId)
+    yield call(boardApi.saveBoardSettings, boardId, newSettings)
+    yield put(setBoardSettingsOpen(false))
+  } catch (e) {
+    yield put(fireSetError('Не удалось сохранить настройки'))
+  } finally {
+    yield put(setSidebarSpinnerLoading(false))
   }
 }

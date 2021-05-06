@@ -8,11 +8,14 @@ import { isOnBoardPage } from '../../common/utils/routes'
 import { getBoardPageState } from '../../pages/BoardPage/selectors'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
-import { Button, TextField, Paper } from '@material-ui/core'
+import { Button, IconButton, TextField, Paper } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import PersonIcon from '@material-ui/icons/Person'
 import { INITIAL_HEADER_TITLE } from './constants'
 import { ENTER_KEY_CODE } from '../../common/constants'
+import SettingsIcon from '@material-ui/icons/Settings'
+import { isAdminOfBoard } from '../../common/user/utils'
+import { setBoardSettingsOpen } from "../BoardSettings/boardSettingsSlice";
 
 const useStyles = makeStyles((theme) => createStyles({
   headerWrapper: {
@@ -37,7 +40,8 @@ const useStyles = makeStyles((theme) => createStyles({
     color: '#afbcc5'
   },
   headerLink: {
-    textDecoration: 'none'
+    textDecoration: 'none',
+    marginLeft: '7px'
   },
   headerButton: {
     background: '#2c86ff', // 3855c9 7f4bec 2c86ff
@@ -73,6 +77,7 @@ const Header = () => {
   const [headerTitle, setHeaderTitle] = useState(INITIAL_HEADER_TITLE)
   const [isModdingTitle, setIsModdingTitle] = useState(false)
   const [title, setTitle] = useState('')
+  const [isControlIconsVisible, setIsControlIconsVisible] = useState(false)
 
   useEffect(() => {
     if (isOnBoardPage(location.pathname)) {
@@ -82,6 +87,17 @@ const Header = () => {
       setIsModdingTitle(false)
     }
   }, [location.pathname, boardPageState.name])
+  useEffect(() => {
+    if (
+      isOnBoardPage(location.pathname) &&
+      userState.id &&
+      isAdminOfBoard(boardPageState.id, userState.registeredInBoards)
+    ) {
+      setIsControlIconsVisible(true)
+    } else {
+      setIsControlIconsVisible(false)
+    }
+  }, [location.pathname, userState.id])
 
   const handleTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -114,6 +130,9 @@ const Header = () => {
       exitUpdatingMode()
     }
   }
+  const openBoardSettings = () => {
+    dispatch(setBoardSettingsOpen(true))
+  }
   const TableTitle: React.FC = () => (
     <Link to="/" className={styles.logoBtn} onClick={handleTitleClick}>
       <h3 className={styles.logo}>{headerTitle}</h3>
@@ -135,17 +154,26 @@ const Header = () => {
         />
         : <TextWithLoading isLoading={boardPageState.isLoading} Component={TableTitle} />
     }
-    {
-      userState.id
-        ? <Link to="/user" className={styles.headerLink}>
-          <Button variant="contained" color="primary">
-            <PersonIcon fontSize="small" />
-          </Button>
-        </Link>
-        : <Link to="/login" className={styles.headerLink}>
-          <Button className={styles.headerButton} variant="contained">Войти</Button>
-        </Link>
-    }
+    <div>
+      {
+        isControlIconsVisible
+          ? <IconButton onClick={openBoardSettings} color="secondary">
+              <SettingsIcon />
+            </IconButton>
+          : null
+      }
+      {
+        userState.id
+          ? <Link to="/user" className={styles.headerLink}>
+            <Button variant="contained" color="secondary">
+              <PersonIcon fontSize="small" />
+            </Button>
+          </Link>
+          : <Link to="/login" className={styles.headerLink}>
+            <Button className={styles.headerButton} variant="contained">Войти</Button>
+          </Link>
+      }
+    </div>
   </Paper>
 }
 

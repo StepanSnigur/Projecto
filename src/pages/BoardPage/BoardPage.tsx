@@ -20,6 +20,7 @@ import InputModalWindow from '../../common/components/InputModalWindow'
 import BoardColumnContextMenu from '../../common/components/BoardColumnContextMenu'
 import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
 import TaskInfo from '../../features/TaskInfo'
+import BoardSettings from '../../features/BoardSettings'
 
 interface IBoardPage {
   boardId: string
@@ -186,6 +187,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
         />
       </DragDropContext>
       <TaskInfo />
+      <BoardSettings />
     </div>
   )
 }

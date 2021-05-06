@@ -20,7 +20,8 @@ import {
   watchMoveBoardTask,
   watchMoveBoardColumn,
   watchChangeBoardTitle,
-  watchChangeBoardCard
+  watchChangeBoardCard,
+  watchSaveBoardPageSettings
 } from '../pages/BoardPage/saga'
 import boardPageReducer from '../pages/BoardPage/boardPageSlice'
 
@@ -31,6 +32,7 @@ import { watchUpdateUserLink } from '../features/Sidebar/saga'
 import taskInfoReducer from '../features/TaskInfo/taskInfoSlice'
 import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
 import sidebarSpinnerReducer from '../features/SidebarSpinner/sidebarSpinnerSlice'
+import boardSettingsReducer from '../features/BoardSettings/boardSettingsSlice'
 
 export const sagaMiddleware = createSagaMiddleware()
 const rootReducer = combineReducers({
@@ -42,7 +44,8 @@ const rootReducer = combineReducers({
   addNewTable: addNewTableReducer,
   sidebar: sidebarReducer,
   taskInfo: taskInfoReducer,
-  sidebarSpinner: sidebarSpinnerReducer
+  sidebarSpinner: sidebarSpinnerReducer,
+  boardSettings: boardSettingsReducer
 })
 const store = configureStore({
   reducer: rootReducer,
@@ -64,5 +67,6 @@ sagaMiddleware.run(watchMoveBoardColumn)
 sagaMiddleware.run(watchChangeBoardTitle)
 sagaMiddleware.run(watchUpdateUserLink)
 sagaMiddleware.run(watchOpenTaskInfo)
+sagaMiddleware.run(watchSaveBoardPageSettings)
 
 export default store
