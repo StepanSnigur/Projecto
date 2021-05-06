@@ -20,6 +20,3 @@ export interface ISetTaskInfoOpen {
   listId: string,
   canEdit: boolean
 }
-export interface ISetTaskInfoLoading {
-  isLoading: boolean
-}

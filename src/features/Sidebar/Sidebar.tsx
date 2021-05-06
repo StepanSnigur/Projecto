@@ -8,6 +8,7 @@ import { getUserId } from '../../common/user/selectors'
 import { getPinnedBoards } from './selectors'
 import AddIcon from '@material-ui/icons/Add'
 import BoardLink from '../../common/components/BoardLink'
+import SidebarSpinner from '../SidebarSpinner'
 
 const useStyles = makeStyles((theme) => createStyles({
   sidebarWrapper: {
@@ -57,6 +58,7 @@ const Sidebar = () => {
         <Link to="/" onClick={handleAddNewTable} className={styles.sidebarItem}>
           <AddIcon style={{ color: '#fff' }} />
         </Link>
+        <SidebarSpinner />
       </div>
     </Paper>
   )

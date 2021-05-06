@@ -30,6 +30,7 @@ import { watchUpdateUserLink } from '../features/Sidebar/saga'
 
 import taskInfoReducer from '../features/TaskInfo/taskInfoSlice'
 import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
+import sidebarSpinnerReducer from '../features/SidebarSpinner/sidebarSpinnerSlice'
 
 export const sagaMiddleware = createSagaMiddleware()
 const rootReducer = combineReducers({
@@ -40,7 +41,8 @@ const rootReducer = combineReducers({
   progressBar: progressBarReducer,
   addNewTable: addNewTableReducer,
   sidebar: sidebarReducer,
-  taskInfo: taskInfoReducer
+  taskInfo: taskInfoReducer,
+  sidebarSpinner: sidebarSpinnerReducer
 })
 const store = configureStore({
   reducer: rootReducer,

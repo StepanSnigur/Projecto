@@ -5,15 +5,16 @@ import { getBoardId } from '../../pages/BoardPage/selectors'
 import boardApi from '../../api/boardApi'
 
 import { initSetTaskInfoOpen, setTaskInfoOpen, setTaskInfoLoading } from './taskInfoSlice'
+import { setSidebarSpinnerLoading } from '../SidebarSpinner/sidebarSpinnerSlice'
+import { fireSetError } from '../ErrorManager/errorManagerSlice'
 
 export function* watchOpenTaskInfo() {
   yield takeEvery(initSetTaskInfoOpen.type, openTaskInfoSaga)
 }
 function* openTaskInfoSaga(action: IInitTaskInfoOpen) {
   try {
-    yield put(setTaskInfoLoading({
-      isLoading: true
-    }))
+    yield put(setTaskInfoLoading(true))
+    yield put(setSidebarSpinnerLoading(true))
     const { id, listId, title, description } = action.payload
 
     const userId: string = yield select(getUserId)
@@ -28,10 +29,9 @@ function* openTaskInfoSaga(action: IInitTaskInfoOpen) {
       canEdit
     }))
   } catch (e) {
-    console.log(e.message)
+    yield put(fireSetError('Не удалось открыть описание'))
   } finally {
-    yield put(setTaskInfoLoading({
-      isLoading: false
-    }))
+    yield put(setTaskInfoLoading(false))
+    yield put(setSidebarSpinnerLoading(false))
   }
 }

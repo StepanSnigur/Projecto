@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ISetTaskInfoOpen, ISetTaskInfoLoading } from './actionTypes'
+import { ISetTaskInfoOpen } from './actionTypes'
 
 export interface ITaskData {
   priority: string,
@@ -54,10 +54,10 @@ const taskInfoSlice = createSlice({
         }
       }
     },
-    setTaskInfoLoading(state, action: PayloadAction<ISetTaskInfoLoading>) {
+    setTaskInfoLoading(state, action: PayloadAction<boolean>) {
       return {
         ...state,
-        isLoading: action.payload.isLoading
+        isLoading: action.payload
       }
     },
   }
