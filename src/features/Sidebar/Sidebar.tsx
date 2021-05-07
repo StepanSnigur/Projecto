@@ -54,6 +54,7 @@ const Sidebar = () => {
           key={boardLink.id}
           idx={i}
           linkData={boardLink}
+          isUserLink={false}
         />)}
         <Link to="/" onClick={handleAddNewTable} className={styles.sidebarItem}>
           <AddIcon style={{ color: '#fff' }} />

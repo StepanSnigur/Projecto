@@ -42,8 +42,7 @@ import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSlice'
 import { IUserData, IBoardLink } from '../../common/user/userSlice'
-import { setSidebarLinks, addSidebarLink } from '../../features/Sidebar/sidebarSlice'
-import { addLoadingField } from '../../features/Sidebar/utils'
+import { addSidebarLink } from '../../features/Sidebar/sidebarSlice'
 import { getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
 import { getBoardId, getBoardPageState, getBoardPageSettings } from './selectors'
@@ -75,8 +74,6 @@ export function* createBoardSaga(action: IInitCreateBoardPage) {
       userState.email,
       userState.id
     )
-    const extendedSidebarLinks = addLoadingField(newTableData.updatedUserTables)
-    yield put(setSidebarLinks(extendedSidebarLinks))
     const newBoardSidebarLink = {
       name: name,
       background: newTableData.newBoard.backgroundImage || '#fff',
