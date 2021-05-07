@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppStateType } from '../../App/store'
 import { getBoardPageState } from '../../pages/BoardPage/selectors'
@@ -6,7 +6,8 @@ import { setBoardSettingsOpen } from './boardSettingsSlice'
 import {
   changeCommentsState,
   changeIsPrivateState,
-  saveBoardPageSettings
+  saveBoardPageSettings,
+  initAddUserToBoard
 } from '../../pages/BoardPage/boardPageSlice'
 import {
   Button,
@@ -26,6 +27,9 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PencilIcon from '@material-ui/icons/Create'
+import InputModalWindow from '../../common/components/InputModalWindow'
+import SearchUserInput from '../../common/components/SearchUserInput'
+import { ITableMember } from '../AddNewTable/AddNewTable'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -46,13 +50,11 @@ const useStyles = makeStyles(theme => createStyles({
   title: {
     fontSize: '24px'
   },
-  formSelect: {
-    width: '210px'
-  },
   settingsGrid: {
-    display: 'flex',
-    gridTemplateColumns: '1fr 1fr',
-    gridGap: '52px'
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '210px 210px',
+    justifyContent: 'space-between'
   },
   submitBtn: {
     marginTop: '100px',
@@ -78,6 +80,9 @@ const BoardSettings = () => {
   const dispatch = useDispatch()
   const boardPageState = useSelector(getBoardPageState)
   const boardSettingsState = useSelector((state: AppStateType) => state.boardSettings)
+  const [isAddNewUserWindowOpen, setAddNewUserWindowOpen] = useState(false)
+  const [newUserWindowInputValue, setNewUserWindowInputValue] = useState('')
+  const [newMember, setNewMember] = useState<ITableMember[]>([])
   const styles = useStyles()
 
   const handleTableMemberDelete = (params: GridCellParams) => {
@@ -122,60 +127,87 @@ const BoardSettings = () => {
     dispatch(saveBoardPageSettings())
   }
   const handleAddMember = () => {
-    console.log('add member')
+    setAddNewUserWindowOpen(true)
+  }
+  const handleAddNewMemberWindowClose = () => {
+    setAddNewUserWindowOpen(false)
+  }
+  const handleAddNewMemberWindowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewUserWindowInputValue(e.target.value)
+  }
+  const handleAddNewMemberWindowSubmit = () => {
+    dispatch(initAddUserToBoard(newMember))
+    handleAddNewMemberWindowClose()
   }
 
   return (
-    <Modal
-      open={boardSettingsState.isOpen}
-      onClose={handleClose}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-    >
-      <Slide direction="left" in={boardSettingsState.isOpen}>
-        <Paper className={styles.modalWindowContent}>
-          <ThemeProvider theme={defaultTheme}>
-            <h3 className={styles.title}>Настройки "{boardPageState.name}"</h3>
-            <div className={styles.settingsGrid}>
-              <FormControl variant="outlined" className={styles.formSelect}>
-                <InputLabel>Коментарии</InputLabel>
-                <Select onChange={handleCommentsStateChange} value={boardPageState.settings.comments}>
-                  <MenuItem value="disabled">отключить</MenuItem>
-                  <MenuItem value="only-registered">только зарегистрированные пользователи</MenuItem>
-                  <MenuItem value="only-members">только участники</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" className={styles.formSelect}>
-                <InputLabel>Приватность</InputLabel>
-                <Select onChange={handleIsPrivateStateChange} value={boardPageState.settings.isPrivate}>
-                  <MenuItem value="false">Доска доступна всем</MenuItem>
-                  <MenuItem value="true">Доска доступна только участникам</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <div className={styles.membersList}>
-              <div className={styles.membersTitleWrapper}>
-                <h4 style={{ margin: 0, marginRight: '10px' }}>Участники:</h4>
-                <IconButton onClick={handleAddMember}>
-                  <AddCircleIcon />
-                </IconButton>
+    <>
+      <Modal
+        open={boardSettingsState.isOpen}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <Slide direction="left" in={boardSettingsState.isOpen}>
+          <Paper className={styles.modalWindowContent}>
+            <ThemeProvider theme={defaultTheme}>
+              <h3 className={styles.title}>Настройки "{boardPageState.name}"</h3>
+              <div className={styles.settingsGrid}>
+                <FormControl variant="outlined">
+                  <InputLabel>Коментарии</InputLabel>
+                  <Select onChange={handleCommentsStateChange} value={boardPageState.settings.comments}>
+                    <MenuItem value="disabled">отключить</MenuItem>
+                    <MenuItem value="only-registered">только зарегистрированные пользователи</MenuItem>
+                    <MenuItem value="only-members">только участники</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined">
+                  <InputLabel>Приватность</InputLabel>
+                  <Select onChange={handleIsPrivateStateChange} value={boardPageState.settings.isPrivate}>
+                    <MenuItem value="false">Доска доступна всем</MenuItem>
+                    <MenuItem value="true">Доска доступна только участникам</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
-              <DataGrid
-                rows={boardPageState.assignedUsers}
-                columns={membersTableGrid}
-                pageSize={PAGE_SIZE}
-              />
-            </div>
-            <Button
-              className={styles.submitBtn}
-              size="large"
-              variant="outlined"
-              onClick={handleSettingsSave}
-            >Сохранить</Button>
-          </ThemeProvider>
-        </Paper>
-      </Slide>
-    </Modal>
+              <div className={styles.membersList}>
+                <div className={styles.membersTitleWrapper}>
+                  <h4 style={{ margin: 0, marginRight: '10px' }}>Участники:</h4>
+                  <IconButton onClick={handleAddMember}>
+                    <AddCircleIcon />
+                  </IconButton>
+                </div>
+                <DataGrid
+                  rows={boardPageState.assignedUsers}
+                  columns={membersTableGrid}
+                  pageSize={PAGE_SIZE}
+                />
+              </div>
+              <Button
+                className={styles.submitBtn}
+                size="large"
+                variant="outlined"
+                onClick={handleSettingsSave}
+              >Сохранить</Button>
+            </ThemeProvider>
+          </Paper>
+        </Slide>
+      </Modal>
+      <ThemeProvider theme={defaultTheme}>
+        <InputModalWindow
+          isOpen={isAddNewUserWindowOpen}
+          onClose={handleAddNewMemberWindowClose}
+          inputValue={newUserWindowInputValue}
+          inputTitle="Добавить участника"
+          handleChange={handleAddNewMemberWindowChange}
+          onSubmit={handleAddNewMemberWindowSubmit}
+          renderInput={() => <SearchUserInput
+            isMultiple={false}
+            onUsersLoad={setNewMember}
+            width="100%"
+          />}
+        />
+      </ThemeProvider>
+    </>
   )
 }
 

@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { openAddNewTableWindow } from './addNewTableSlice'
 import { getAddNewTableState } from './selectors'
-import { getUserId } from '../../common/user/selectors'
 import { makeStyles, createStyles, useTheme } from '@material-ui/core/styles'
 import { Modal, Slide, Paper } from '@material-ui/core'
-import boardApi from '../../api/boardApi'
-import { asyncThrottle, getUniqueArr, removeCurrentUserFromSearchList } from './utils'
-import { SEARCH_DELAY } from './constants'
-import { fireSetError } from '../ErrorManager/errorManagerSlice'
 import { initCreateBoardPage } from '../../pages/BoardPage/boardPageSlice'
-
-import { TextField, Button, Chip, CircularProgress } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import { TextField, Button } from '@material-ui/core'
+import SearchUserInput from '../../common/components/SearchUserInput'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -26,7 +20,6 @@ const useStyles = makeStyles(theme => createStyles({
     top: '0',
     right: '0',
     outline: 'none',
-    // background: '#f4f5f7',
     borderRadius: '5px 0 0 5px'
   },
   title: {
@@ -57,52 +50,20 @@ export interface ITableMember {
 const AddNewTable = () => {
   const dispatch = useDispatch()
   const addNewTableState = useSelector(getAddNewTableState)
-  const currentUserId = useSelector(getUserId)
   const [tableName, setTableName] = useState('')
   const theme = useTheme()
+  const styles = useStyles()
 
   const [tableMembers, setTableMembers] = useState<ITableMember[]>([]) // <-- added members
-  const [membersList, setMembersList] = useState<ITableMember[]>([]) // <-- searched members
-  const [searchMembersInputValue, setSearchMembersInputValue] = useState('')
-  const [isMemberInputLoading, setIsMemberInputLoading] = useState(false)
-
-  const styles = useStyles()
-  const membersListLoaded = (members: ITableMember[]) => {
-    setMembersList(members)
-    setIsMemberInputLoading(false)
-  }
-  const membersListError = (errorMessage: string) => {
-    dispatch(fireSetError(errorMessage))
-  }
-  const throttlesSearchUsers = useMemo(
-    () => asyncThrottle(boardApi.searchUsers, SEARCH_DELAY),
-    []
-  )
-
-  const loadMembersList = async () => {
-    setIsMemberInputLoading(true)
-    throttlesSearchUsers(searchMembersInputValue)
-      .then((members) => removeCurrentUserFromSearchList(members, currentUserId))
-      .then(membersListLoaded)
-      .catch(membersListError)
-  }
-
-  useEffect(() => {
-    loadMembersList()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchMembersInputValue])
 
   const handleTableNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTableName(e.target.value)
-  }
-  const handleTableMembersChange = (_: any, newValue: any) => {
-    const filteredMembers = getUniqueArr(newValue)
-    setTableMembers(filteredMembers)
   }
   const handleClose = () => {
     dispatch(openAddNewTableWindow(false))
   }
   const handleAddNewTable = () => {
+    console.log(tableName, 'members')
     dispatch(initCreateBoardPage({
       name: tableName,
       members: tableMembers
@@ -110,35 +71,6 @@ const AddNewTable = () => {
     setTableName('')
     setTableMembers([])
     dispatch(openAddNewTableWindow(false))
-  }
-  const handleMemberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchMembersInputValue(e.target.value)
-  }
-  const renderMembersInput = (params: any) => {
-    return <TextField
-      {...params}
-      variant="outlined"
-      label="Добавить участников"
-      className={styles.textInput}
-      InputProps={{
-        ...params.InputProps,
-        endAdornment: (
-          <>
-            {isMemberInputLoading ? <CircularProgress size={20} color="inherit" /> : null}
-            {params.InputProps.endAdornment}
-          </>
-        ),
-        classes: {
-          notchedOutline: styles.inputColor
-        }
-      }}
-      InputLabelProps={{
-        style: {
-          color: theme.palette.text.primary
-        }
-      }}
-      onChange={handleMemberInputChange}
-    />
   }
 
   return (
@@ -170,21 +102,9 @@ const AddNewTable = () => {
             onChange={handleTableNameChange}
             value={tableName}
           />
-          <Autocomplete
-            multiple
-            value={tableMembers}
-            onChange={handleTableMembersChange}
-            options={membersList}
-            getOptionLabel={(option: ITableMember) => option.name}
-            renderTags={(tagValue, getTagProps) => tagValue.map((option, index) => (
-              <Chip
-                label={option.name}
-                {...getTagProps({ index })}
-              />
-            ))}
-            color="primary"
-            renderInput={renderMembersInput}
-            loading={isMemberInputLoading}
+          <SearchUserInput
+            isMultiple={true}
+            onUsersLoad={setTableMembers}
           />
           <Button
             variant="contained"

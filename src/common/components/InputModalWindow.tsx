@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, TextField } from '@material-ui/core'
+import { Button, Modal, TextField, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 interface IModalWindow {
@@ -8,10 +8,11 @@ interface IModalWindow {
   inputValue: string | number,
   inputTitle: string,
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  onSubmit: () => void
+  onSubmit: () => void,
+  renderInput?: () => void
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   addCardModalWrapper: {
     width: '250px',
     position: 'absolute',
@@ -19,7 +20,7 @@ const useStyles = makeStyles({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     outline: 'none',
-    background: '#f4f5f7',
+    background: theme.palette.background.paper,
     borderRadius: '5px',
     padding: '20px',
   },
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
   addCardButton: {
     width: '100%'
   }
-})
+}))
 
 const InputModalWindow: React.FC<IModalWindow> = ({
   isOpen,
@@ -38,12 +39,13 @@ const InputModalWindow: React.FC<IModalWindow> = ({
   inputValue,
   inputTitle,
   handleChange,
-  onSubmit
+  onSubmit,
+  renderInput
 }) => {
   const styles = useStyles()
 
   return (
-    <div>
+    <Paper>
       <Modal
         open={isOpen}
         onClose={onClose}
@@ -51,15 +53,19 @@ const InputModalWindow: React.FC<IModalWindow> = ({
         aria-describedby="simple-modal-description"
       >
         <div className={styles.addCardModalWrapper}>
-          <TextField
-            id="email"
-            required
-            label={inputTitle}
-            variant="outlined"
-            className={styles.addCardInput}
-            value={inputValue}
-            onChange={handleChange}
-          />
+          {
+            renderInput
+              ? renderInput()
+              : <TextField
+                id="email"
+                required
+                label={inputTitle}
+                variant="outlined"
+                className={styles.addCardInput}
+                value={inputValue}
+                onChange={handleChange}
+              />
+          }
           <Button
             variant="contained"
             className={styles.addCardButton}
@@ -68,7 +74,7 @@ const InputModalWindow: React.FC<IModalWindow> = ({
           >Добавить</Button>
         </div>
       </Modal>
-    </div>
+    </Paper>
   )
 }
 

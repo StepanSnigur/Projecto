@@ -21,7 +21,8 @@ import {
   watchMoveBoardColumn,
   watchChangeBoardTitle,
   watchChangeBoardCard,
-  watchSaveBoardPageSettings
+  watchSaveBoardPageSettings,
+  watchAddUserToBoard
 } from '../pages/BoardPage/saga'
 import boardPageReducer from '../pages/BoardPage/boardPageSlice'
 
@@ -68,5 +69,6 @@ sagaMiddleware.run(watchChangeBoardTitle)
 sagaMiddleware.run(watchUpdateUserLink)
 sagaMiddleware.run(watchOpenTaskInfo)
 sagaMiddleware.run(watchSaveBoardPageSettings)
+sagaMiddleware.run(watchAddUserToBoard)
 
 export default store

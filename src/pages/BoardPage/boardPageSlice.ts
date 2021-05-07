@@ -197,6 +197,16 @@ const boardPageSlice = createSlice({
       }
     },
     saveBoardPageSettings() {},
+    initAddUserToBoard(state, action) {},
+    addUserToBoard(state, action: PayloadAction<ITableMember>) {
+      return {
+        ...state,
+        assignedUsers: [
+          ...state.assignedUsers,
+          action.payload
+        ]
+      }
+    }
   }
 })
 
@@ -223,6 +233,8 @@ export const {
   changeBoardTitle,
   changeCommentsState,
   changeIsPrivateState,
-  saveBoardPageSettings
+  saveBoardPageSettings,
+  initAddUserToBoard,
+  addUserToBoard
 } = boardPageSlice.actions
 export default boardPageSlice.reducer
