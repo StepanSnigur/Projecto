@@ -1,7 +1,7 @@
 import app from 'firebase/app'
 import { IBoardTask, IBoardList, IBoardPage, IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
-import { IBoardLink } from '../common/user/userSlice'
+import { IBoardLink, IUserData } from '../common/user/userSlice'
 import authApi from './authApi'
 import { getArrayIds } from './utils'
 import { DEFAULT_BOARD_SETTINGS } from '../features/AddNewTable/constants'
@@ -122,6 +122,40 @@ const boardApi = {
   async saveBoardSettings(boardId: string, newSettings: IBoardSettings) {
     return await app.firestore().collection('boards').doc(boardId).update({
       settings: newSettings
+    })
+  },
+  async addBoardToUser(boardId: string, userId: string) {
+    const user = await app.firestore().collection('users').doc(userId).get()
+    const userData = user.data()
+    if (!userData?.email) throw new Error('Пользователь не найден')
+    if (userData
+      .registeredInBoards
+      .some((board: IBoardPage) => board.id === boardId)
+    ) throw new Error('Этот человек уже добавлен')
+
+    return await app.firestore().collection('users')
+      .doc(userId)
+      .update({
+        registeredInBoards: [
+          ...userData?.registeredInBoards,
+          { id: boardId, isAdmin: false }
+        ]
+      })
+  },
+  async addNewMember(boardId: string, userId: string, userEmail: string) {
+    const board = await app.firestore().collection('boards').doc(boardId).get()
+    const boardData = board.data()
+    if (!boardData?.name) throw new Error('Что-то пошло не так')
+    if (boardData
+      .assignedUsers
+      .some((user: ITableMember) => user.id === userId)
+    ) throw new Error('Этот человек уже добавлен')
+
+    return await app.firestore().collection('boards').doc(boardId).update({
+      assignedUsers: [
+        ...boardData?.assignedUsers,
+        { id: userId, name: userEmail }
+      ]
     })
   }
 }

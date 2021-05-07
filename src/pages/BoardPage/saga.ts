@@ -1,4 +1,5 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects'
+import { PayloadAction } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import {
   IInitCreateBoardPage,
@@ -33,7 +34,9 @@ import {
   moveBoardColumn,
   changeBoardTitle,
   changeBoardCard,
-  saveBoardPageSettings
+  saveBoardPageSettings,
+  initAddUserToBoard,
+  addUserToBoard
 } from './boardPageSlice'
 import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
@@ -46,6 +49,7 @@ import history from '../../App/history'
 import { getBoardId, getBoardPageState, getBoardPageSettings } from './selectors'
 import { setSidebarSpinnerLoading } from '../../features/SidebarSpinner/sidebarSpinnerSlice'
 import { setBoardSettingsOpen } from '../../features/BoardSettings/boardSettingsSlice'
+import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 
 interface INewBoardWithId extends IBoardPage {
   id: string
@@ -264,5 +268,24 @@ function* saveBoardPageSettingsSaga() {
     yield put(fireSetError('Не удалось сохранить настройки'))
   } finally {
     yield put(setSidebarSpinnerLoading(false))
+  }
+}
+
+export function* watchAddUserToBoard() {
+  yield takeEvery(initAddUserToBoard.type, addUserToBardSaga)
+}
+function* addUserToBardSaga(action: PayloadAction<ITableMember>) {
+  try {
+    yield put(setProgressBarLoading(true))
+    if (!action.payload || !action.payload.id) throw new Error('Что-то пошло не так')
+    const boardId: string = yield select(getBoardId)
+
+    yield call(boardApi.addBoardToUser, boardId, action.payload.id)
+    yield call(boardApi.addNewMember, boardId, action.payload.id, action.payload.name)
+    yield put(addUserToBoard(action.payload))
+  } catch (e) {
+    yield put(fireSetError(e.message))
+  } finally {
+    yield put(setProgressBarLoading(false))
   }
 }
