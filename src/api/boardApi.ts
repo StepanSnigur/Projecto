@@ -1,7 +1,7 @@
 import app from 'firebase/app'
 import { IBoardTask, IBoardList, IBoardPage, IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
-import { IBoardLink, IUserData } from '../common/user/userSlice'
+import { IBoardLink } from '../common/user/userSlice'
 import authApi from './authApi'
 import { getArrayIds } from './utils'
 import { DEFAULT_BOARD_SETTINGS } from '../features/AddNewTable/constants'
