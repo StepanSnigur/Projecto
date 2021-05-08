@@ -158,7 +158,7 @@ const Header = () => {
     <div>
       {
         isControlIconsVisible
-          ? <IconButton onClick={openBoardSettings} color="secondary">
+          ? <IconButton role="settingsButton" onClick={openBoardSettings} color="secondary">
               <SettingsIcon />
             </IconButton>
           : null
