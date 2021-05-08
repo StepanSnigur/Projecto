@@ -7,7 +7,7 @@ import {
   changeCommentsState,
   changeIsPrivateState,
   saveBoardPageSettings,
-  initAddUserToBoard
+  initAddUserToBoard, initDeleteBoardMember
 } from '../../pages/BoardPage/boardPageSlice'
 import {
   Button,
@@ -86,7 +86,10 @@ const BoardSettings = () => {
   const styles = useStyles()
 
   const handleTableMemberDelete = (params: GridCellParams) => {
-    console.log('delete', params.id)
+    dispatch(initDeleteBoardMember({
+      boardId: boardPageState.id,
+      userId: params.id
+    }))
   }
   const handleTableMemberUpdate = (params: GridCellParams) => {
     console.log('update', params.id)
@@ -180,6 +183,7 @@ const BoardSettings = () => {
                   rows={boardPageState.assignedUsers}
                   columns={membersTableGrid}
                   pageSize={PAGE_SIZE}
+                  disableSelectionOnClick
                 />
               </div>
               <Button

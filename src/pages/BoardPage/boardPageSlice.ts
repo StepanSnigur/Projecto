@@ -206,6 +206,13 @@ const boardPageSlice = createSlice({
           action.payload
         ]
       }
+    },
+    initDeleteBoardMember(state, action) {},
+    deleteBoardMember(state, action) {
+      return {
+        ...state,
+        assignedUsers: state.assignedUsers.filter(user => user.id !== action.payload)
+      }
     }
   }
 })
@@ -235,6 +242,8 @@ export const {
   changeIsPrivateState,
   saveBoardPageSettings,
   initAddUserToBoard,
-  addUserToBoard
+  addUserToBoard,
+  initDeleteBoardMember,
+  deleteBoardMember
 } = boardPageSlice.actions
 export default boardPageSlice.reducer

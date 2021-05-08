@@ -36,14 +36,16 @@ import {
   changeBoardCard,
   saveBoardPageSettings,
   initAddUserToBoard,
-  addUserToBoard
+  addUserToBoard,
+  initDeleteBoardMember,
+  deleteBoardMember
 } from './boardPageSlice'
 import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSlice'
 import { IUserData, IBoardLink } from '../../common/user/userSlice'
 import { addSidebarLink } from '../../features/Sidebar/sidebarSlice'
-import { getUserState } from '../../common/user/selectors'
+import { getUserId, getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
 import { getBoardId, getBoardPageState, getBoardPageSettings } from './selectors'
 import { setSidebarSpinnerLoading } from '../../features/SidebarSpinner/sidebarSpinnerSlice'
@@ -280,6 +282,25 @@ function* addUserToBardSaga(action: PayloadAction<ITableMember>) {
     yield call(boardApi.addBoardToUser, boardId, action.payload.id)
     yield call(boardApi.addNewMember, boardId, action.payload.id, action.payload.name)
     yield put(addUserToBoard(action.payload))
+  } catch (e) {
+    yield put(fireSetError(e.message))
+  } finally {
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchDeleteBoardMember() {
+  yield takeEvery(initDeleteBoardMember.type, deleteBoardMemberSaga)
+}
+function* deleteBoardMemberSaga(action: PayloadAction<{ boardId: string, userId: string }>) {
+  try {
+    yield put(setProgressBarLoading(true))
+    const { boardId, userId } = action.payload
+    const currentUserId: string = yield select(getUserId)
+    if (currentUserId === userId) throw new Error('Вы не можете удалить саиого себя')
+
+    yield call(boardApi.deleteBoardMember, boardId, userId)
+    yield put(deleteBoardMember(userId))
   } catch (e) {
     yield put(fireSetError(e.message))
   } finally {

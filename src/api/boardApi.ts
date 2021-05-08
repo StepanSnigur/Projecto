@@ -157,6 +157,9 @@ const boardApi = {
         { id: userId, name: userEmail }
       ]
     })
+  },
+  async deleteBoardMember(boardId: string, userId: string) {
+    console.log(boardId, userId, 'delete')
   }
 }
 
