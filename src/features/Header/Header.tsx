@@ -88,6 +88,7 @@ const Header = () => {
     }
   }, [location.pathname, boardPageState.name])
   useEffect(() => {
+
     if (
       isOnBoardPage(location.pathname) &&
       userState.id &&
@@ -97,7 +98,7 @@ const Header = () => {
     } else {
       setIsControlIconsVisible(false)
     }
-  }, [location.pathname, userState.id])
+  }, [location.pathname, userState.id, boardPageState.id, userState.registeredInBoards])
 
   const handleTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
