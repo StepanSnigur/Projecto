@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal, TextField, Paper } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 
 interface IModalWindow {
   isOpen: boolean,
@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   },
   addCardButton: {
     width: '100%'
+  },
+  inputBorder: {
+    borderColor: theme.palette.primary.main
   }
 }))
 
@@ -43,6 +46,7 @@ const InputModalWindow: React.FC<IModalWindow> = ({
   renderInput
 }) => {
   const styles = useStyles()
+  const theme = useTheme()
 
   return (
     <Paper>
@@ -59,11 +63,22 @@ const InputModalWindow: React.FC<IModalWindow> = ({
               : <TextField
                 id="email"
                 required
+                color="secondary"
                 label={inputTitle}
                 variant="outlined"
                 className={styles.addCardInput}
                 value={inputValue}
                 onChange={handleChange}
+                InputLabelProps={{
+                  style: {
+                    color: theme.palette.text.primary
+                  }
+                }}
+                InputProps={{
+                  classes: {
+                    notchedOutline: styles.inputBorder
+                  }
+                }}
               />
           }
           <Button

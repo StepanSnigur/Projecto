@@ -99,7 +99,6 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     setNewCardTitle('')
   }
   const handleAddNewCard = (columnId: string) => {
-    console.log(columnId)
     setAddNewCardModalOpen(true)
     setCurrentColumnId(columnId)
   }
@@ -141,7 +140,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   if (boardPageState.isLoading) return <Preloader />
   if (
     JSON.parse(boardPageState.settings?.isPrivate) &&
-    (!userId || !boardPageState.assignedUsers.some(user => user.id === userId))
+    (!userId || !boardPageState.assignedUsers.some(user => user.userId === userId))
   ) return <BoardMemberBarrier />
   if (boardPageState.error) return <div>error</div>
 
@@ -160,7 +159,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
                     tasksList={tasksList}
                     onAddNewCard={handleAddNewCard}
                     dragIndex={i}
-                    key={tasksList.id}
+                    key={tasksList._id}
                   />)}
                   {provided.placeholder}
                   <Button

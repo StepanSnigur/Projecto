@@ -1,3 +1,5 @@
+import { ROLES } from '../../common/constants'
+import { IUserData } from '../../common/user/userSlice'
 import { ITableMember } from './AddNewTable'
 
 export const asyncThrottle = (
@@ -7,7 +9,7 @@ export const asyncThrottle = (
   let isCalled = false
   let timer: ReturnType<typeof setTimeout> | null = null
 
-  return (...args: any) => new Promise<ITableMember[]>((resolve, reject) => {
+  return (...args: any) => new Promise<IUserData[]>((resolve, reject) => {
     if (isCalled && timer) clearTimeout(timer)
     isCalled = true
     timer = setTimeout(async () => {
@@ -22,20 +24,29 @@ export const asyncThrottle = (
   })
 }
 
-const getArrIds = (arr: any[]) => arr.map(el => el.id)
+const getArrIds = (arr: any[]) => arr.map(el => el._id)
 export const getUniqueArr = (arr: any[]) => {
   const res: any[] = []
 
   const ids = getArrIds(arr)
   const uniqueIds = new Set(ids)
   uniqueIds.forEach(id => {
-    const uniqueEl = arr.find(el => el.id === id)
+    const uniqueEl = arr.find(el => el._id === id)
     res.push(uniqueEl)
   })
 
   return res
 }
 
-export const removeCurrentUserFromSearchList = (list: ITableMember[], currentUserId: string): ITableMember[] => {
-  return list.filter(member => member.id !== currentUserId)
+export const removeCurrentUserFromSearchList = (list: IUserData[], currentUserId: string): IUserData[] => {
+  return list.filter(member => member._id !== currentUserId)
+}
+
+export const makeMembersFromUsers = (users: IUserData[]): ITableMember[] => {
+  return users.map(user => ({
+    _id: user._id,
+    userId: user._id,
+    name: user.email,
+    role: ROLES.USER
+  }))
 }

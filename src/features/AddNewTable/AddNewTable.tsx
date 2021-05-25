@@ -7,6 +7,8 @@ import { Modal, Slide, Paper } from '@material-ui/core'
 import { initCreateBoardPage } from '../../pages/BoardPage/boardPageSlice'
 import { TextField, Button } from '@material-ui/core'
 import SearchUserInput from '../../common/components/SearchUserInput'
+import { IUserData } from '../../common/user/userSlice'
+import { makeMembersFromUsers } from './utils'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -44,8 +46,10 @@ const useStyles = makeStyles(theme => createStyles({
 }))
 
 export interface ITableMember {
-  id: string,
-  name: string
+  _id: string,
+  userId: string,
+  name: string,
+  role: string
 }
 const AddNewTable = () => {
   const dispatch = useDispatch()
@@ -54,7 +58,7 @@ const AddNewTable = () => {
   const theme = useTheme()
   const styles = useStyles()
 
-  const [tableMembers, setTableMembers] = useState<ITableMember[]>([]) // <-- added members
+  const [tableMembers, setTableMembers] = useState<IUserData[]>([]) // <-- added members
 
   const handleTableNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTableName(e.target.value)
@@ -63,10 +67,9 @@ const AddNewTable = () => {
     dispatch(openAddNewTableWindow(false))
   }
   const handleAddNewTable = () => {
-    console.log(tableName, 'members')
     dispatch(initCreateBoardPage({
       name: tableName,
-      members: tableMembers
+      members: makeMembersFromUsers(tableMembers)
     }))
     setTableName('')
     setTableMembers([])

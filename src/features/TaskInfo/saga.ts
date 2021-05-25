@@ -1,8 +1,5 @@
-import { takeEvery, call, put, select } from 'redux-saga/effects'
+import { takeEvery, put } from 'redux-saga/effects'
 import { IInitTaskInfoOpen } from './actionTypes'
-import { getUserId } from '../../common/user/selectors'
-import { getBoardId } from '../../pages/BoardPage/selectors'
-import boardApi from '../../api/boardApi'
 
 import { initSetTaskInfoOpen, setTaskInfoOpen, setTaskInfoLoading } from './taskInfoSlice'
 import { setSidebarSpinnerLoading } from '../SidebarSpinner/sidebarSpinnerSlice'
@@ -17,16 +14,12 @@ function* openTaskInfoSaga(action: IInitTaskInfoOpen) {
     yield put(setSidebarSpinnerLoading(true))
     const { id, listId, title, description } = action.payload
 
-    const userId: string = yield select(getUserId)
-    const boardId: string = yield select(getBoardId)
-    const canEdit: boolean = yield call(boardApi.checkCanEdit, userId, boardId)
     yield put(setTaskInfoOpen({
       isOpen: true,
       title,
       description,
       id,
-      listId,
-      canEdit
+      listId
     }))
   } catch (e) {
     yield put(fireSetError('Не удалось открыть описание'))

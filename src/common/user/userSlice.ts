@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface IBoardLink {
-  id: string,
-  isAdmin: boolean,
+  _id: string,
+  boardId: string,
+  role: string,
   isPinned: boolean
 }
 export interface IUserData {
   email: string,
   nickName: string,
   registeredInBoards: IBoardLink[],
-  id: string,
+  _id: string,
+  token: string,
   icon: string | null,
 }
 
@@ -19,7 +21,8 @@ const userSlice = createSlice({
     email: '',
     nickName: '',
     registeredInBoards: [],
-    id: '',
+    _id: '',
+    token: '',
     icon: null
   } as IUserData,
   reducers: {
@@ -29,12 +32,26 @@ const userSlice = createSlice({
         ...state,
         ...action.payload
       }
+    },
+    setToken(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        token: action.payload
+      }
+    },
+    addBoardLinkToCurrentUser(state, action: PayloadAction<IBoardLink>) {
+      return {
+        ...state,
+        registeredInBoards: [...state.registeredInBoards, action.payload]
+      }
     }
   }
 })
 
 export const {
   initSetUser,
-  setUser
+  setUser,
+  setToken,
+  addBoardLinkToCurrentUser
 } = userSlice.actions
 export default userSlice.reducer

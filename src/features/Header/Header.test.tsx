@@ -13,9 +13,9 @@ describe('Header', () => {
         email: 'mock email',
         nickName: '',
         registeredInBoards: [
-          { id: 'mock board id', isAdmin: true }
+          { boardId: 'mock board id', role: 'ADMIN' }
         ],
-        id: 'mock id',
+        _id: 'mock id',
         icon: null
       },
       reducers: {}
@@ -31,7 +31,7 @@ describe('Header', () => {
         assignedUsers: [],
         lists: [],
         actions: [],
-        id: 'mock board id',
+        _id: 'mock board id',
         settings: {
           comments: 'disabled',
           isPrivate: 'false'
@@ -64,7 +64,7 @@ describe('Header', () => {
         email: 'mock email',
         nickName: '',
         registeredInBoards: [
-          { id: 'mock board id', isAdmin: true }
+          { id: 'mock board id', role: 'ADMIN' }
         ],
         id: 'mock id',
         icon: null

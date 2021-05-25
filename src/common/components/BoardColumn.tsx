@@ -93,14 +93,14 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardColumnContext.isUpdating, tasksList.name])
   useEffect(() => {
-    if (boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) {
+    if (boardColumnContext.currentListId === tasksList._id && boardColumnContext.isUpdating) {
       columnInput.current?.focus()
     }
-  }, [boardColumnContext.isUpdating, columnInput, boardColumnContext.currentListId, tasksList.id])
+  }, [boardColumnContext.isUpdating, columnInput, boardColumnContext.currentListId, tasksList._id])
 
   const openContextMenu = () => {
     boardColumnContext.setAnchorEl(contextMenuBtn)
-    boardColumnContext.setCurrentListId(tasksList.id)
+    boardColumnContext.setCurrentListId(tasksList._id)
     boardColumnContext.setIsOpen(true)
     boardColumnContext.setIsUpdating(false)
   }
@@ -109,7 +109,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
   }
 
   return (
-    <Draggable draggableId={tasksList.id} isDragDisabled={!userState.id} index={dragIndex}>
+    <Draggable draggableId={tasksList._id} isDragDisabled={!userState._id} index={dragIndex}>
       {(provided) => (
         <Paper
           {...provided.draggableProps}
@@ -118,7 +118,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
           className={styles.boardColumnWrapper}
         >
           <div className={styles.columnTitleWrapper}>
-            {(boardColumnContext.currentListId === tasksList.id && boardColumnContext.isUpdating) ?
+            {(boardColumnContext.currentListId === tasksList._id && boardColumnContext.isUpdating) ?
               <TextField
                 label="Новое название"
                 variant="outlined"
@@ -131,13 +131,13 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
               /> :
               <h4 className={styles.columnTitle}>{tasksList.name}</h4>
             }
-            {userState.id ? <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
+            {userState._id ? <div className={styles.columnMenu} onClick={openContextMenu} ref={contextMenuBtn}>
               <span className={styles.columnMenuDot}/>
               <span className={styles.columnMenuDot}/>
               <span className={styles.columnMenuDot}/>
             </div> : null}
           </div>
-          <Droppable droppableId={tasksList.id}>
+          <Droppable droppableId={tasksList._id}>
             {(provided) => (
               <div
                 ref={provided.innerRef}
@@ -145,13 +145,13 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                 className={styles.droppableZone}
               >
                 {tasksList.tasks.map((task, i) => <BoardCard
-                  key={task.id}
+                  key={task._id}
                   title={task.name}
                   description={task.description}
-                  id={task.id}
-                  listId={tasksList.id}
+                  id={task._id}
+                  listId={tasksList._id}
                   index={i}
-                  isDraggable={!!userState.id}
+                  isDraggable={!!userState._id}
                 />)}
                 {provided.placeholder}
               </div>
@@ -159,7 +159,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
           </Droppable>
           <button
             className={styles.addTaskBtn}
-            onClick={() => onAddNewCard(tasksList.id)}
+            onClick={() => onAddNewCard(tasksList._id)}
           >Добавить задачу</button>
         </Paper>
       )}

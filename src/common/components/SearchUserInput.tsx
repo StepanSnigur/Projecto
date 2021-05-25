@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserId } from '../user/selectors'
+import { getToken, getUserId } from '../user/selectors'
 import { useTheme } from '@material-ui/core/styles'
 import {
   asyncThrottle,
@@ -12,7 +12,7 @@ import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import boardApi from '../../api/boardApi'
 import { SEARCH_DELAY } from '../../features/AddNewTable/constants'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { ITableMember } from '../../features/AddNewTable/AddNewTable'
+import { IUserData } from '../user/userSlice'
 
 const useStyles = makeStyles(theme => ({
   textInput: {
@@ -26,16 +26,17 @@ const useStyles = makeStyles(theme => ({
 
 export interface ISearchUserInput {
   isMultiple: boolean,
-  onUsersLoad: (users: ITableMember[]) => void,
+  onUsersLoad: (users: IUserData[]) => void,
   width?: string | number
 }
 export const SearchUserInput: React.FC<ISearchUserInput> = ({ isMultiple, onUsersLoad, width }) => {
   const dispatch = useDispatch()
-  const [tableMembers, setTableMembers] = useState<ITableMember[]>([]) // <-- added members
-  const [membersList, setMembersList] = useState<ITableMember[]>([]) // <-- searched members
+  const [tableMembers, setTableMembers] = useState<IUserData[]>([]) // <-- added members
+  const [membersList, setMembersList] = useState<IUserData[]>([]) // <-- searched members
   const [searchMembersInputValue, setSearchMembersInputValue] = useState('')
   const [isMemberInputLoading, setIsMemberInputLoading] = useState(false)
   const currentUserId = useSelector(getUserId)
+  const token = useSelector(getToken)
   const styles = useStyles()
   const theme = useTheme()
 
@@ -81,7 +82,7 @@ export const SearchUserInput: React.FC<ISearchUserInput> = ({ isMultiple, onUser
       onChange={handleMemberInputChange}
     />
   }
-  const membersListLoaded = (members: ITableMember[]) => {
+  const membersListLoaded = (members: IUserData[]) => {
     setMembersList(members)
     setIsMemberInputLoading(false)
   }
@@ -94,14 +95,16 @@ export const SearchUserInput: React.FC<ISearchUserInput> = ({ isMultiple, onUser
   )
   const loadMembersList = async () => {
     setIsMemberInputLoading(true)
-    throttlesSearchUsers(searchMembersInputValue)
-      .then((members) => removeCurrentUserFromSearchList(members, currentUserId))
+    throttlesSearchUsers(searchMembersInputValue, token)
+      .then(members => removeCurrentUserFromSearchList(members, currentUserId))
       .then(membersListLoaded)
       .catch(membersListError)
   }
 
   useEffect(() => {
-    loadMembersList()
+    if (searchMembersInputValue.length >= 3) {
+      loadMembersList()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchMembersInputValue])
 
@@ -112,10 +115,10 @@ export const SearchUserInput: React.FC<ISearchUserInput> = ({ isMultiple, onUser
       value={tableMembers}
       onChange={handleTableMembersChange}
       options={membersList}
-      getOptionLabel={(option: ITableMember) => option.name || ''}
+      getOptionLabel={(option: IUserData) => option.email || ''}
       renderTags={isMultiple ? (tagValue, getTagProps) => tagValue.map((option, index) => (
         <Chip
-          label={option.name}
+          label={option.email}
           {...getTagProps({ index })}
         />
       )) : undefined}

@@ -51,7 +51,7 @@ const Sidebar = () => {
     <Paper className={styles.sidebarWrapper} square elevation={0}>
       <div className={styles.sidebarItemsWrapper}>
         {pinnedBoards.map((boardLink, i) => <BoardLink
-          key={boardLink.id}
+          key={boardLink._id}
           idx={i}
           linkData={boardLink}
           isUserLink={false}

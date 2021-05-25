@@ -44,14 +44,15 @@ describe('Remove current user from search list',  () => {
   it('Correct remove current user from search list', () => {
     const userId = '3'
     const testArray = [
-      {name: 'test1', id: '1'},
-      {name: 'test2', id: '2'},
-      {name: 'test3', id: '3'}
+      {email: 'test1', _id: '1'},
+      {email: 'test2', _id: '2'},
+      {email: 'test3', _id: '3'}
     ]
     const resultArr = [
-      {name: 'test1', id: '1'},
-      {name: 'test2', id: '2'}
+      {email: 'test1', _id: '1'},
+      {email: 'test2', _id: '2'}
     ]
+    // @ts-ignore
     expect(removeCurrentUserFromSearchList(testArray, userId)).toEqual(resultArr)
   })
 })
@@ -59,18 +60,18 @@ describe('Remove current user from search list',  () => {
 describe('getUniqueArr', () => {
   it('Returns unique array', () => {
     const testArr = [
-      {value: 1, id: 1},
-      {value: 2, id: 2},
-      {value: 3, id: 3},
-      {value: 4, id: 4},
-      {value: 4, id: 4},
-      {value: 1, id: 1}
+      {value: 1, _id: 1},
+      {value: 2, _id: 2},
+      {value: 3, _id: 3},
+      {value: 4, _id: 4},
+      {value: 4, _id: 4},
+      {value: 1, _id: 1}
     ]
     const expectation = [
-      {value: 1, id: 1},
-      {value: 2, id: 2},
-      {value: 3, id: 3},
-      {value: 4, id: 4}
+      {value: 1, _id: 1},
+      {value: 2, _id: 2},
+      {value: 3, _id: 3},
+      {value: 4, _id: 4}
     ]
 
     expect(getUniqueArr(testArr)).toEqual(expectation)

@@ -15,7 +15,7 @@ import { INITIAL_HEADER_TITLE } from './constants'
 import { ENTER_KEY_CODE } from '../../common/constants'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { isAdminOfBoard } from '../../common/user/utils'
-import { setBoardSettingsOpen } from "../BoardSettings/boardSettingsSlice";
+import { setBoardSettingsOpen } from '../BoardSettings/boardSettingsSlice'
 
 const useStyles = makeStyles((theme) => createStyles({
   headerWrapper: {
@@ -88,21 +88,27 @@ const Header = () => {
     }
   }, [location.pathname, boardPageState.name])
   useEffect(() => {
-
     if (
       isOnBoardPage(location.pathname) &&
-      userState.id &&
-      isAdminOfBoard(boardPageState.id, userState.registeredInBoards)
+      userState._id &&
+      isAdminOfBoard(boardPageState._id, userState.registeredInBoards)
+      && !boardPageState.isLoading
     ) {
       setIsControlIconsVisible(true)
     } else {
       setIsControlIconsVisible(false)
     }
-  }, [location.pathname, userState.id, boardPageState.id, userState.registeredInBoards])
+  }, [
+    location.pathname,
+    userState._id,
+    boardPageState._id,
+    userState.registeredInBoards,
+    boardPageState.isLoading
+  ])
 
   const handleTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    if (headerTitle !== INITIAL_HEADER_TITLE && userState.id) {
+    if (headerTitle !== INITIAL_HEADER_TITLE && userState._id) {
       setIsModdingTitle(true)
       setTitle(boardPageState.name)
     }
@@ -111,7 +117,7 @@ const Header = () => {
     setTitle(e.target.value)
   }
   const exitUpdatingMode = () => {
-    if (!boardPageState.id) {
+    if (!boardPageState._id) {
       dispatch(fireSetError('Непредвиденная ошибка'))
       setIsModdingTitle(false)
       return false
@@ -121,7 +127,7 @@ const Header = () => {
       return false
     }
     dispatch(initChangeBoardTitle({
-      boardId: boardPageState.id,
+      boardId: boardPageState._id,
       newTitle: title
     }))
     setIsModdingTitle(false)
@@ -164,7 +170,7 @@ const Header = () => {
           : null
       }
       {
-        userState.id
+        userState._id
           ? <Link to="/user" className={styles.headerLink}>
             <Button variant="contained" color="secondary">
               <PersonIcon fontSize="small" />

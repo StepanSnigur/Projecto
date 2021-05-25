@@ -6,16 +6,17 @@ import {
 } from './actionTypes'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
 import { moveToPosition } from './utils'
+import { IUserDataWithRole } from './saga'
 
 export interface IBoardTask {
   name: string,
   description?: string,
   createdAt: string,
-  id: string
+  _id: string
 }
 export interface IBoardList {
   name: string,
-  id: string,
+  _id: string,
   tasks: IBoardTask[]
 }
 export interface IBoardAction {
@@ -33,7 +34,7 @@ export interface IBoardPage {
   backgroundImage: string | null,
   lists: IBoardList[],
   actions: IBoardAction[],
-  id?: string,
+  _id: string,
   settings: IBoardSettings
 }
 interface IBoardPageState extends IBoardPage {
@@ -53,7 +54,7 @@ const boardPageSlice = createSlice({
     assignedUsers: [],
     lists: [],
     actions: [],
-    id: '',
+    _id: '',
     settings: {
       comments: 'disabled',
       isPrivate: 'false'
@@ -69,7 +70,7 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id,
+        _id,
         settings
       } = action.payload
       return {
@@ -79,7 +80,7 @@ const boardPageSlice = createSlice({
         assignedUsers,
         lists,
         actions,
-        id,
+        _id,
         settings
       }
     },
@@ -98,7 +99,7 @@ const boardPageSlice = createSlice({
     initAddNewBoardCard(state, action) {},
     addNewBoardCardAction(state, action: PayloadAction<IAddNewBoardCardActionPayload>) {
       const updatedLists = [...state.lists]
-      const listToUpdate = updatedLists.findIndex((list) => list.id === action.payload.columnId)
+      const listToUpdate = updatedLists.findIndex((list) => list._id === action.payload.columnId)
       updatedLists[listToUpdate] = {
         ...updatedLists[listToUpdate],
         tasks: [...updatedLists[listToUpdate].tasks, action.payload.newCard]
@@ -117,8 +118,8 @@ const boardPageSlice = createSlice({
     initChangeBoardCard(state, action) {},
     changeBoardCard(state, action: PayloadAction<IChangeBoardCardActionPayload>) {
       const newLists = [...state.lists]
-      const listToChange = newLists.findIndex(list => list.id === action.payload.listId)
-      const taskToChange = newLists[listToChange].tasks.findIndex(task => task.id === action.payload.taskId)
+      const listToChange = newLists.findIndex(list => list._id === action.payload.listId)
+      const taskToChange = newLists[listToChange].tasks.findIndex(task => task._id === action.payload.taskId)
       const newTasks = [...newLists[listToChange].tasks]
       newTasks[taskToChange] = {
         ...newTasks[taskToChange],
@@ -148,7 +149,7 @@ const boardPageSlice = createSlice({
     deleteBoardListAction(state, action: PayloadAction<string>) {
       return {
         ...state,
-        lists: state.lists.filter(list => list.id !== action.payload)
+        lists: state.lists.filter(list => list._id !== action.payload)
       }
     },
     initMoveBoardTask(state, action) {},
@@ -156,8 +157,8 @@ const boardPageSlice = createSlice({
       const { source, destination } = action.payload
       const listsToChange = [...state.lists]
 
-      const dragFromListIndex = state.lists.findIndex(list => list.id === source.droppableId)
-      const dragToListIndex = state.lists.findIndex(list => list.id === destination.droppableId)
+      const dragFromListIndex = state.lists.findIndex(list => list._id === source.droppableId)
+      const dragToListIndex = state.lists.findIndex(list => list._id === destination.droppableId)
       const taskToMove = { ...listsToChange[dragFromListIndex].tasks[source.index] }
       state.lists[dragFromListIndex].tasks = state.lists[dragFromListIndex].tasks.filter((_, i) => i !== source.index)
       state.lists[dragToListIndex].tasks.splice(destination.index, 0, taskToMove)
@@ -198,12 +199,17 @@ const boardPageSlice = createSlice({
     },
     saveBoardPageSettings() {},
     initAddUserToBoard(state, action) {},
-    addUserToBoard(state, action: PayloadAction<ITableMember>) {
+    addUserToBoard(state, action: PayloadAction<IUserDataWithRole>) {
       return {
         ...state,
         assignedUsers: [
           ...state.assignedUsers,
-          action.payload
+          {
+            _id: action.payload._id,
+            userId: action.payload._id,
+            name: action.payload.email,
+            role: action.payload.role
+          }
         ]
       }
     },
@@ -211,7 +217,7 @@ const boardPageSlice = createSlice({
     deleteBoardMember(state, action) {
       return {
         ...state,
-        assignedUsers: state.assignedUsers.filter(user => user.id !== action.payload)
+        assignedUsers: state.assignedUsers.filter(user => user.userId !== action.payload)
       }
     }
   }
