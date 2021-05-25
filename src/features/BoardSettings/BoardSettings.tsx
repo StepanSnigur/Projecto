@@ -7,7 +7,8 @@ import {
   changeCommentsState,
   changeIsPrivateState,
   saveBoardPageSettings,
-  initAddUserToBoard, initDeleteBoardMember
+  initAddUserToBoard,
+  initDeleteBoardMember
 } from '../../pages/BoardPage/boardPageSlice'
 import {
   Button,
@@ -29,7 +30,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import PencilIcon from '@material-ui/icons/Create'
 import InputModalWindow from '../../common/components/InputModalWindow'
 import SearchUserInput from '../../common/components/SearchUserInput'
-import { ITableMember } from '../AddNewTable/AddNewTable'
+import { IUserData } from '../../common/user/userSlice'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -82,21 +83,22 @@ const BoardSettings = () => {
   const boardSettingsState = useSelector((state: AppStateType) => state.boardSettings)
   const [isAddNewUserWindowOpen, setAddNewUserWindowOpen] = useState(false)
   const [newUserWindowInputValue, setNewUserWindowInputValue] = useState('')
-  const [newMember, setNewMember] = useState<ITableMember[]>([])
+  const [newMember, setNewMember] = useState<IUserData[]>([])
   const styles = useStyles()
 
   const handleTableMemberDelete = (params: GridCellParams) => {
     dispatch(initDeleteBoardMember({
-      boardId: boardPageState.id,
-      userId: params.id
+      boardId: boardPageState._id,
+      userId: params.row.userId
     }))
   }
   const handleTableMemberUpdate = (params: GridCellParams) => {
     console.log('update', params.id)
   }
   const membersTableGrid: GridColDef[] = [
-    { field: 'id', headerName: 'id', width: 120 },
+    { field: 'userId', headerName: 'id', width: 120 },
     { field: 'name', headerName: 'имя', width: 140 },
+    { field: 'role', headerName: 'роль' },
     {
       field: '',
       headerName: 'Действия',
@@ -139,6 +141,7 @@ const BoardSettings = () => {
     setNewUserWindowInputValue(e.target.value)
   }
   const handleAddNewMemberWindowSubmit = () => {
+    console.log(newMember, 'submit')
     dispatch(initAddUserToBoard(newMember))
     handleAddNewMemberWindowClose()
   }
@@ -183,6 +186,7 @@ const BoardSettings = () => {
                   rows={boardPageState.assignedUsers}
                   columns={membersTableGrid}
                   pageSize={PAGE_SIZE}
+                  getRowId={row => row._id}
                   disableSelectionOnClick
                 />
               </div>

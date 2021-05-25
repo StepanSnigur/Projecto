@@ -8,6 +8,8 @@ import { makeStyles, createStyles, createMuiTheme, withStyles, useTheme } from '
 import { ThemeProvider } from '@material-ui/styles'
 import { green, blueGrey } from '@material-ui/core/colors'
 import { Save, Delete } from '@material-ui/icons'
+import { getBoardPageState } from '../../pages/BoardPage/selectors'
+import { getUserId } from '../../common/user/selectors'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -54,7 +56,7 @@ const taskInfoTheme = createMuiTheme({
     secondary: blueGrey
   }
 })
-const inputsTheme = createMuiTheme({
+export const inputsTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#c9d1d7'
@@ -80,12 +82,15 @@ const ControlBtn = withStyles({
 const TaskInfo = () => {
   const dispatch = useDispatch()
   const taskInfoState = useSelector(getTaskInfoState)
+  const board = useSelector(getBoardPageState)
+  const userId = useSelector(getUserId)
   const styles = useStyles()
   const theme = useTheme()
 
   const [taskTitle, setTaskTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
+  const [canEdit, setCanEdit] = useState(false)
 
   useEffect(() => {
     setTaskTitle(taskInfoState.taskData.title)
@@ -99,6 +104,10 @@ const TaskInfo = () => {
     setIsSaveButtonDisabled(!isTaskChanged)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskTitle, taskDescription, setIsSaveButtonDisabled])
+  useEffect(() => {
+    const canEdit = board.assignedUsers.some(user => user.userId === userId)
+    setCanEdit(canEdit)
+  }, [board.assignedUsers, userId])
 
   const handleClose = () => {
     dispatch(setTaskInfoOpen({
@@ -106,8 +115,7 @@ const TaskInfo = () => {
       title: '',
       description: '',
       id: '',
-      listId: '',
-      canEdit: false
+      listId: ''
     }))
   }
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,7 +142,7 @@ const TaskInfo = () => {
     >
       <Slide direction="left" in={taskInfoState.isOpen}>
         <Paper className={styles.modalWindowContent}>
-          {taskInfoState.canEdit ? <div className={styles.controlButtons}>
+          {canEdit ? <div className={styles.controlButtons}>
             <ThemeProvider theme={taskInfoTheme}>
               <div>
                 <DoTaskBtn
@@ -174,7 +182,7 @@ const TaskInfo = () => {
               value={taskTitle}
               fullWidth
               onChange={handleTitleChange}
-              disabled={!taskInfoState.canEdit}
+              disabled={!canEdit}
             />
             <TextField
               InputLabelProps={{
@@ -195,7 +203,7 @@ const TaskInfo = () => {
               multiline
               rows={7}
               onChange={handleDescriptionChange}
-              disabled={!taskInfoState.canEdit}
+              disabled={!canEdit}
             />
           </ThemeProvider>
         </Paper>

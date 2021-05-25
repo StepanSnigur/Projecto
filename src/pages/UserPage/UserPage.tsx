@@ -27,7 +27,7 @@ const UserPage = () => {
   return (
     <div className={styles.linksWrapper}>
       {userBoards.map((boardLink, i) => <BoardLink
-        key={boardLink.id}
+        key={boardLink._id}
         isUserLink={true}
         idx={i}
         linkData={boardLink}

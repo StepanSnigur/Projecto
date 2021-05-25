@@ -31,7 +31,7 @@ const AppRouter = () => {
   const location = useLocation()
   const userState = useSelector(getUserState)
   const styles = useStyles({
-    isLogged: !!userState.id,
+    isLogged: !!userState._id,
     onBoardPage: isOnBoardPage(location.pathname)
   })
 

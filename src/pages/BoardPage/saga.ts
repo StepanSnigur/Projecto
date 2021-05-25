@@ -1,6 +1,5 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import {
   IInitCreateBoardPage,
   IInitAddNewBoardCard,
@@ -12,7 +11,7 @@ import {
   IInitChangeBoardCard
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
-import { IBoardPage, IBoardList, IBoardSettings } from './boardPageSlice'
+import { IBoardPage, IBoardList, IBoardSettings, IBoardTask } from './boardPageSlice'
 import {
   initCreateBoardPage,
   initSetNewBoard,
@@ -43,14 +42,20 @@ import {
 import { checkIsLogged } from '../../common/saga'
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSlice'
-import { IUserData, IBoardLink } from '../../common/user/userSlice'
-import { addSidebarLink } from '../../features/Sidebar/sidebarSlice'
-import { getUserId, getUserState } from '../../common/user/selectors'
+import { IUserData, IBoardLink, addBoardLinkToCurrentUser } from '../../common/user/userSlice'
+import { addSidebarLink, changeSidebarLinkName, IExtendedBoardLink } from '../../features/Sidebar/sidebarSlice'
+import { getToken, getUserId, getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
-import { getBoardId, getBoardPageState, getBoardPageSettings } from './selectors'
+import { getBoardId, getBoardPageSettings } from './selectors'
 import { setSidebarSpinnerLoading } from '../../features/SidebarSpinner/sidebarSpinnerSlice'
 import { setBoardSettingsOpen } from '../../features/BoardSettings/boardSettingsSlice'
+import authApi from '../../api/authApi'
+import { ROLES, RoleType } from '../../common/constants'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
+
+export interface IUserDataWithRole extends IUserData {
+  role: RoleType
+}
 
 interface INewBoardWithId extends IBoardPage {
   id: string
@@ -67,25 +72,39 @@ export function* createBoardSaga(action: IInitCreateBoardPage) {
     yield put(setBoardCardLoading(true))
     yield put(setProgressBarLoading(true))
     const { name, members } = action.payload
-    const userState: IUserData = yield select(getUserState)
-    const newTableData: INewBoardData = yield call(
+    const backgroundImage = '#525252' // TODO
+    const user: IUserData = yield select(getUserState)
+    members.push({
+      _id: user._id,
+      userId: user._id,
+      name: user.email,
+      role: ROLES.ADMIN
+    } as ITableMember)
+    const token: string = yield select(getToken)
+
+    const newBoard: IBoardPage = yield call(
       boardApi.createBoard,
       name,
       members,
-      userState.registeredInBoards,
-      userState.email,
-      userState.id
+      backgroundImage,
+      token
     )
-    const newBoardSidebarLink = {
-      name: name,
-      background: newTableData.newBoard.backgroundImage || '#fff',
-      isLoading: false,
-      id: newTableData.newBoard.id,
-      isAdmin: true,
+
+    const userLink: IBoardLink = {
+      _id: newBoard._id,
+      boardId: newBoard._id,
+      role: ROLES.ADMIN,
       isPinned: false
     }
-    yield put(addSidebarLink(newBoardSidebarLink))
-    history.push(`/board/${newTableData.newBoard.id}`)
+    const sidebarLink: IExtendedBoardLink = {
+      ...userLink,
+      name,
+      background: newBoard.backgroundImage || backgroundImage,
+      isLoading: false,
+    }
+    yield put(addSidebarLink(sidebarLink))
+    yield put(addBoardLinkToCurrentUser(userLink))
+    history.push(`/board/${newBoard._id}`)
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -101,7 +120,8 @@ export function* setNewBoard(action: IInitSetNewBoard) {
   try {
     yield put(setBoardPageError(null))
     yield put(setBoardPageLoading(true))
-    const board: IBoardPage = yield call(boardApi.getBoard, action.payload)
+    const token: string = yield select(getToken)
+    const board: IBoardPage = yield call(boardApi.getBoard, action.payload, token)
     yield put(setNewBoardAction(board))
   } catch (err) {
     yield put(setBoardPageError(err.message))
@@ -118,13 +138,17 @@ export function* addNewBoardCard(action: IInitAddNewBoardCard) {
     if (!action.payload.columnId) throw new Error('Не удалось добавить задачу')
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
-    const boardId = action.payload.boardId
-    const newCard = {
-      id: uuidv4(),
-      name: action.payload.cardName,
-      createdAt: new Date().toLocaleDateString()
-    }
-    yield call(boardApi.addNewCard, boardId, action.payload.columnId, newCard)
+    const { boardId, columnId, cardName } = action.payload
+    const token: string = yield select(getToken)
+
+    const newCard: IBoardTask = yield call(
+      boardApi.addNewCard,
+      boardId,
+      columnId,
+      new Date().toLocaleDateString(),
+      cardName,
+      token
+    )
     yield put(addNewBoardCardAction({
       columnId: action.payload.columnId,
       newCard
@@ -147,9 +171,9 @@ export function* changeBoardCardSaga(action: IInitChangeBoardCard) {
     yield put(setBoardCardLoading(true))
 
     const boardId: string = yield select(getBoardId)
-    const boardPageState: IBoardPage = yield select(getBoardPageState)
     const { taskId, listId, newTitle, newDescription } = action.payload
-    yield call(boardApi.changeTaskData, boardId, listId, taskId, newTitle, newDescription, boardPageState.lists)
+    const token: string = yield select(getToken)
+    yield call(boardApi.changeTaskData, boardId, listId, taskId, newTitle, newDescription, token)
     yield put(changeBoardCard({ listId, taskId, newTitle, newDescription }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
@@ -167,12 +191,10 @@ export function* addNewBoardList(action: IInitAddNewBoardList) {
     if (!action.payload) throw new Error('Список должен иметь корректное название')
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
-    const newBoardList: IBoardList = {
-      name: action.payload.name,
-      id: uuidv4(),
-      tasks: []
-    }
-    yield call(boardApi.addNewList, newBoardList, action.payload.boardId)
+    const { boardId, name } = action.payload
+    const token: string = yield select(getToken)
+
+    const newBoardList: IBoardList = yield call(boardApi.addNewList, boardId, name, token)
     yield put(addNewBoardListAction(newBoardList))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
@@ -244,8 +266,10 @@ export function* changeBoardTitleSaga(action: IInitChangeBoardTitle) {
     yield call(checkIsLogged)
     yield put(setProgressBarLoading(true))
     const { boardId, newTitle } = action.payload
-    yield call(boardApi.changeBoardTitle, boardId, newTitle)
+    const token: string = yield select(getToken)
+    yield call(boardApi.changeBoardTitle, boardId, newTitle, token)
     yield put(changeBoardTitle(newTitle))
+    yield put(changeSidebarLinkName({ id: boardId, name: newTitle }))
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -260,11 +284,12 @@ function* saveBoardPageSettingsSaga() {
   try {
     yield put(setSidebarSpinnerLoading(true))
     const newSettings: IBoardSettings = yield select(getBoardPageSettings)
+    const token: string = yield select(getToken)
     const boardId: string = yield select(getBoardId)
-    yield call(boardApi.saveBoardSettings, boardId, newSettings)
+    yield call(boardApi.saveBoardSettings, boardId, newSettings, token)
     yield put(setBoardSettingsOpen(false))
   } catch (e) {
-    yield put(fireSetError('Не удалось сохранить настройки'))
+    yield put(fireSetError(e.message || 'Не удалось сохранить настройки'))
   } finally {
     yield put(setSidebarSpinnerLoading(false))
   }
@@ -273,14 +298,16 @@ function* saveBoardPageSettingsSaga() {
 export function* watchAddUserToBoard() {
   yield takeEvery(initAddUserToBoard.type, addUserToBardSaga)
 }
-function* addUserToBardSaga(action: PayloadAction<ITableMember>) {
+function* addUserToBardSaga(action: PayloadAction<IUserDataWithRole>) {
   try {
     yield put(setProgressBarLoading(true))
-    if (!action.payload || !action.payload.id) throw new Error('Что-то пошло не так')
+    const { _id, email } = action.payload
+    if (!action.payload || !_id) throw new Error('Что-то пошло не так')
     const boardId: string = yield select(getBoardId)
+    const token: string = yield select(getToken)
 
-    yield call(boardApi.addBoardToUser, boardId, action.payload.id)
-    yield call(boardApi.addNewMember, boardId, action.payload.id, action.payload.name)
+    action.payload.role = ROLES.USER
+    yield call(authApi.addTableToUser, _id, email, boardId, action.payload.role, token)
     yield put(addUserToBoard(action.payload))
   } catch (e) {
     yield put(fireSetError(e.message))
@@ -297,7 +324,7 @@ function* deleteBoardMemberSaga(action: PayloadAction<{ boardId: string, userId:
     yield put(setProgressBarLoading(true))
     const { boardId, userId } = action.payload
     const currentUserId: string = yield select(getUserId)
-    if (currentUserId === userId) throw new Error('Вы не можете удалить саиого себя')
+    if (currentUserId === userId) throw new Error('Вы не можете удалить самого себя')
 
     yield call(boardApi.deleteBoardMember, boardId, userId)
     yield put(deleteBoardMember(userId))

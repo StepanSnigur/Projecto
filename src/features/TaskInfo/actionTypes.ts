@@ -17,6 +17,5 @@ export interface ISetTaskInfoOpen {
   title: string,
   description: string,
   id: string,
-  listId: string,
-  canEdit: boolean
+  listId: string
 }

@@ -51,6 +51,18 @@ const sidebarSlice = createSlice({
         ...state,
         boards: updatedBoards
       }
+    },
+    changeSidebarLinkName(state, action: PayloadAction<{ id: string, name: string }>) {
+      const newBoards = [...state.boards]
+      const boardToChange = newBoards.findIndex(board => board.boardId === action.payload.id)
+      newBoards[boardToChange] = {
+        ...newBoards[boardToChange],
+        name: action.payload.name
+      }
+      return {
+        ...state,
+        boards: newBoards
+      }
     }
   }
 })
@@ -60,6 +72,7 @@ export const {
   setBoardLinkLoading,
   addSidebarLink,
   initUpdateSidebarLink,
-  updateSidebarLink
+  updateSidebarLink,
+  changeSidebarLinkName
 } = sidebarSlice.actions
 export default sidebarSlice.reducer

@@ -40,7 +40,7 @@ export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkD
 
   const loadLinkData = async () => {
     !linkData.name && dispatch(initUpdateSidebarLink({
-      id: linkData.id,
+      id: linkData.boardId,
       position: idx
     }))
   }
@@ -72,7 +72,7 @@ export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkD
   }
   return (
     <Link
-      to={`/board/${linkData.id}`}
+      to={`/board/${linkData.boardId}`}
       className={isUserLink ? styles.boardLink : styles.sidebarItem}
       style={{
         background: linkData.background

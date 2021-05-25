@@ -4,5 +4,5 @@ import { IUserData } from './user/userSlice'
 
 export function* checkIsLogged() {
   const user: IUserData = yield select(getUserState)
-  if (!user.id) throw new Error('Вы не вошли в аккаунт')
+  if (!user._id) throw new Error('Вы не вошли в аккаунт')
 }

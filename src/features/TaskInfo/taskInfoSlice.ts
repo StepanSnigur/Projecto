@@ -14,7 +14,6 @@ export interface ITaskInfoReducer {
   isOpen: boolean,
   error: string | null,
   isLoading: boolean,
-  canEdit: boolean,
   id: string,
   listId: string,
   taskData: ITaskData
@@ -26,7 +25,6 @@ const taskInfoSlice = createSlice({
     isOpen: false,
     error: null,
     isLoading: false,
-    canEdit: false,
     id: '',
     listId: '',
     taskData: {
@@ -44,7 +42,6 @@ const taskInfoSlice = createSlice({
       return {
         ...state,
         isOpen: action.payload.isOpen,
-        canEdit: action.payload.canEdit,
         id: action.payload.id,
         listId: action.payload.listId,
         taskData: {

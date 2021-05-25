@@ -18,9 +18,6 @@ import {
   maxPasswordLength,
   requiredPasswordCharacters
 } from './constants'
-import {
-  translatedServerErrors
-} from '../../common/constants'
 
 const requiredPasswordCharactersString = requiredPasswordCharacters.reduce((acc, character, idx) => {
   return `${acc}${idx === 0 ? '' : ', '}${character.name}`
@@ -55,12 +52,11 @@ function* addNewUser(action: ReturnType<typeof initAddNewUser>) {
     yield put(setUser(userData))
   } catch (err) {
     const errorMessage = err.message
-    const serverErrorMessage = translatedServerErrors[err.code]
     if (isJson(errorMessage)) {
       const errors = JSON.parse(errorMessage)
       yield put(setRegistrationInputErrors(errors))
-    } else if (serverErrorMessage) {
-      yield put(fireSetError(serverErrorMessage))
+    } else {
+      yield put(fireSetError(errorMessage))
     }
   } finally {
     yield put(setRegistrationPageLoading(false))

@@ -1,6 +1,6 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import authApi from '../../api/authApi'
-import { initSetUser, setUser } from './userSlice'
+import { initSetUser, setUser, setToken } from './userSlice'
 import { setSidebarLinks } from '../../features/Sidebar/sidebarSlice'
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { IInitSetUser } from './actionTypes'
@@ -8,7 +8,6 @@ import { setProgressBarLoading } from '../../features/ProgressBar/progressBarSli
 import { fireSetError } from '../../features/ErrorManager/errorManagerSlice'
 import { IUserData, IBoardLink } from './userSlice'
 import history from '../../App/history'
-import { translatedServerErrors } from '../constants'
 
 export interface IUser {
   nickName: string,
@@ -24,21 +23,20 @@ export function* setUserSaga (action: IInitSetUser) {
     yield put(setProgressBarLoading(true))
     const { email, password } = action.payload
 
-    const userId: string = yield call(authApi.getUserId, email, password)
-    if (!userId) throw new Error('Пользователь не найден')
-
-    const user: IUser = yield call(authApi.getUser, userId)
-    const userData: IUserData = {
-      ...user,
-      id: userId
-    }
+    const response: {
+      token: string,
+      user: IUserData
+    } = yield call(authApi.getUser, email, password)
+    const userData: IUserData = response.user
+    const token = response.token
 
     yield put(setUser(userData))
+    yield put(setToken(token))
     const extendedUserLinks = addLoadingField(userData.registeredInBoards)
     yield put(setSidebarLinks(extendedUserLinks))
     history.push('/user')
   } catch (e) {
-    yield put(fireSetError(translatedServerErrors[e.code] || 'Непредвиденная ошибка'))
+    yield put(fireSetError(e.message))
   } finally {
     yield put(setProgressBarLoading(false))
   }
