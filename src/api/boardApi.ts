@@ -93,6 +93,14 @@ class BoardApi extends Api {
   }
 
   deleteBoardMember = async (boardId: string, userId: string) => {}
+
+  pinBoard = async (userId: string, boardId: string, isPinned: boolean, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/pin`, {
+      userId,
+      boardId,
+      isPinned
+    }, 'POST', token)
+  }
 }
 
 export default new BoardApi()

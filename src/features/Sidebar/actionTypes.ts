@@ -36,3 +36,8 @@ export interface IUpdateSidebarLinkPayload {
   idx: number,
   updates: IUserLinkUpdates
 }
+
+export interface IPinBoardPayload {
+  boardId: string,
+  isPinned: boolean
+}
