@@ -32,9 +32,15 @@ const useStyles = makeStyles({
 interface IBoardLink {
   isUserLink?: boolean,
   idx: number,
-  linkData: IExtendedBoardLink
+  linkData: IExtendedBoardLink,
+  onContextMenu?: (e: React.MouseEvent) => void
 }
-export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkData }) => {
+export const BoardLink: React.FC<IBoardLink> = ({
+  isUserLink = false,
+  idx,
+  linkData,
+  onContextMenu
+}) => {
   const dispatch = useDispatch()
   const styles = useStyles()
 
@@ -78,6 +84,7 @@ export const BoardLink: React.FC<IBoardLink> = ({ isUserLink = false, idx, linkD
         background: linkData.background
       }}
       title={isUserLink ? '' : linkData.name}
+      onContextMenu={onContextMenu}
     >{isUserLink ? linkData.name : ''}</Link>
   )
 }
