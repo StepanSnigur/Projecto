@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IBoardLink } from '../../common/user/userSlice'
-import { IPinBoardPayload, ISetBoardLinksLoadingPayload, IUpdateSidebarLinkPayload } from './actionTypes'
+import {
+  IDeleteBoardPayload,
+  IPinBoardPayload,
+  ISetBoardLinksLoadingPayload,
+  IUpdateSidebarLinkPayload
+} from './actionTypes'
 
 export interface IExtendedBoardLink extends IBoardLink {
   name?: string,
@@ -77,6 +82,14 @@ const sidebarSlice = createSlice({
         ...state,
         boards: newBoards
       }
+    },
+    initDeleteBoard(state, action) {},
+    initDeleteBoardFromUser(state, action) {},
+    deleteBoard(state, action: PayloadAction<IDeleteBoardPayload>) {
+      return {
+        ...state,
+        boards: state.boards.filter(board => board.boardId !== action.payload.boardId)
+      }
     }
   }
 })
@@ -89,6 +102,9 @@ export const {
   updateSidebarLink,
   changeSidebarLinkName,
   initPinBoard,
-  pinBoard
+  pinBoard,
+  initDeleteBoard,
+  initDeleteBoardFromUser,
+  deleteBoard
 } = sidebarSlice.actions
 export default sidebarSlice.reducer

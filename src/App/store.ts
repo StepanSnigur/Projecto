@@ -29,7 +29,12 @@ import boardPageReducer from '../pages/BoardPage/boardPageSlice'
 
 import progressBarReducer from '../features/ProgressBar/progressBarSlice'
 import sidebarReducer from '../features/Sidebar/sidebarSlice'
-import { watchUpdateUserLink, watchPinBoard } from '../features/Sidebar/saga'
+import {
+  watchUpdateUserLink,
+  watchPinBoard,
+  watchDeleteBoard,
+  watchDeleteBoardFromUser
+} from '../features/Sidebar/saga'
 
 import taskInfoReducer from '../features/TaskInfo/taskInfoSlice'
 import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
@@ -73,5 +78,7 @@ sagaMiddleware.run(watchSaveBoardPageSettings)
 sagaMiddleware.run(watchAddUserToBoard)
 sagaMiddleware.run(watchDeleteBoardMember)
 sagaMiddleware.run(watchPinBoard)
+sagaMiddleware.run(watchDeleteBoard)
+sagaMiddleware.run(watchDeleteBoardFromUser)
 
 export default store

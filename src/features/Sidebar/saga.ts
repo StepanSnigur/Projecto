@@ -5,9 +5,12 @@ import {
   initUpdateSidebarLink,
   updateSidebarLink,
   initPinBoard,
-  pinBoard
+  pinBoard,
+  initDeleteBoard,
+  initDeleteBoardFromUser,
+  deleteBoard
 } from './sidebarSlice'
-import { IInitUpdateSidebarLink, IPinBoardPayload } from './actionTypes'
+import { IDeleteBoardPayload, IInitUpdateSidebarLink, IPinBoardPayload } from './actionTypes'
 import boardApi from '../../api/boardApi'
 import { IBoardPage } from '../../pages/BoardPage/boardPageSlice'
 import { getToken, getUserId } from '../../common/user/selectors'
@@ -56,6 +59,44 @@ function* pinBoardSaga(action: PayloadAction<IPinBoardPayload>) {
     yield put(pinBoard(action.payload))
   } catch (e) {
     yield put(fireSetError('Не удалось закрепить доску'))
+  } finally {
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchDeleteBoard() {
+  yield takeEvery(initDeleteBoard.type, deleteBoardSaga)
+}
+function* deleteBoardSaga(action: PayloadAction<IDeleteBoardPayload>) {
+  try {
+    yield put(setProgressBarLoading(true))
+    const { boardId } = action.payload
+    const token: string = yield select(getToken)
+    yield call(boardApi.deleteBoard, boardId, token)
+    yield put(deleteBoard(action.payload))
+  } catch (e) {
+    yield put(fireSetError('Не удалось удалить доску'))
+  } finally {
+    yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchDeleteBoardFromUser() {
+  yield takeEvery(initDeleteBoardFromUser.type, deleteBoardFromUserSaga)
+}
+function* deleteBoardFromUserSaga(action: PayloadAction<IDeleteBoardPayload>) {
+  try {
+    // TO-DO при удалении назначать админа
+    yield put(setProgressBarLoading(true))
+    const { boardId, isAdmin } = action.payload
+    if (isAdmin) throw new Error('Админ не может удалить доску')
+
+    const token: string = yield select(getToken)
+    const userId: string = yield select(getUserId)
+    yield call(boardApi.deleteBoardFromUser, userId, boardId, token)
+    yield put(deleteBoard(action.payload))
+  } catch (e) {
+    yield put(fireSetError('Не удалось удалить доску'))
   } finally {
     yield put(setProgressBarLoading(false))
   }

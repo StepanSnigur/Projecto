@@ -41,3 +41,7 @@ export interface IPinBoardPayload {
   boardId: string,
   isPinned: boolean
 }
+export interface IDeleteBoardPayload {
+  boardId: string,
+  isAdmin: boolean
+}
