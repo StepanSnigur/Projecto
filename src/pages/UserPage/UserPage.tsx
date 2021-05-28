@@ -6,7 +6,12 @@ import { getUserBoards } from '../../features/Sidebar/selectors'
 import BoardLink from '../../common/components/BoardLink'
 import { makeStyles } from '@material-ui/core/styles'
 import ContextMenu from '../../common/components/ContextMenu'
-import { initPinBoard } from '../../features/Sidebar/sidebarSlice'
+import {
+  initDeleteBoard,
+  initPinBoard,
+  initDeleteBoardFromUser
+} from '../../features/Sidebar/sidebarSlice'
+import { ROLES } from '../../common/constants'
 
 const useStyles = makeStyles({
   linksWrapper: {
@@ -64,7 +69,16 @@ const UserPage = () => {
     }
   }
   const handleDeleteBoard = () => {
-    console.log(contextMenuState.executionData, 'delete')
+    dispatch(initDeleteBoard({
+      boardId: contextMenuState.executionData.boardId,
+      isAdmin: contextMenuState.executionData.role === ROLES.ADMIN
+    }))
+  }
+  const handleRemoveBoardFromUser = () => {
+    dispatch(initDeleteBoardFromUser({
+      boardId: contextMenuState.executionData.boardId,
+      isAdmin: contextMenuState.executionData.role === ROLES.ADMIN
+    }))
   }
 
   if (!userId) return <Redirect to="/login" />
@@ -86,6 +100,7 @@ const UserPage = () => {
         <button onClick={handlePinBoard}>
           {contextMenuState.executionData.isPinned ? 'Открепить' : 'Закрепить'}
         </button>
+        <button onClick={handleRemoveBoardFromUser}>Удалить из своего списка</button>
         <button onClick={handleDeleteBoard}>Удалить</button>
       </ContextMenu>
     </div>

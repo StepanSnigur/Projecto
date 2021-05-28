@@ -101,6 +101,27 @@ class BoardApi extends Api {
       isPinned
     }, 'POST', token)
   }
+
+  deleteBoard = async (boardId: string, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/delete`, {
+      boardId
+    }, 'POST', token)
+  }
+  deleteBoardFromUser = async (userId: string, boardId: string, token: string) => {
+    console.log(userId, boardId, 'delete')
+    const deleteMemberRes = await this.makeRequest(`${this.baseDBUrl}/board/deleteMember`, {
+      boardId,
+      memberId: userId
+    }, 'POST', token)
+    const removeBoardRes = await this.makeRequest(`${this.baseDBUrl}/auth/removeBoard`, {
+      boardId,
+      memberId: userId
+    }, 'POST', token)
+    return {
+      ...deleteMemberRes,
+      ...removeBoardRes
+    }
+  }
 }
 
 export default new BoardApi()
