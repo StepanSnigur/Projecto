@@ -228,10 +228,14 @@ export function* moveBoardTaskSaga(action: IInitMoveBoardColumn) {
   try {
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
+    const { source, destination } = action.payload
     yield put(moveBoardTask({
-      source: action.payload.source,
-      destination: action.payload.destination
+      source: source,
+      destination: destination
     }))
+    const boardId: string = yield select(getBoardId)
+    const token: string = yield select(getToken)
+    yield call(boardApi.moveBoardTask, boardId, source, destination, token)
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
@@ -246,10 +250,14 @@ export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
   try {
     yield put(setProgressBarLoading(true))
     yield put(setBoardCardLoading(true))
+    const { source, destination } = action.payload
     yield put(moveBoardColumn({
-      source: action.payload.source,
-      destination: action.payload.destination
+      source: source,
+      destination: destination
     }))
+    const boardId: string = yield select(getBoardId)
+    const token: string = yield select(getToken)
+    yield call(boardApi.moveBoardColumn, boardId, source, destination, token)
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {

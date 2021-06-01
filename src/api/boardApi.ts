@@ -1,6 +1,7 @@
 import Api from './apiConfig'
 import { IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
+import { IDropResult } from '../pages/BoardPage/BoardPage'
 
 class BoardApi extends Api {
   getBoard = async (boardId: string, token: string) => {
@@ -121,6 +122,21 @@ class BoardApi extends Api {
       ...deleteMemberRes,
       ...removeBoardRes
     }
+  }
+
+  moveBoardTask = async (boardId: string, source: IDropResult, destination: IDropResult, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/move/task`, {
+      boardId,
+      source,
+      destination
+    }, 'POST', token)
+  }
+  moveBoardColumn = async (boardId: string, source: IDropResult, destination: IDropResult, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/move/column`, {
+      boardId,
+      source,
+      destination
+    }, 'POST', token)
   }
 }
 
