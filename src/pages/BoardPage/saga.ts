@@ -230,8 +230,8 @@ export function* moveBoardTaskSaga(action: IInitMoveBoardColumn) {
     yield put(setBoardCardLoading(true))
     const { source, destination } = action.payload
     yield put(moveBoardTask({
-      source: source,
-      destination: destination
+      source,
+      destination
     }))
     const boardId: string = yield select(getBoardId)
     const token: string = yield select(getToken)
@@ -252,8 +252,8 @@ export function* moveBoardColumnSaga(action: IInitMoveBoardColumn) {
     yield put(setBoardCardLoading(true))
     const { source, destination } = action.payload
     yield put(moveBoardColumn({
-      source: source,
-      destination: destination
+      source,
+      destination
     }))
     const boardId: string = yield select(getBoardId)
     const token: string = yield select(getToken)
