@@ -9,7 +9,8 @@ const useStyles = makeStyles({
     position: 'fixed',
     top: '0',
     left: '0',
-    width: '100%'
+    width: '100%',
+    zIndex: 9999
   }
 })
 
