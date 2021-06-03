@@ -20,8 +20,9 @@ export interface IBoardList {
   tasks: IBoardTask[]
 }
 export interface IBoardAction {
-  cardText: string,
-  operatorId: string,
+  _id: string,
+  action: string,
+  producedBy: string,
   producedAt: string
 }
 export interface IBoardSettings {
@@ -219,6 +220,13 @@ const boardPageSlice = createSlice({
         ...state,
         assignedUsers: state.assignedUsers.filter(user => user.userId !== action.payload)
       }
+    },
+    initAddBoardAction(state, action) {},
+    addBoardAction(state, action: PayloadAction<IBoardAction>) {
+      return {
+        ...state,
+        actions: [action.payload, ...state.actions]
+      }
     }
   }
 })
@@ -250,6 +258,8 @@ export const {
   initAddUserToBoard,
   addUserToBoard,
   initDeleteBoardMember,
-  deleteBoardMember
+  deleteBoardMember,
+  initAddBoardAction,
+  addBoardAction
 } = boardPageSlice.actions
 export default boardPageSlice.reducer

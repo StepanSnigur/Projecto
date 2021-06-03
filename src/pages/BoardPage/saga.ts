@@ -11,7 +11,15 @@ import {
   IInitChangeBoardCard
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
-import { IBoardPage, IBoardList, IBoardSettings, IBoardTask } from './boardPageSlice'
+import {
+  IBoardPage,
+  IBoardList,
+  IBoardSettings,
+  IBoardTask,
+  IBoardAction,
+  initAddBoardAction,
+  addBoardAction
+} from './boardPageSlice'
 import {
   initCreateBoardPage,
   initSetNewBoard,
@@ -340,5 +348,19 @@ function* deleteBoardMemberSaga(action: PayloadAction<{ boardId: string, userId:
     yield put(fireSetError(e.message))
   } finally {
     yield put(setProgressBarLoading(false))
+  }
+}
+
+export function* watchAddBoardAction() {
+  yield takeEvery(initAddBoardAction.type, addBoardActionSaga)
+}
+function* addBoardActionSaga(action: PayloadAction<IBoardAction>) {
+  try {
+    const boardId: string = yield select(getBoardId)
+    const token: string = yield select(getToken)
+    const boardAction: IBoardAction = yield call(boardApi.addBoardAction, boardId, action.payload, token)
+    yield put(addBoardAction(boardAction))
+  } catch (e) {
+    yield put(fireSetError('Ошибка сохранения действия'))
   }
 }

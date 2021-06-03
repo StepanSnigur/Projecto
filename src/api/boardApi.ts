@@ -1,5 +1,5 @@
 import Api from './apiConfig'
-import { IBoardSettings } from '../pages/BoardPage/boardPageSlice'
+import { IBoardAction, IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 import { IDropResult } from '../pages/BoardPage/BoardPage'
 
@@ -137,6 +137,18 @@ class BoardApi extends Api {
       source,
       destination
     }, 'POST', token)
+  }
+
+  addBoardAction = async (boardId: string, action: IBoardAction, token: string) => {
+    return await this.makeRequest(
+      `${this.baseDBUrl}/board/addAction`,
+      {
+        boardId,
+        action
+      },
+      'POST',
+      token
+    )
   }
 }
 
