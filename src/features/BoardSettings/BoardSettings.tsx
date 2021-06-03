@@ -30,6 +30,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import PencilIcon from '@material-ui/icons/Create'
 import InputModalWindow from '../../common/components/InputModalWindow'
 import SearchUserInput from '../../common/components/SearchUserInput'
+import BoardActions from '../../features/ActionsTrack'
 import { IUserData } from '../../common/user/userSlice'
 
 const useStyles = makeStyles(theme => createStyles({
@@ -58,7 +59,7 @@ const useStyles = makeStyles(theme => createStyles({
     justifyContent: 'space-between'
   },
   submitBtn: {
-    marginTop: '100px',
+    marginTop: '450px',
     width: '160px'
   },
   membersList: {
@@ -189,6 +190,10 @@ const BoardSettings = () => {
                   getRowId={row => row._id}
                   disableSelectionOnClick
                 />
+                <div className={styles.membersTitleWrapper}>
+                  <h4 style={{ margin: '10px 0 2px 0' }}>Действия:</h4>
+                </div>
+                <BoardActions />
               </div>
               <Button
                 className={styles.submitBtn}

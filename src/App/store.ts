@@ -1,5 +1,6 @@
 import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
+import { saveActionsMiddleware } from './middleware'
 
 import { watchAddNewUser } from '../pages/RegistrationPage/saga'
 import { watchSetUser } from '../common/user/saga'
@@ -23,7 +24,8 @@ import {
   watchChangeBoardCard,
   watchSaveBoardPageSettings,
   watchAddUserToBoard,
-  watchDeleteBoardMember
+  watchDeleteBoardMember,
+  watchAddBoardAction
 } from '../pages/BoardPage/saga'
 import boardPageReducer from '../pages/BoardPage/boardPageSlice'
 
@@ -40,6 +42,7 @@ import taskInfoReducer from '../features/TaskInfo/taskInfoSlice'
 import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
 import sidebarSpinnerReducer from '../features/SidebarSpinner/sidebarSpinnerSlice'
 import boardSettingsReducer from '../features/BoardSettings/boardSettingsSlice'
+import { trackedActions } from '../common/constants'
 
 export const sagaMiddleware = createSagaMiddleware()
 const rootReducer = combineReducers({
@@ -56,7 +59,11 @@ const rootReducer = combineReducers({
 })
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [...getDefaultMiddleware({ thunk: false }), sagaMiddleware]
+  middleware: [
+    ...getDefaultMiddleware({ thunk: false }),
+    sagaMiddleware,
+    saveActionsMiddleware(trackedActions.map(action => action.type))
+  ]
 })
 export type AppStateType = ReturnType<typeof rootReducer>
 
@@ -80,5 +87,6 @@ sagaMiddleware.run(watchDeleteBoardMember)
 sagaMiddleware.run(watchPinBoard)
 sagaMiddleware.run(watchDeleteBoard)
 sagaMiddleware.run(watchDeleteBoardFromUser)
+sagaMiddleware.run(watchAddBoardAction)
 
 export default store
