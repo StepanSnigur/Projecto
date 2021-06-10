@@ -85,6 +85,7 @@ const BoardSettings = () => {
   const [isAddNewUserWindowOpen, setAddNewUserWindowOpen] = useState(false)
   const [newUserWindowInputValue, setNewUserWindowInputValue] = useState('')
   const [newMember, setNewMember] = useState<IUserData[]>([])
+  const [isSaveButtonActive, setSaveButtonActive] = useState(false)
   const styles = useStyles()
 
   const handleTableMemberDelete = (params: GridCellParams) => {
@@ -125,12 +126,15 @@ const BoardSettings = () => {
   }
   const handleCommentsStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     dispatch(changeCommentsState(e.target.value as string))
+    setSaveButtonActive(true)
   }
   const handleIsPrivateStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     dispatch(changeIsPrivateState(e.target.value as string))
+    setSaveButtonActive(true)
   }
   const handleSettingsSave = () => {
     dispatch(saveBoardPageSettings())
+    setSaveButtonActive(false)
   }
   const handleAddMember = () => {
     setAddNewUserWindowOpen(true)
@@ -142,7 +146,6 @@ const BoardSettings = () => {
     setNewUserWindowInputValue(e.target.value)
   }
   const handleAddNewMemberWindowSubmit = () => {
-    console.log(newMember, 'submit')
     dispatch(initAddUserToBoard(newMember))
     handleAddNewMemberWindowClose()
   }
@@ -197,6 +200,7 @@ const BoardSettings = () => {
               </div>
               <Button
                 className={styles.submitBtn}
+                disabled={!isSaveButtonActive}
                 size="large"
                 variant="outlined"
                 onClick={handleSettingsSave}
