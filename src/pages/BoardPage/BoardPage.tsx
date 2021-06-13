@@ -113,6 +113,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
 
   const handleCloseAddNewListModal = () => {
     setAddNewListModalOpen(false)
+    setNewListTitle('')
   }
   const addNewList = () => {
     dispatch(initAddNewBoardList({
