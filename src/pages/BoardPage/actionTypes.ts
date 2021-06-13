@@ -120,3 +120,9 @@ export interface IMoveBoardTaskActionPayload {
   source: IDropResult,
   destination: IDropResult
 }
+
+export interface IChangeTaskStatusActionPayload {
+  listId: string,
+  taskId: string,
+  isCompleted: boolean
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTaskInfoOpen } from './taskInfoSlice'
-import { initChangeBoardCard } from '../../pages/BoardPage/boardPageSlice'
+import { initChangeBoardCard, initChangeTaskStatus } from '../../pages/BoardPage/boardPageSlice'
 import { getTaskInfoState } from './selectors'
 import { Modal, Slide, TextField, Button, IconButton, Paper } from '@material-ui/core'
 import { makeStyles, createStyles, createMuiTheme, withStyles, useTheme } from '@material-ui/core/styles'
@@ -112,6 +112,7 @@ const TaskInfo = () => {
   const handleClose = () => {
     dispatch(setTaskInfoOpen({
       isOpen: false,
+      completed: false,
       title: '',
       description: '',
       id: '',
@@ -132,6 +133,14 @@ const TaskInfo = () => {
       newDescription: taskDescription
     }))
   }
+  const handleTaskDone = () => {
+    console.log(taskInfoState)
+    dispatch(initChangeTaskStatus({
+      listId: taskInfoState.listId,
+      taskId: taskInfoState.id,
+      isCompleted: !taskInfoState.completed
+    }))
+  }
 
   return (
     <Modal
@@ -150,7 +159,11 @@ const TaskInfo = () => {
                   size="small"
                   color="primary"
                   disableElevation
-                >Выполнить</DoTaskBtn>
+                  onClick={handleTaskDone}
+                  style={{
+                    opacity: taskInfoState.completed ? .4 : 1
+                  }}
+                >{taskInfoState.completed ? 'выполнено' : 'выполнить'}</DoTaskBtn>
                 <ControlBtn
                   aria-label="сохранить"
                   size="small"

@@ -25,7 +25,8 @@ import {
   watchSaveBoardPageSettings,
   watchAddUserToBoard,
   watchDeleteBoardMember,
-  watchAddBoardAction
+  watchAddBoardAction,
+  watchChangeTaskStatus
 } from '../pages/BoardPage/saga'
 import boardPageReducer from '../pages/BoardPage/boardPageSlice'
 
@@ -88,5 +89,6 @@ sagaMiddleware.run(watchPinBoard)
 sagaMiddleware.run(watchDeleteBoard)
 sagaMiddleware.run(watchDeleteBoardFromUser)
 sagaMiddleware.run(watchAddBoardAction)
+sagaMiddleware.run(watchChangeTaskStatus)
 
 export default store
