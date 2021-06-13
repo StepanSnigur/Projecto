@@ -35,6 +35,7 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.primary.main
   }
 }))
+const ENTER_KEY_CODE = 13
 
 const InputModalWindow: React.FC<IModalWindow> = ({
   isOpen,
@@ -47,6 +48,12 @@ const InputModalWindow: React.FC<IModalWindow> = ({
 }) => {
   const styles = useStyles()
   const theme = useTheme()
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === ENTER_KEY_CODE) {
+      onSubmit()
+    }
+  }
 
   return (
     <Paper>
@@ -69,6 +76,7 @@ const InputModalWindow: React.FC<IModalWindow> = ({
                 className={styles.addCardInput}
                 value={inputValue}
                 onChange={handleChange}
+                onKeyDown={handleKeyDown}
                 InputLabelProps={{
                   style: {
                     color: theme.palette.text.primary
