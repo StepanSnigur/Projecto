@@ -11,6 +11,7 @@ interface IBoardCard {
   id: string,
   listId: string,
   index: number,
+  completed: boolean,
   isDraggable: boolean
 }
 
@@ -43,6 +44,7 @@ const BoardCard: React.FC<IBoardCard> = ({
   id,
   listId,
   index,
+  completed,
   isDraggable
 }) => {
   const dispatch = useDispatch()
@@ -56,6 +58,7 @@ const BoardCard: React.FC<IBoardCard> = ({
         title,
         description,
         id,
+        completed,
         listId
       }))
     }
@@ -70,7 +73,14 @@ const BoardCard: React.FC<IBoardCard> = ({
           ref={provided.innerRef}
           className={styles.wrapper}
         >
-          <div className={styles.taskButton} onClick={openTaskInfo}>{title}</div>
+          <div
+            className={styles.taskButton}
+            onClick={openTaskInfo}
+            style={{
+              textDecoration: completed ? 'line-through' : 'none',
+              opacity: completed ? .4 : 1
+            }}
+          >{title}</div>
         </div>
       )}
     </Draggable>

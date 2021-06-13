@@ -8,7 +8,8 @@ import {
   IInitDeleteBoardList,
   IInitMoveBoardColumn,
   IInitChangeBoardTitle,
-  IInitChangeBoardCard
+  IInitChangeBoardCard,
+  IChangeTaskStatusActionPayload
 } from './actionTypes'
 import boardApi from '../../api/boardApi'
 import {
@@ -18,7 +19,9 @@ import {
   IBoardTask,
   IBoardAction,
   initAddBoardAction,
-  addBoardAction
+  addBoardAction,
+  initChangeTaskStatus,
+  changeTaskStatus
 } from './boardPageSlice'
 import {
   initCreateBoardPage,
@@ -60,6 +63,7 @@ import { setBoardSettingsOpen } from '../../features/BoardSettings/boardSettings
 import authApi from '../../api/authApi'
 import { ROLES, RoleType } from '../../common/constants'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
+import { changeTaskInfoStatus } from '../../features/TaskInfo/taskInfoSlice'
 
 export interface IUserDataWithRole extends IUserData {
   role: RoleType
@@ -362,5 +366,25 @@ function* addBoardActionSaga(action: PayloadAction<IBoardAction>) {
     yield put(addBoardAction(boardAction))
   } catch (e) {
     yield put(fireSetError('Ошибка сохранения действия'))
+  }
+}
+
+export function* watchChangeTaskStatus() {
+  yield takeEvery(initChangeTaskStatus.type, changeTaskStatusSaga)
+}
+function* changeTaskStatusSaga(action: PayloadAction<IChangeTaskStatusActionPayload>) {
+  try {
+    yield put(setSidebarSpinnerLoading(true))
+    const boardId: string = yield select(getBoardId)
+    const token: string = yield select(getToken)
+    const { listId, taskId, isCompleted } = action.payload
+    yield call(boardApi.changeTaskStatus, boardId, listId, taskId, isCompleted, token)
+
+    yield put(changeTaskStatus(action.payload))
+    yield put(changeTaskInfoStatus(isCompleted))
+  } catch (e) {
+    yield put(fireSetError(e.message))
+  } finally {
+    yield put(setSidebarSpinnerLoading(false))
   }
 }

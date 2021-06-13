@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   IAddNewBoardCardActionPayload,
   IChangeBoardCardActionPayload,
+  IChangeTaskStatusActionPayload,
   IMoveBoardTaskActionPayload
 } from './actionTypes'
 import { ITableMember } from '../../features/AddNewTable/AddNewTable'
@@ -12,6 +13,7 @@ export interface IBoardTask {
   name: string,
   description?: string,
   createdAt: string,
+  completed: boolean,
   _id: string
 }
 export interface IBoardList {
@@ -227,6 +229,15 @@ const boardPageSlice = createSlice({
         ...state,
         actions: [action.payload, ...state.actions]
       }
+    },
+    initChangeTaskStatus(state, action) {},
+    changeTaskStatus(state, action: PayloadAction<IChangeTaskStatusActionPayload>) {
+      const { listId, taskId, isCompleted } = action.payload
+      const list = state.lists.find(list => list._id === listId)
+      const task = list!.tasks.find(task => task._id === taskId)
+      task!.completed = isCompleted
+
+      return state
     }
   }
 })
@@ -260,6 +271,8 @@ export const {
   initDeleteBoardMember,
   deleteBoardMember,
   initAddBoardAction,
-  addBoardAction
+  addBoardAction,
+  initChangeTaskStatus,
+  changeTaskStatus
 } = boardPageSlice.actions
 export default boardPageSlice.reducer

@@ -151,6 +151,7 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
                   id={task._id}
                   listId={tasksList._id}
                   index={i}
+                  completed={task.completed}
                   isDraggable={!!userState._id}
                 />)}
                 {provided.placeholder}

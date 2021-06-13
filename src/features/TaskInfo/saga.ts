@@ -12,14 +12,15 @@ function* openTaskInfoSaga(action: IInitTaskInfoOpen) {
   try {
     yield put(setTaskInfoLoading(true))
     yield put(setSidebarSpinnerLoading(true))
-    const { id, listId, title, description } = action.payload
+    const { id, listId, title, description, completed } = action.payload
 
     yield put(setTaskInfoOpen({
       isOpen: true,
       title,
       description,
       id,
-      listId
+      listId,
+      completed
     }))
   } catch (e) {
     yield put(fireSetError('Не удалось открыть описание'))

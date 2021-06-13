@@ -9,7 +9,8 @@ export interface IInitTaskInfoOpen {
     title: string,
     description: string,
     id: string,
-    listId: string
+    listId: string,
+    completed: boolean
   }
 }
 export interface ISetTaskInfoOpen {
@@ -17,5 +18,6 @@ export interface ISetTaskInfoOpen {
   title: string,
   description: string,
   id: string,
-  listId: string
+  listId: string,
+  completed: boolean
 }

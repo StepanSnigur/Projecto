@@ -150,6 +150,21 @@ class BoardApi extends Api {
       token
     )
   }
+
+  changeTaskStatus = async (
+    boardId: string,
+    listId: string,
+    taskId: string,
+    isCompleted: boolean,
+    token: string
+  ) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/changeTaskStatus`, {
+      boardId,
+      listId,
+      taskId,
+      isCompleted
+    }, 'POST', token)
+  }
 }
 
 export default new BoardApi()
