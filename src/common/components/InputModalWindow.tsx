@@ -79,6 +79,7 @@ const InputModalWindow: React.FC<IModalWindow> = ({
                     notchedOutline: styles.inputBorder
                   }
                 }}
+                autoFocus
               />
           }
           <Button
