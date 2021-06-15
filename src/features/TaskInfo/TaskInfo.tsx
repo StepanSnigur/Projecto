@@ -134,7 +134,6 @@ const TaskInfo = () => {
     }))
   }
   const handleTaskDone = () => {
-    console.log(taskInfoState)
     dispatch(initChangeTaskStatus({
       listId: taskInfoState.listId,
       taskId: taskInfoState.id,
