@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardPageState } from './selectors'
 import { getUserId } from '../../common/user/selectors'
@@ -12,7 +12,7 @@ import {
 import Preloader from '../../common/components/Preloader'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import { Button, Container } from '@material-ui/core'
-import { isHexColor } from './utils'
+import { checkIsBoardMember, isHexColor } from './utils'
 import { IBoardList } from './boardPageSlice'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
@@ -85,6 +85,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
     background: boardPageState.backgroundImage,
     isImage: !isHexColor(boardPageState.backgroundImage || '') && !!boardPageState.backgroundImage?.length
   })
+  const [isBoardMember, setIsBoardMember] = useState(false)
 
   const [addNewCardModalOpen, setAddNewCardModalOpen] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -137,11 +138,14 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   useLayoutEffect(() => {
     dispatch(initSetNewBoard(boardId))
   }, [dispatch, boardId])
+  useEffect(() => {
+    setIsBoardMember(checkIsBoardMember(boardPageState.assignedUsers, userId))
+  }, [boardPageState.assignedUsers, userId])
 
   if (boardPageState.isLoading) return <Preloader />
   if (
     JSON.parse(boardPageState.settings?.isPrivate) &&
-    (!userId || !boardPageState.assignedUsers.some(user => user.userId === userId))
+    (!userId || !isBoardMember)
   ) return <BoardMemberBarrier />
   if (boardPageState.error) return <div>error</div>
 
@@ -160,16 +164,19 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
                     tasksList={tasksList}
                     onAddNewCard={handleAddNewCard}
                     dragIndex={i}
+                    isBoardMember={isBoardMember}
                     key={tasksList._id}
                   />)}
                   {provided.placeholder}
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    className={styles.addListBtn}
-                    onClick={() => setAddNewListModalOpen(true)}
-                    disabled={boardPageState.isCardLoading}
-                  >Добавить список</Button>
+                  {isBoardMember
+                    ? <Button
+                      variant="contained"
+                      disableElevation
+                      className={styles.addListBtn}
+                      onClick={() => setAddNewListModalOpen(true)}
+                      disabled={boardPageState.isCardLoading}
+                    >Добавить список</Button>
+                    : null}
                 </div>
               )}
             </Droppable>

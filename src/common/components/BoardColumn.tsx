@@ -12,7 +12,8 @@ import { ENTER_KEY_CODE } from '../constants'
 interface IBoardColumn {
   tasksList: IBoardList,
   onAddNewCard: (columnId: string) => void,
-  dragIndex: number
+  dragIndex: number,
+  isBoardMember: boolean
 }
 
 const useStyles = makeStyles({
@@ -70,7 +71,7 @@ const useStyles = makeStyles({
   }
 })
 
-const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragIndex }) => {
+const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragIndex, isBoardMember }) => {
   const boardColumnContext = useContext(BoardColumnContext)
   const userState = useSelector(getUserState)
   const [titleInputValue, setTitleInputValue] = useState('')
@@ -158,10 +159,12 @@ const BoardColumn: React.FC<IBoardColumn> = ({ tasksList, onAddNewCard, dragInde
               </div>
             )}
           </Droppable>
-          <button
-            className={styles.addTaskBtn}
-            onClick={() => onAddNewCard(tasksList._id)}
-          >Добавить задачу</button>
+          {isBoardMember
+            ? <button
+              className={styles.addTaskBtn}
+              onClick={() => onAddNewCard(tasksList._id)}
+            >Добавить задачу</button>
+            : null}
         </Paper>
       )}
     </Draggable>
