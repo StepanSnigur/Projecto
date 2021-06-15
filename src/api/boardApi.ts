@@ -109,7 +109,6 @@ class BoardApi extends Api {
     }, 'POST', token)
   }
   deleteBoardFromUser = async (userId: string, boardId: string, token: string) => {
-    console.log(userId, boardId, 'delete')
     const deleteMemberRes = await this.makeRequest(`${this.baseDBUrl}/board/deleteMember`, {
       boardId,
       memberId: userId
