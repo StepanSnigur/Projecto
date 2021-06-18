@@ -9,14 +9,21 @@ const useStyles = makeStyles(theme => createStyles({
     justifyContent: 'center',
     alignItems: 'center',
     background: theme.palette.secondary.dark
+  },
+  noBackground: {
+    background: 'inherit'
   }
 }))
 
-const Preloader = () => {
+interface IPreloader {
+  haveBackground?: boolean
+}
+
+const Preloader: React.FC<IPreloader> = ({ haveBackground = true }) => {
   const styles = useStyles()
 
   return (
-    <div className={styles.preloaderContainer}>
+    <div className={`${styles.preloaderContainer} ${!haveBackground ? styles.noBackground : ''}`}>
       <CircularProgress />
     </div>
   )
