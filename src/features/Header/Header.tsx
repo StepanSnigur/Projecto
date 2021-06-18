@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { getUserState } from '../../common/user/selectors'
@@ -14,8 +14,11 @@ import PersonIcon from '@material-ui/icons/Person'
 import { INITIAL_HEADER_TITLE } from './constants'
 import { ENTER_KEY_CODE } from '../../common/constants'
 import SettingsIcon from '@material-ui/icons/Settings'
+import ChatIcon from '@material-ui/icons/Chat'
 import { isAdminOfBoard } from '../../common/user/utils'
 import { setBoardSettingsOpen } from '../BoardSettings/boardSettingsSlice'
+import { checkIsBoardMember } from '../../pages/BoardPage/utils'
+import { initSetBoardChatOpen } from '../BoardChat/boardChatSlice'
 
 const useStyles = makeStyles((theme) => createStyles({
   headerWrapper: {
@@ -78,6 +81,7 @@ const Header = () => {
   const [isModdingTitle, setIsModdingTitle] = useState(false)
   const [title, setTitle] = useState('')
   const [isControlIconsVisible, setIsControlIconsVisible] = useState(false)
+  const [isBoardMember, setIsBoardMember] = useState(false)
 
   useEffect(() => {
     if (isOnBoardPage(location.pathname)) {
@@ -86,24 +90,27 @@ const Header = () => {
       setHeaderTitle(INITIAL_HEADER_TITLE)
       setIsModdingTitle(false)
     }
-  }, [location.pathname, boardPageState.name])
-  useEffect(() => {
-    if (
-      isOnBoardPage(location.pathname) &&
+  }, [location, boardPageState])
+  useLayoutEffect(() => {
+    setIsControlIconsVisible(
+      !!(isOnBoardPage(location.pathname) &&
       userState._id &&
       isAdminOfBoard(boardPageState._id, userState.registeredInBoards)
-      && !boardPageState.isLoading
-    ) {
-      setIsControlIconsVisible(true)
-    } else {
-      setIsControlIconsVisible(false)
-    }
+      && !boardPageState.isLoading)
+    )
   }, [
-    location.pathname,
-    userState._id,
-    boardPageState._id,
-    userState.registeredInBoards,
-    boardPageState.isLoading
+    location,
+    userState,
+    boardPageState
+  ])
+  useLayoutEffect(() => {
+    setIsBoardMember(isOnBoardPage(location.pathname)
+      && checkIsBoardMember(boardPageState.assignedUsers, userState._id)
+      && !boardPageState.isLoading)
+  }, [
+    location,
+    boardPageState,
+    userState
   ])
 
   const handleTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -117,15 +124,12 @@ const Header = () => {
     setTitle(e.target.value)
   }
   const exitUpdatingMode = () => {
-    if (!boardPageState._id) {
-      dispatch(fireSetError('Непредвиденная ошибка'))
+    if (!boardPageState._id || headerTitle === title) {
+      !boardPageState._id && dispatch(fireSetError('Непредвиденная ошибка'))
       setIsModdingTitle(false)
       return false
     }
-    if (headerTitle === title) {
-      setIsModdingTitle(false)
-      return false
-    }
+
     dispatch(initChangeBoardTitle({
       boardId: boardPageState._id,
       newTitle: title
@@ -139,6 +143,9 @@ const Header = () => {
   }
   const openBoardSettings = () => {
     dispatch(setBoardSettingsOpen(true))
+  }
+  const openBoardChat = () => {
+    dispatch(initSetBoardChatOpen())
   }
   const TableTitle: React.FC = () => (
     <Link to="/" className={styles.logoBtn} onClick={handleTitleClick}>
@@ -162,6 +169,13 @@ const Header = () => {
         : <TextWithLoading isLoading={boardPageState.isLoading} Component={TableTitle} />
     }
     <div>
+      {
+        isBoardMember
+          ? <IconButton onClick={openBoardChat} color="secondary">
+            <ChatIcon />
+          </IconButton>
+          : null
+      }
       {
         isControlIconsVisible
           ? <IconButton role="settingsButton" onClick={openBoardSettings} color="secondary">

@@ -39,6 +39,9 @@ import {
   watchDeleteBoardFromUser
 } from '../features/Sidebar/saga'
 
+import boardChatSliceReducer from '../features/BoardChat/boardChatSlice'
+import { watchBoardChatOpen, watchSendMessage } from '../features/BoardChat/saga'
+
 import taskInfoReducer from '../features/TaskInfo/taskInfoSlice'
 import { watchOpenTaskInfo } from '../features/TaskInfo/saga'
 import sidebarSpinnerReducer from '../features/SidebarSpinner/sidebarSpinnerSlice'
@@ -56,7 +59,8 @@ const rootReducer = combineReducers({
   sidebar: sidebarReducer,
   taskInfo: taskInfoReducer,
   sidebarSpinner: sidebarSpinnerReducer,
-  boardSettings: boardSettingsReducer
+  boardSettings: boardSettingsReducer,
+  boardChat: boardChatSliceReducer
 })
 const store = configureStore({
   reducer: rootReducer,
@@ -90,5 +94,7 @@ sagaMiddleware.run(watchDeleteBoard)
 sagaMiddleware.run(watchDeleteBoardFromUser)
 sagaMiddleware.run(watchAddBoardAction)
 sagaMiddleware.run(watchChangeTaskStatus)
+sagaMiddleware.run(watchBoardChatOpen)
+sagaMiddleware.run(watchSendMessage)
 
 export default store

@@ -2,6 +2,7 @@ import Api from './apiConfig'
 import { IBoardAction, IBoardSettings } from '../pages/BoardPage/boardPageSlice'
 import { ITableMember } from '../features/AddNewTable/AddNewTable'
 import { IDropResult } from '../pages/BoardPage/BoardPage'
+import { IChatMessage } from '../features/BoardChat/boardChatSlice'
 
 class BoardApi extends Api {
   getBoard = async (boardId: string, token: string) => {
@@ -162,6 +163,19 @@ class BoardApi extends Api {
       listId,
       taskId,
       isCompleted
+    }, 'POST', token)
+  }
+
+  getChatMessages = async (boardId: string, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/getChatMessages`, {
+      boardId
+    }, 'POST', token)
+  }
+
+  sendChatMessage = async (boardId: string, message: Partial<IChatMessage>, token: string) => {
+    return await this.makeRequest(`${this.baseDBUrl}/board/sendChatMessage`, {
+      boardId,
+      message
     }, 'POST', token)
   }
 }

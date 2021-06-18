@@ -23,6 +23,7 @@ import BoardMemberBarrier from '../../common/components/BoardMemberBarrier'
 import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
 import TaskInfo from '../../features/TaskInfo'
 import BoardSettings from '../../features/BoardSettings'
+import BoardChat from '../../features/BoardChat'
 
 interface IBoardPage {
   boardId: string
@@ -202,6 +203,7 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
       </DragDropContext>
       <TaskInfo />
       <BoardSettings />
+      <BoardChat />
     </div>
   )
 }
