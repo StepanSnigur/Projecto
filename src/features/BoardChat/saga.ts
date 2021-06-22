@@ -7,7 +7,6 @@ import {
   IChatMessage,
   initSendMessage,
   initSetBoardChatOpen,
-  sendMessage,
   setBoardChatData,
   setBoardChatLoading
 } from './boardChatSlice'
@@ -40,15 +39,12 @@ function* sendMessageSaga(action: PayloadAction<string>) {
   try {
     yield put(setProgressBarLoading(true))
     const user: IUserData = yield select(getUserState)
-    const boardId: string = yield select(getBoardId)
-    const token: string = yield select(getToken)
     const messageData = {
       sender: user.email,
       sendedAt: new Date().toLocaleDateString(),
       content: action.payload
     }
-    const message: IChatMessage = yield call(boardApi.sendChatMessage, boardId, messageData, token)
-    yield put(sendMessage(message))
+    yield call(boardApi.sendChatMessage, messageData)
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {

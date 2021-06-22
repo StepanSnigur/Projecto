@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 import { initSendMessage, setBoardChatOpen } from './boardChatSlice'
 import { getBoardChatState } from './selectors'
+import { getUserState } from '../../common/user/selectors'
 import SendIcon from '@material-ui/icons/Send'
 import ChatMessage from '../../common/components/ChatMessage'
 import Preloader from '../../common/components/Preloader'
@@ -50,6 +51,7 @@ const useStyles = makeStyles(theme => createStyles({
 const BoardChat = () => {
   const dispatch = useDispatch()
   const boardChatState = useSelector(getBoardChatState)
+  const userState = useSelector(getUserState)
   const [message, setMessage] = useState('')
   const styles = useStyles()
 
@@ -85,7 +87,7 @@ const BoardChat = () => {
                       text={message.content}
                       from={message.sender}
                       time={message.sendedAt}
-                      fromCurrentUser={true}
+                      fromCurrentUser={message.sender === userState.email}
                     />
                   ))}
                 </div>

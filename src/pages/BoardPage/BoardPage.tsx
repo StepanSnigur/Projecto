@@ -24,6 +24,8 @@ import BoardColumnContextProvider from '../../common/context/BoardColumnContext'
 import TaskInfo from '../../features/TaskInfo'
 import BoardSettings from '../../features/BoardSettings'
 import BoardChat from '../../features/BoardChat'
+import boardApi from '../../api/boardApi'
+import { sendMessage } from '../../features/BoardChat/boardChatSlice'
 
 interface IBoardPage {
   boardId: string
@@ -142,6 +144,15 @@ const BoardPage: React.FC<IBoardPage> = ({ boardId }) => {
   useEffect(() => {
     setIsBoardMember(checkIsBoardMember(boardPageState.assignedUsers, userId))
   }, [boardPageState.assignedUsers, userId])
+  useEffect(() => {
+    const socket = boardApi.connectToChat(userId, boardId)
+    socket.onmessage = (msg) => {
+      const message = JSON.parse(msg.data)
+      dispatch(sendMessage(message))
+    }
+
+    return boardApi.disconnectFromChat
+  }, [dispatch, boardId, userId])
 
   if (boardPageState.isLoading) return <Preloader />
   if (
