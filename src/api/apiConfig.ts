@@ -1,8 +1,10 @@
 class Api {
   baseDBUrl: string
+  baseSocketUrl: string
 
   constructor() {
     this.baseDBUrl = 'https://projecto-backend.herokuapp.com'
+    this.baseSocketUrl = 'wss://projecto-backend.herokuapp.com/boardChat'
   }
 
   async makeRequest(url: string, params?: any, method = 'GET', token = '') {

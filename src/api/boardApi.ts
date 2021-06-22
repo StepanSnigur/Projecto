@@ -5,6 +5,25 @@ import { IDropResult } from '../pages/BoardPage/BoardPage'
 import { IChatMessage } from '../features/BoardChat/boardChatSlice'
 
 class BoardApi extends Api {
+  chatSocket: WebSocket | null
+  constructor() {
+    super()
+    this.chatSocket = null
+  }
+  connectToChat = (id: string, boardId: string) => {
+    this.chatSocket && this.disconnectFromChat()
+    this.chatSocket = new WebSocket(`${this.baseSocketUrl}?id=${id}&boardId=${boardId}`)
+    return this.chatSocket
+  }
+  sendChatMessage = (msg: Partial<IChatMessage>) => {
+    this.chatSocket && this.chatSocket.send(JSON.stringify(msg))
+  }
+  disconnectFromChat = () => {
+    this.chatSocket && this.chatSocket.close()
+    this.chatSocket = null
+  }
+
+
   getBoard = async (boardId: string, token: string) => {
     return await this.makeRequest(
       `${this.baseDBUrl}/board/`,
@@ -172,12 +191,12 @@ class BoardApi extends Api {
     }, 'POST', token)
   }
 
-  sendChatMessage = async (boardId: string, message: Partial<IChatMessage>, token: string) => {
-    return await this.makeRequest(`${this.baseDBUrl}/board/sendChatMessage`, {
-      boardId,
-      message
-    }, 'POST', token)
-  }
+  // sendChatMessage = async (boardId: string, message: Partial<IChatMessage>, token: string) => {
+  //   return await this.makeRequest(`${this.baseDBUrl}/board/sendChatMessage`, {
+  //     boardId,
+  //     message
+  //   }, 'POST', token)
+  // }
 }
 
 export default new BoardApi()
