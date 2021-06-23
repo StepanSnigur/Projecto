@@ -8,6 +8,7 @@ const useStyles = makeStyles(theme => ({
     width: 'fit-content',
     maxWidth: '90%',
     minWidth: '80px',
+    minHeight: '19px',
     borderRadius: '8px',
     padding: '16px',
     paddingBottom: '18px',

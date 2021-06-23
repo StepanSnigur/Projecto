@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Modal,
@@ -44,7 +44,8 @@ const useStyles = makeStyles(theme => createStyles({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: '800px'
+    maxHeight: '700px',
+    overflowY: 'auto'
   },
 }))
 
@@ -54,6 +55,17 @@ const BoardChat = () => {
   const userState = useSelector(getUserState)
   const [message, setMessage] = useState('')
   const styles = useStyles()
+  const messagesListRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const messagesListEl = messagesListRef.current
+    if (messagesListEl) {
+      messagesListEl.scroll({
+        top: messagesListEl.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  }, [messagesListRef, boardChatState])
 
   const handleClose = () => {
     dispatch(setBoardChatOpen(false))
@@ -80,7 +92,7 @@ const BoardChat = () => {
             boardChatState.isLoading
               ? <Preloader haveBackground={false} />
               : <>
-                <div className={styles.messagesList}>
+                <div className={styles.messagesList} ref={messagesListRef}>
                   {boardChatState.messages.map(message => (
                     <ChatMessage
                       key={message._id}
