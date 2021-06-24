@@ -7,8 +7,7 @@ import {
   IChatMessage,
   initSendMessage,
   initSetBoardChatOpen,
-  setBoardChatData,
-  setBoardChatLoading
+  setBoardChatData
 } from './boardChatSlice'
 import { getBoardId } from '../../pages/BoardPage/selectors'
 import { setProgressBarLoading } from '../ProgressBar/progressBarSlice'
@@ -20,7 +19,7 @@ export function* watchBoardChatOpen() {
 }
 function* setBoardChatOpenSaga() {
   try {
-    yield put(setBoardChatLoading(true))
+    yield put(setProgressBarLoading(true))
     const boardId: string = yield select(getBoardId)
     const token: string = yield select(getToken)
     const chatMessages: IChatMessage[] = yield call(boardApi.getChatMessages, boardId, token)
@@ -28,7 +27,7 @@ function* setBoardChatOpenSaga() {
   } catch (e) {
     yield put(fireSetError(e.message || 'Непредвиденная ошибка'))
   } finally {
-    yield put(setBoardChatLoading(false))
+    yield put(setProgressBarLoading(false))
   }
 }
 

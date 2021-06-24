@@ -24,12 +24,6 @@ const boardChatSlice = createSlice({
     messages: []
   } as IBoardPageChatReducer,
   reducers: {
-    setBoardChatLoading(state, action: PayloadAction<boolean>) {
-      return {
-        ...state,
-        isLoading: action.payload
-      }
-    },
     initSetBoardChatOpen(state?) {
       return {
         ...state,
@@ -62,7 +56,6 @@ const boardChatSlice = createSlice({
 })
 
 export const {
-  setBoardChatLoading,
   initSetBoardChatOpen,
   setBoardChatOpen,
   initSendMessage,

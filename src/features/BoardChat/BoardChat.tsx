@@ -14,7 +14,6 @@ import { getBoardChatState } from './selectors'
 import { getUserState } from '../../common/user/selectors'
 import SendIcon from '@material-ui/icons/Send'
 import ChatMessage from '../../common/components/ChatMessage'
-import Preloader from '../../common/components/Preloader'
 
 const useStyles = makeStyles(theme => createStyles({
   modalWindowContent: {
@@ -58,13 +57,16 @@ const BoardChat = () => {
   const messagesListRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const messagesListEl = messagesListRef.current
-    if (messagesListEl) {
-      messagesListEl.scroll({
-        top: messagesListEl.scrollHeight,
-        behavior: 'smooth'
-      })
-    }
+    // wait until opening animation ends
+    setTimeout(() => {
+      const messagesListEl = messagesListRef.current
+      if (messagesListEl) {
+        messagesListEl.scroll({
+          top: messagesListEl.scrollHeight,
+          behavior: 'smooth'
+        })
+      }
+    }, 0)
   }, [messagesListRef, boardChatState])
 
   const handleClose = () => {
@@ -88,34 +90,28 @@ const BoardChat = () => {
     >
       <Slide direction="left" in={boardChatState.isOpen}>
         <Paper className={styles.modalWindowContent}>
-          {
-            boardChatState.isLoading
-              ? <Preloader haveBackground={false} />
-              : <>
-                <div className={styles.messagesList} ref={messagesListRef}>
-                  {boardChatState.messages.map(message => (
-                    <ChatMessage
-                      key={message._id}
-                      text={message.content}
-                      from={message.sender}
-                      time={message.sendedAt}
-                      fromCurrentUser={message.sender === userState.email}
-                    />
-                  ))}
-                </div>
-                <div className={styles.sendMessageWrapper}>
-                  <TextField
-                    placeholder="Сообщение"
-                    className={styles.textInput}
-                    onChange={handleMessageInputChange}
-                    value={message}
-                  />
-                  <IconButton onClick={handleSendMessage} color="secondary">
-                    <SendIcon />
-                  </IconButton>
-                </div>
-              </>
-          }
+          <div className={styles.messagesList} ref={messagesListRef}>
+            {boardChatState.messages.map(message => (
+              <ChatMessage
+                key={message._id}
+                text={message.content}
+                from={message.sender}
+                time={message.sendedAt}
+                fromCurrentUser={message.sender === userState.email}
+              />
+            ))}
+          </div>
+          <div className={styles.sendMessageWrapper}>
+            <TextField
+              placeholder="Сообщение"
+              className={styles.textInput}
+              onChange={handleMessageInputChange}
+              value={message}
+            />
+            <IconButton onClick={handleSendMessage} color="secondary">
+              <SendIcon />
+            </IconButton>
+          </div>
         </Paper>
       </Slide>
     </Modal>
