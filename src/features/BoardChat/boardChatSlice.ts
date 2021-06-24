@@ -10,6 +10,7 @@ export interface IBoardPageChatReducer {
   isOpen: boolean,
   error: string | null,
   isLoading: boolean,
+  newMessageIndicator: boolean,
   messages: IChatMessage[]
 }
 
@@ -19,6 +20,7 @@ const boardChatSlice = createSlice({
     isOpen: false,
     error: null,
     isLoading: false,
+    newMessageIndicator: false,
     messages: []
   } as IBoardPageChatReducer,
   reducers: {
@@ -28,7 +30,12 @@ const boardChatSlice = createSlice({
         isLoading: action.payload
       }
     },
-    initSetBoardChatOpen() {},
+    initSetBoardChatOpen(state?) {
+      return {
+        ...state,
+        newMessageIndicator: false
+      }
+    },
     setBoardChatOpen(state, action: PayloadAction<boolean>) {
       return {
         ...state,
@@ -47,7 +54,8 @@ const boardChatSlice = createSlice({
     sendMessage(state, action: PayloadAction<IChatMessage>) {
       return {
         ...state,
-        messages: [...state.messages, action.payload]
+        messages: [...state.messages, action.payload],
+        newMessageIndicator: !state.isOpen
       }
     }
   }

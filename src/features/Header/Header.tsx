@@ -19,6 +19,7 @@ import { isAdminOfBoard } from '../../common/user/utils'
 import { setBoardSettingsOpen } from '../BoardSettings/boardSettingsSlice'
 import { checkIsBoardMember } from '../../pages/BoardPage/utils'
 import { initSetBoardChatOpen } from '../BoardChat/boardChatSlice'
+import { getBoardChatState } from '../BoardChat/selectors'
 
 const useStyles = makeStyles((theme) => createStyles({
   headerWrapper: {
@@ -52,6 +53,15 @@ const useStyles = makeStyles((theme) => createStyles({
     '&:hover': {
       background: '#3855c9'
     }
+  },
+  redIndicator: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    width: '7px',
+    height: '7px',
+    borderRadius: '50%',
+    background: 'red'
   }
 }))
 
@@ -77,6 +87,7 @@ const Header = () => {
   const dispatch = useDispatch()
   const userState = useSelector(getUserState)
   const boardPageState = useSelector(getBoardPageState)
+  const boardChatState = useSelector(getBoardChatState)
   const [headerTitle, setHeaderTitle] = useState(INITIAL_HEADER_TITLE)
   const [isModdingTitle, setIsModdingTitle] = useState(false)
   const [title, setTitle] = useState('')
@@ -172,6 +183,7 @@ const Header = () => {
       {
         isBoardMember
           ? <IconButton onClick={openBoardChat} color="secondary">
+            {boardChatState.newMessageIndicator ? <div className={styles.redIndicator}/> : ''}
             <ChatIcon />
           </IconButton>
           : null
