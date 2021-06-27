@@ -98,10 +98,16 @@ class BoardApi extends Api {
     }, 'POST', token)
   }
 
-  saveBoardSettings = async (boardId: string, newSettings: IBoardSettings, token: string) => {
+  saveBoardSettings = async (
+    boardId: string,
+    newSettings: IBoardSettings,
+    token: string,
+    newBackground?: string
+  ) => {
     return await this.makeRequest(`${this.baseDBUrl}/board/setBoardSettings`, {
       boardId,
-      newSettings
+      newSettings,
+      newBackground
     }, 'POST', token)
   }
 

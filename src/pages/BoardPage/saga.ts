@@ -57,7 +57,7 @@ import { IUserData, IBoardLink, addBoardLinkToCurrentUser } from '../../common/u
 import { addSidebarLink, changeSidebarLinkName, IExtendedBoardLink } from '../../features/Sidebar/sidebarSlice'
 import { getToken, getUserId, getUserState } from '../../common/user/selectors'
 import history from '../../App/history'
-import { getBoardId, getBoardPageSettings } from './selectors'
+import { getBoardId, getBoardPageSettings, getBoardPageState } from './selectors'
 import { setSidebarSpinnerLoading } from '../../features/SidebarSpinner/sidebarSpinnerSlice'
 import { setBoardSettingsOpen } from '../../features/BoardSettings/boardSettingsSlice'
 import authApi from '../../api/authApi'
@@ -305,8 +305,8 @@ function* saveBoardPageSettingsSaga() {
     yield put(setSidebarSpinnerLoading(true))
     const newSettings: IBoardSettings = yield select(getBoardPageSettings)
     const token: string = yield select(getToken)
-    const boardId: string = yield select(getBoardId)
-    yield call(boardApi.saveBoardSettings, boardId, newSettings, token)
+    const { backgroundImage, _id } = yield select(getBoardPageState)
+    yield call(boardApi.saveBoardSettings, _id, newSettings, token, backgroundImage)
     yield put(setBoardSettingsOpen(false))
   } catch (e) {
     yield put(fireSetError(e.message || 'Не удалось сохранить настройки'))

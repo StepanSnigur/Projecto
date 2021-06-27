@@ -182,13 +182,10 @@ const boardPageSlice = createSlice({
         name: action.payload
       }
     },
-    changeCommentsState(state, action: PayloadAction<string>) {
+    changeBoardBackground(state, action: PayloadAction<string>) {
       return {
         ...state,
-        settings: {
-          ...state.settings,
-          comments: action.payload
-        }
+        backgroundImage: action.payload
       }
     },
     changeIsPrivateState(state, action: PayloadAction<string>) {
@@ -263,7 +260,7 @@ export const {
   moveBoardColumn,
   initChangeBoardTitle,
   changeBoardTitle,
-  changeCommentsState,
+  changeBoardBackground,
   changeIsPrivateState,
   saveBoardPageSettings,
   initAddUserToBoard,
