@@ -4,11 +4,11 @@ import { AppStateType } from '../../App/store'
 import { getBoardPageState } from '../../pages/BoardPage/selectors'
 import { setBoardSettingsOpen } from './boardSettingsSlice'
 import {
-  changeCommentsState,
   changeIsPrivateState,
   saveBoardPageSettings,
   initAddUserToBoard,
-  initDeleteBoardMember
+  initDeleteBoardMember,
+  changeBoardBackground
 } from '../../pages/BoardPage/boardPageSlice'
 import {
   Button,
@@ -124,8 +124,8 @@ const BoardSettings = () => {
   const handleClose = () => {
     dispatch(setBoardSettingsOpen(false))
   }
-  const handleCommentsStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(changeCommentsState(e.target.value as string))
+  const handleBoardBackgroundChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    dispatch(changeBoardBackground(e.target.value as string))
     setSaveButtonActive(true)
   }
   const handleIsPrivateStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -164,11 +164,10 @@ const BoardSettings = () => {
               <h3 className={styles.title}>Настройки "{boardPageState.name}"</h3>
               <div className={styles.settingsGrid}>
                 <FormControl variant="outlined">
-                  <InputLabel>Коментарии</InputLabel>
-                  <Select onChange={handleCommentsStateChange} value={boardPageState.settings.comments}>
-                    <MenuItem value="disabled">отключить</MenuItem>
-                    <MenuItem value="only-registered">только зарегистрированные пользователи</MenuItem>
-                    <MenuItem value="only-members">только участники</MenuItem>
+                  <InputLabel>Задний фон</InputLabel>
+                  <Select onChange={handleBoardBackgroundChange} value={boardPageState.backgroundImage}>
+                    <MenuItem value="#000">черный</MenuItem>
+                    <MenuItem value="#1f2c3c">темно-синий</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl variant="outlined">
