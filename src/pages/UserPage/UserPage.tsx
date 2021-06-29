@@ -12,15 +12,25 @@ import {
   initDeleteBoardFromUser
 } from '../../features/Sidebar/sidebarSlice'
 import { ROLES } from '../../common/constants'
+import AddIcon from '@material-ui/icons/Add'
+import { openAddNewTableWindow } from '../../features/AddNewTable/addNewTableSlice'
 
 const useStyles = makeStyles({
   linksWrapper: {
     display: 'grid',
     justifyContent: 'center',
+    gridAutoRows: '102px',
     gridTemplateColumns: 'repeat(5, 202px)',
     gridRowGap: '20px',
     gridColumnGap: '20px',
     paddingTop: '30px'
+  },
+  addBoardButton: {
+    borderRadius: '10px',
+    background: '#2c86ff',
+    cursor: 'pointer',
+    textAlign: 'center',
+    border: 'none'
   }
 })
 interface IContextMenuCoords {
@@ -80,6 +90,9 @@ const UserPage = () => {
       isAdmin: contextMenuState.executionData.role === ROLES.ADMIN
     }))
   }
+  const handleAddNewBoard = () => {
+    dispatch(openAddNewTableWindow(true))
+  }
 
   if (!userId) return <Redirect to="/login" />
 
@@ -92,6 +105,12 @@ const UserPage = () => {
         linkData={boardLink}
         onContextMenu={openContextMenu(boardLink)}
       />)}
+      <button
+        className={styles.addBoardButton}
+        onClick={handleAddNewBoard}
+      >
+        <AddIcon style={{ color: '#fff' }} />
+      </button>
       <ContextMenu
         x={contextMenuState.x}
         y={contextMenuState.y}
