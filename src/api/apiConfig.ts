@@ -8,14 +8,15 @@ class Api {
   }
 
   async makeRequest(url: string, params?: any, method = 'GET', token = '') {
-    const data = await fetch(url, {
+    const query = {
       method,
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(params)
-    })
+    }
+    const data = await fetch(url, query)
     const parsedData = await data.json()
     if (parsedData.message) throw new Error(parsedData.message)
 
