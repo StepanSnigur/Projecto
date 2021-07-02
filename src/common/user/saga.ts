@@ -1,6 +1,6 @@
 import { takeEvery, put, call } from 'redux-saga/effects'
 import authApi from '../../api/authApi'
-import { initSetUser, setUser, setToken } from './userSlice'
+import { initSetUser, setUser } from './userSlice'
 import { setSidebarLinks } from '../../features/Sidebar/sidebarSlice'
 import { addLoadingField } from '../../features/Sidebar/utils'
 import { IInitSetUser } from './actionTypes'
@@ -31,7 +31,7 @@ export function* setUserSaga (action: IInitSetUser) {
     const token = response.token
 
     yield put(setUser(userData))
-    yield put(setToken(token))
+    localStorage.setItem('token', token)
     const extendedUserLinks = addLoadingField(userData.registeredInBoards)
     yield put(setSidebarLinks(extendedUserLinks))
     history.push('/user')

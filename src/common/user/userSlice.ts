@@ -11,7 +11,6 @@ export interface IUserData {
   nickName: string,
   registeredInBoards: IBoardLink[],
   _id: string,
-  token: string,
   icon: string | null,
 }
 
@@ -22,7 +21,6 @@ const userSlice = createSlice({
     nickName: '',
     registeredInBoards: [],
     _id: '',
-    token: '',
     icon: null
   } as IUserData,
   reducers: {
@@ -31,12 +29,6 @@ const userSlice = createSlice({
       return {
         ...state,
         ...action.payload
-      }
-    },
-    setToken(state, action: PayloadAction<string>) {
-      return {
-        ...state,
-        token: action.payload
       }
     },
     addBoardLinkToCurrentUser(state, action: PayloadAction<IBoardLink>) {
@@ -51,7 +43,6 @@ const userSlice = createSlice({
 export const {
   initSetUser,
   setUser,
-  setToken,
   addBoardLinkToCurrentUser
 } = userSlice.actions
 export default userSlice.reducer
